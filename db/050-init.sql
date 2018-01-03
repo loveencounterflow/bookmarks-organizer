@@ -85,7 +85,6 @@ create function INIT.py_init() returns void language plpython3u as $$
     #.......................................................................................................
     $$;
 
-
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
 drop function if exists log( variadic text[] ) cascade;
