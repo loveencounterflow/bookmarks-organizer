@@ -13,7 +13,7 @@ cd "$home"
 # truncate -s 0 /tmp/psql-signals
 
 #-----------------------------------------------------------------------------------------------------------
-bmo_python_path="$home"/python_modules ; export bmo_python_path
+bmo_python_path="$home"/python_modules      ; export bmo_python_path
 bmo_psql_output_path='/tmp/bmo-psql-output' ; export bmo_psql_output_path
 
 #-----------------------------------------------------------------------------------------------------------
