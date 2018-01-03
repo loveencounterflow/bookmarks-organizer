@@ -2,6 +2,7 @@
 
 -- ---------------------------------------------------------------------------------------------------------
 /* Update OS.env to reflect current environment: */
+/* thx to https://dba.stackexchange.com/a/134538/126933 */
 \set os_environment `printenv`
 insert into OS.env with
     v1 as ( select regexp_split_to_table( :'os_environment'::text, '\n' ) as setting  ),
