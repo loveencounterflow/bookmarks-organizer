@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+cd "$(readlink -f "$0" | xargs dirname)"/..
+
+# mkdir -p public/uploads
+# mkdir -p public/downloads
+
+sudo -u postgres psql --set QUIET=on --set ON_ERROR_STOP=1 -f db/teardown.sql
+bin/bmo-psql -f db/000-main.sql
+
+

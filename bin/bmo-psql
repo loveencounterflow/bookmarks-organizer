@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# set -ex
+set -e
+export psql_tailer_pid
+cd "$(readlink -f "$0" | xargs dirname)"/..
+
+
+# make sure output file exists with the correct rights:
+touch /tmp/psql-output
+chmod 0666 /tmp/psql-output
+truncate -s 0 /tmp/psql-output
+
+
+# # make sure output file exists with the correct rights:
+# touch /tmp/psql-signals
+# chmod 0666 /tmp/psql-signals
+# truncate -s 0 /tmp/psql-signals
+
+# # I'd simply use a pipe here but that invalidates the `$!` (last PID) invocation:
+# tail -f /tmp/psql-output | sed 's/^.*$/\x1b[38;05;214m\0\x1b[0m/g' &
+
+# # Thx to https://stackoverflow.com/a/8048493/7568091
+# # for the idea to redirect to a subshell to preserve the PID of the first command:
+( tail -f /tmp/psql-output 2> /dev/null ) > >( sed 's/^.*$/\x1b[38;05;214m\0\x1b[0m/g' ) &
+psql_tailer_pid=$!
+
+# # according to https://stackoverflow.com/a/8366378/7568091
+# # we can also use
+# trap "kill 0" SIGINT
+trap 'kill $psql_tailer_pid' EXIT
+
+# export bmo_bin_path
+# bmo_bin_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# # export bmo_dir_home="$( dirname "$bmo_bin_path" )"
+
+pwd
+psql -U bmo --set QUIET=on --set ON_ERROR_STOP=1 -f ./db/update-os-env.sql
+PAGER="postgres-pager -s 7 --less-status-bar" psql -U bmo --set QUIET=on --set ON_ERROR_STOP=1 "$@"
+
+

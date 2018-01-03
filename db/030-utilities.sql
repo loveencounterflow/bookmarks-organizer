@@ -1,0 +1,157 @@
+
+/*
+
+888     888
+888     888
+888     888
+888     888
+888     888
+888     888
+Y88b. .d88P
+ "Y88888P"
+
+*/
+
+-- ---------------------------------------------------------------------------------------------------------
+drop schema if exists U cascade;
+create schema U;
+
+-- .........................................................................................................
+create domain U.null_text             as text     check ( value is null   );
+create domain U.null_integer          as integer  check ( value is null   );
+create domain U.nonnegative_integer   as integer  check ( value >= 0      );
+create domain U.positive_integer      as integer  check ( value >= 1      );
+create domain U.nonempty_text         as text     check ( value != ''     );
+
+-- ---------------------------------------------------------------------------------------------------------
+create function U.text_array_from_json( jsonb )
+  /* Accepts a textual JSON-compliant representation of an array and returns an SQL `array` with text
+  elements. This is needed primarily to pass `variadic text[]` arguments to public / RPC UDFs.
+  Thx to https://dba.stackexchange.com/a/54289/126933 */
+  returns text[] immutable language sql as $$
+  select array( select jsonb_array_elements_text( $1 ) )
+  $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function U.bigint_array_from_json( jsonb )
+  /* Accepts a textual JSON-compliant representation of an array and returns an SQL `array` with bigint
+  elements. This is needed primarily to pass `variadic bigint[]` arguments to public / RPC UDFs.
+  Thx to https://dba.stackexchange.com/a/54289/126933 */
+  returns bigint[] immutable language sql as $$
+  select array( select jsonb_array_elements_text( $1 ) )::bigint[]
+  $$;
+
+/* thx to https://stackoverflow.com/a/37278190/7568091 (J. Raczkiewicz) */
+create function U.jsonb_diff( a jsonb, b jsonb )
+returns jsonb immutable language plpgsql as $$
+  declare
+    R             jsonb;
+    object_result jsonb;
+    n             int;
+    value         record;
+  begin
+    if jsonb_typeof(a) = 'null' then return b; end if;
+    -- .....................................................................................................
+    R = a;
+    for value in select * from jsonb_each( a ) loop
+      R = R || jsonb_build_object( value.key, null );
+      end loop;
+    -- .....................................................................................................
+    for value in select * from jsonb_each( b ) loop
+      -- ...................................................................................................
+      if jsonb_typeof( a->value.key ) = 'object' and jsonb_typeof( b->value.key ) = 'object' then
+        object_result = U.jsonb_diff( a->value.key, b->value.key );
+        -- .................................................................................................
+        /* check if R is not empty */
+        n := ( select count(*) from jsonb_each( object_result ) );
+        -- .................................................................................................
+        if n = 0 then
+          --if empty, remove:
+          R := R - value.key;
+        -- .................................................................................................
+        else
+          R := R || jsonb_build_object( value.key, object_result );
+          end if;
+      -- ...................................................................................................
+      elsif a->value.key = b->value.key then
+        R = R - value.key;
+      else
+        R = R || jsonb_build_object( value.key,value.value );
+        end if;
+      end loop;
+    -- .....................................................................................................
+    return R;
+    end;
+    $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+/* thx to https://stackoverflow.com/a/39812817/7568091 */
+create function U.count_jsonb_keys( diff jsonb )
+returns integer immutable language plpgsql as $$
+  begin
+    select array_upper( array( select jsonb_object_keys( diff ) ), 1 );
+    end;
+    $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+/* thx to https://stackoverflow.com/a/39812817/7568091 */
+create function U.truth( boolean )
+returns text immutable language plpgsql as $$
+  begin
+    case $1
+      when true   then  return 'true';
+      when false  then  return 'false';
+      else              return '∎';
+      end case;
+    end; $$;
+
+  -- declare
+  --   green   text;
+  --   red     text;
+  --   reset   text;
+  -- begin
+  --   select into reset value from TRM.colors where key = 'reset';
+  --   if $1 then
+  --     select into green value from TRM.colors where key = 'green';
+  --     return green  || 'true'  || reset;
+  --   else
+  --     select into red   value from TRM.colors where key = 'red';
+  --     return red    || 'false' || reset;
+  --     end if;
+  --   end;
+  --   $$;
+
+-- =========================================================================================================
+-- VARIABLES
+-- ---------------------------------------------------------------------------------------------------------
+create table U.variables (
+  key   text unique not null primary key,
+  value text );
+
+/*
+-- ---------------------------------------------------------------------------------------------------------
+drop function if exists ¶( text ) cascade;
+create function ¶( ¶key text ) returns text stable language plpgsql as $$
+  begin return current_setting( 'xxx.' || ¶key ); end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+drop function if exists ¶( text, text ) cascade;
+create function ¶( ¶key text, ¶value anyelement ) returns void stable language plpgsql as $$
+  begin perform set_config( 'xxx.' || ¶key, ¶value, false ); end; $$;
+*/
+
+-- ---------------------------------------------------------------------------------------------------------
+drop function if exists ¶( text ) cascade;
+create function ¶( ¶key text ) returns text volatile language sql as $$
+  select value from U.variables where key = ¶key; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+drop function if exists ¶( text, text ) cascade;
+create function ¶( ¶key text, ¶value anyelement ) returns void volatile language sql as $$
+  insert into U.variables values ( ¶key, ¶value )
+  on conflict ( key ) do update set value = ¶value; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+do $$ begin
+  perform ¶( 'username', current_user );
+  end; $$;

@@ -1,0 +1,235 @@
+
+* tags:   tag
+  tags:   tag foo 'bar' "baz" 'gnu x' "moo y"
+  tags:   q=tag q=foo q='bar' q="baz" q='gnu x' q="moo y"
+  tags:   tag::q foo::q 'bar'::q "baz"::q 'gnu x'::q "moo y"::q
+  tags:   'tag with spaces'
+  tags:   ctx:tag
+  tags:   tag=value
+  tags:   tag='value with spaces 1'
+  tags:   tag="value with spaces 2"
+  tags:   ctx:tag='value with spaces 1'
+  tags:   ctx:tag="value with spaces 2"
+  tags:   "Gun, Son of A."::name
+  tags:   "Gun, Son of A.::name"
+  tags:   name="Gun, Son of A."
+
+
+* url:    https://github.com/kittykatattack/learningPixi
+  url:    http://pixijs.download/release/docs
+  url:    http://www.pixijs.com/
+  url:    https://github.com/pixijs/pixi.js
+  tags:   webgl font-rendering kannwas
+
+* url:    https://github.com/kittykatattack/learningPixi
+          http://pixijs.download/release/docs
+          http://www.pixijs.com/
+          https://github.com/pixijs/pixi.js
+  tags:   webgl font-rendering kannwas
+
+# *stop*
+
+* readme: `tag`—simple tag
+          `'tag with spaces'`—spaced tag
+          `ctx:tag`—tag with context specifier
+          `tag=value`—valued tag
+          `tag='value with spaces'`—tag with spaced value
+          `ctx:tag='value with spaces'`—full triple tag (with context, spaced value)
+          `"Gun, Son of A."::name`—spaced tag with data type
+          `name="Gun, Son of A."`—alternative to the above; in both cases, a proper noun is used like a tag
+
+
+* tag-relations:
+    xelatex                         < latex
+    latex                           < tex
+    tex                             < typesetting
+    mingkwai-typesetter             < typesetting nodejs streams xelatex markdown
+    postgresql                      < sql rdbms
+    rdbms                           < db
+    cjk                             < writing-systems chinese japanese korean unicode
+    flowchart                       < programming
+    analysis-of-chinese-characters  < writing-systems cjk
+    async nodejs events             < programming
+    jizura                          < cjk analysis-of-chinese-characters character-components
+    text-rendering-on-gpu           < webgl opengl
+    sql                             = SQL
+    postgres                        = postgresql PostgreSQL
+    jizura                          = jzr
+    jizura                          = analysis-of-chinese-characters
+    jzr:components                  < character-components
+    jzr:factors                     < jzr:components
+    ~ xelatex unicode
+    ~ sql rdbms
+    ~ text-processing typesetting markdown editor text-editor
+    ~ kannwas terminal webgl
+    mojikura-typesetter             = mkts MKTS
+    ~ mojikura-typesetter typesetting
+
+* tag:    jzr:components
+  about:  A recurring visual part of characters
+
+* url:    http://www.yywzw.com/pan/pan-03b-02-1.htm
+  tags:   cjk analysis-of-chinese-characters character-components jizura jzr:factors
+  about:  discusses systems used in 蒋文钦《表形码编排汉语字典》,
+          陈爱文等：《汉字编码的理论与实践》，学林出版社1986年8月
+
+* url:    https://github.com/zestedesavoir/zmarkdown/tree/master/packages/remark-grid-tables
+  tags:   mingkwai-typesetter markdown tables
+
+* url:    https://jaa2100.org/entry/genr/cat_10_1/
+  tags:   japan history historical-imagery download
+
+* url:    https://dba.stackexchange.com/questions/96556/reference-column-alias-in-same-select-list
+  tags:   lateral join sql postgresql
+  about:  reference columns in same SQL query
+
+* url:    http://yedict.com/download/
+  url:    https://chinese.stackexchange.com/questions/24210/how-to-display-cjk-extension-f
+  url:    https://chinese.stackexchange.com/a/24213/16530
+  tags:   cjk mingkwai-typesetter fonts unicode u-cjk-xe u-cjk-xf download ime
+
+* url:    https://mosh.org/
+  url:    http://www.linux-community.de/Internal/Artikel/Print-Artikel/LinuxUser/2012/08/SSH-ueber-unzuverlaessige-Leitungen#article_f1
+  tags:   terminal ssh
+
+* url:    http://www.davehigginsconsulting.com/pd03.htm
+  tags:   flowchart programming visualization
+  about:  how to use Warnier/Orr Diagrams to describe program control flow, logical structure
+
+* url:    https://github.com/tectonic-typesetting/tectonic
+  url:    https://tectonic-typesetting.github.io/
+  tags:   tex latex xelatex engine software
+  about:  A modernized, complete, self-contained TeX/LaTeX engine, powered by XeTeX and TeXLive.
+
+* url:    https://github.com/sindresorhus/emittery
+  url:    https://github.com/sindresorhus/p-event
+  tags:   nodejs events async
+
+* url:    https://github.com/unifiedjs/unified
+  url:    https://unifiedjs.github.io
+  title:  Text processing umbrella: Parse / Transform / Compile
+  tags:   text-processing typesetting markdown
+  about:  unified is an interface for processing text using syntax trees. It’s what powers remark, retext,
+    and rehype, but it also allows for processing between multiple syntaxes.
+
+* url:    https://wiki.postgresql.org/images/a/a2/PostgreSQL_Window_Functions.pdf
+  url:    http://www.postgresqltutorial.com/postgresql-window-function/
+  url:    https://www.postgresql.org/docs/current/static/functions-window.html
+  url:    https://wiki.postgresql.org/images/9/97/Ciolli-window-2011.pdf
+  url:    https://blog.statsbot.co/sql-window-functions-tutorial-b5075b87d129
+  title:  PostgreSQL Window Functions
+  tags:   postgresql sql:windows sql:aggregation
+
+* url:    https://blog.2ndquadrant.com/what-is-select-skip-locked-for-in-postgresql-9-5/
+  url:    https://www.pgcon.org/2016/schedule/attachments/414_queues-pgcon-2016.pdf
+  tags:   postgresql queue programming
+
+* url:    https://namakajiri.net/nikki/boltz-on-the-origin-of-chinese-characters/
+  tags:   chinese characters history cjk:polyphony 'Boltz, William G.'::name Boodberg::name
+  title:  Boltz on the Origins of Chinese Characters
+
+* url:    https://code.kx.com/q/tutorials/startingq/language/
+  tags:   sql programming:language compiles-to:sql q::name parsing
+
+* url:    https://joshuagrams.github.io/pep/
+  title:  A Pint-sized Earley Parser
+  tags:   programming:language parsing earley-parser
+
+* url:    https://github.com/Chalarangelo/30-seconds-of-code#readme
+  title:  30 seconds of code: Curated collection of useful Javascript snippets that you can understand in 30 seconds or less.
+  tags:   programming javascript snippets algorithms
+
+* url:    https://www.endpoint.com/blog/2014/11/12/dear-postgresql-where-are-my-logs
+  title:  Dear PostgreSQL: Where are my logs?
+  tags:   postgresql fs logging
+
+* url:    https://linuxconfig.org/using-openssl-to-encrypt-messages-and-files-on-linux
+  url:    https://github.com/quorrajs/Encrypter
+  url:    https://gchq.github.io/CyberChef
+  url:    https://nodejs.org/api/crypto.html
+  tags:   encryption
+
+* url:    http://ohshitgit.com/
+  title:  I accidentally committed something to master that should have been on a brand new branch!
+  title:  I accidentally committed to the wrong branch!
+  title:  I committed and immediately realized I need to make one small change!
+  title:  I did something terribly wrong, please tell me git has a magic time machine!?!
+  title:  I need to change the message on my last commit!
+  title:  I tried to run a diff but nothing happened?!
+  tags:   git
+
+* url:    https://github.com/sindresorhus/promise-fun
+  title:  Promise packages, patterns, chat, and tutorials
+  tags:   async nodejs javascript promises actor-pattern
+
+* url:    https://www.mobilefish.com/services/chinese_handwriting_recognition/chinese_handwriting_recognition.php
+  tags:   cjk characters ocr handwriting
+
+* url:    http://thetamath.com/app/r=tan(%CE%B8+cos3r)
+  url:    https://medium.com/@evanwallace/easy-scalable-text-rendering-on-the-gpu-c3f4d782c5ac
+  tags:   webgl font-rendering infinite-desktop kannwas
+
+* url:    https://github.com/kittykatattack/learningPixi
+  url:    http://pixijs.download/release/docs
+  url:    http://www.pixijs.com/
+  url:    https://github.com/pixijs/pixi.js
+  tags:   webgl font-rendering kannwas
+
+* url:    https://github.com/jwilm/alacritty/issues/965
+  url:    https://github.com/jwilm/alacritty/issues/957
+  tags:   mojikura-typesetter kannwas
+
+* url:    https://github.com/jwilm/alacritty
+  tags:   terminal text-rendering-on-gpu kannwas
+
+* url:    https://github.com/kovidgoyal/kitty#font-control
+  quote:  You can specify individual families for the regular, bold, italic and
+          bold+italic fonts. You can even specify specific font families for
+          specific ranges of unicode characters. This allows precise control
+          over text rendering.
+  tags:   terminal text-rendering-on-gpu kannwas
+
+* url:    https://askubuntu.com/a/985237
+  tags:   linux system-monitoring
+
+* url:    https://code.google.com/archive/p/ifont/downloads
+  url:    http://yedict.com/download/
+  tags:   CJK fonts download
+
+* url:    https://github.com/edsilv/key-codes/blob/master/src/KeyCodes.ts
+  url:    https://github.com/timoxley/keycode
+  url:    https://github.com/RobertWHurst/KeyboardJS
+  tags:   javascript keyboard keycodes programming
+
+
+* url:    http://stack.gl/
+  url:    https://www.html5rocks.com/en/tutorials/webgl/million_letters/
+  url:    https://threejs.org/
+  url:    https://threejs.org/docs/index.html#manual/introduction/Creating-text
+  url:    https://github.com/bp74/StageXL
+  url:    http://www.stagexl.org/
+  url:    https://groups.google.com/forum/#!topic/stagexl/QG-7boUNPNc
+  url:    https://stackoverflow.com/a/25320418/7568091
+  url:    https://mattdesl.svbtle.com/material-design-on-the-gpu
+  tags:   kannwas text-rendering-on-gpu
+
+* url:    https://github.com/Jam3/three-bmfont-text
+  tags:   kannwas text-rendering-on-gpu threejs::name
+
+* url:    https://github.com/mattdesl/text-modules
+  tags:   kannwas text-rendering-on-gpu threejs::name isa=link-collection
+
+* url:    https://www.robscanlon.com/encom-boardroom/
+  title:  Tron: Legacy Encom Boardroom Visualization
+  tags:   kannwas kannwas-like demo dashboard
+
+* url:    https://github.com/lorenwest/node-config/wiki/Configuration-Files
+  tags:   nodejs configuration utility
+
+* url:    https://github.com/JamieMason/ImageOptim-CLI
+  tags:   kleinbild image_optim::name
+
+
+
+
+
