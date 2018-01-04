@@ -9,26 +9,19 @@ create schema SRC;
 
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
-create function SRC._split_with_quotes_A( x text ) returns text[]
+create function SRC.lex_tags( x text ) returns text[]
   immutable returns null on null input language plpython3u as $$
-    import shlex as _SHLEX
-    # shlex.split( s, comments=False, posix=True )
-    return _SHLEX.split( x, False, False )
+    plpy.execute( 'select INIT.py_init()' )
+    ctx = GD[ 'ctx' ]
+    return ctx.taglexer.lex_tags( x )
     $$;
-create function SRC._split_with_quotes_B( x text ) returns text[]
-  immutable returns null on null input language plpython3u as $$
-    import shlex as _SHLEX
-    # shlex.split( s, comments=False, posix=True )
-    return _SHLEX.split( x, False, True )
-    $$;
-create function SRC._split_with_quotes_C( x text ) returns text[]
-  immutable returns null on null input language plpython3u as $$
-    import shlex as _SHLEX
-    lex = _SHLEX.shlex( x, posix = False )
-    lex.whitespace_split = True
-    # plpy.notice( dir( lex ) )
-    return list( lex )
-    $$;
+reset role;
+
+-- ---------------------------------------------------------------------------------------------------------
+set role dba;
+create function SRC.split_on_whitespace( x text ) returns text[]
+  immutable returns null on null input language sql as $$
+    select regexp_split_to_array( x, E'\\s+' ); $$;
 reset role;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -115,12 +108,10 @@ create view SRC._bookmarks_050_split_values as ( select
     level                                                                       as level,
     key                                                                         as key,
     value                                                                       as value,
-    case when key in ( 'url', 'tags' ) then SRC._split_with_quotes_A( value )
-    else null end                                                               as values_A,
-    case when key in ( 'url', 'tags' ) then SRC._split_with_quotes_B( value )
-    else null end                                                               as values_B,
-    case when key in ( 'url', 'tags' ) then SRC._split_with_quotes_C( value )
-    else null end                                                               as values_C
+    case key
+      when 'tags' then SRC.lex_tags(            value )
+      when 'url'  then SRC.split_on_whitespace( value )
+    else null end                                                               as values
   from SRC._bookmarks_040_split_fields
   );
 
@@ -130,7 +121,6 @@ create view SRC._bookmarks as ( select * from SRC._bookmarks_050_split_values or
 
 /* ###################################################################################################### */
 
-\quit
 
 select * from U.variables where not key ~ '^[A-Z]' \g :out
 
@@ -141,11 +131,10 @@ select * from U.variables where not key ~ '^[A-Z]' \g :out
 select
     linenr                                                            as linenr,
     key                                                               as key,
-    '∎ ' || substring( array_to_string( values_A, ' ∎ ' ) for 80 )     as values_A,
-    -- '∎ ' || substring( array_to_string( values_B, ' ∎ ' ) for 80 )     as values_B,
-    '∎ ' || substring( array_to_string( values_C, ' ∎ ' ) for 80 )     as values_C,
+    '∎' || substring( array_to_string( values, '∎' ) for 80 ) || '∎'  as values,
     value                                                             as value
   from SRC._bookmarks
   order by linenr;
 \quit
 
+\quit
