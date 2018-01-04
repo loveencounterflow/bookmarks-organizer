@@ -53,3 +53,5 @@ postgrest
 
 *.js.map
 _extras
+.cache
+__pycache__
