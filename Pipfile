@@ -13,3 +13,4 @@ name = "pypi"
 
 "tap.py" = "*"
 pytest = "*"
+pytest-tap = "*"
