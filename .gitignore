@@ -55,3 +55,6 @@ postgrest
 _extras
 .cache
 __pycache__
+# python_modules/__pycache__
+# python_modules/tests/__pycache__
+

@@ -35,6 +35,6 @@ trap 'kill $psql_tailer_pid' EXIT
 
 #-----------------------------------------------------------------------------------------------------------
 psql -U bmo --set QUIET=on --set ON_ERROR_STOP=1 -f ./db/update-os-env.sql
-PAGER="postgres-pager -s 7 --less-status-bar" psql -U bmo --set QUIET=on --set ON_ERROR_STOP=1 "$@"
+PAGER="postgres-pager -s 6 --less-status-bar" psql -U bmo --set QUIET=on --set ON_ERROR_STOP=1 "$@"
 
 
