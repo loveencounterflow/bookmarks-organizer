@@ -4,12 +4,12 @@
   tags:   q=tag q=foo q='bar' q="baz" q='gnu x' q="moo y"
   tags:   tag::q foo::q 'bar'::q "baz"::q 'gnu x'::q "moo y"::q
   tags:   'tag with spaces'
-  tags:   ctx:tag
+  tags:   ctx/tag
   tags:   tag=value
   tags:   tag='value with spaces 1'
   tags:   tag="value with spaces 2"
-  tags:   ctx:tag='value with spaces 1'
-  tags:   ctx:tag="value with spaces 2"
+  tags:   ctx/tag='value with spaces 1'
+  tags:   ctx/tag="value with spaces 2"
   tags:   "Gun, Son of A."::name
   tags:   "Gun, Son of A.::name"
   tags:   name="Gun, Son of A."
@@ -31,10 +31,10 @@
 
 * readme: `tag`—simple tag
           `'tag with spaces'`—spaced tag
-          `ctx:tag`—tag with context specifier
+          `ctx/tag`—tag with context specifier
           `tag=value`—valued tag
           `tag='value with spaces'`—tag with spaced value
-          `ctx:tag='value with spaces'`—full triple tag (with context, spaced value)
+          `ctx/tag='value with spaces'`—full triple tag (with context, spaced value)
           `"Gun, Son of A."::name`—spaced tag with data type
           `name="Gun, Son of A."`—alternative to the above; in both cases, a proper noun is used like a tag
 
@@ -53,11 +53,12 @@
     jizura                          < cjk analysis-of-chinese-characters character-components
     text-rendering-on-gpu           < webgl opengl
     sql                             = SQL
+    sql                             < programming/language programming/database
     postgres                        = postgresql PostgreSQL
     jizura                          = jzr
     jizura                          = analysis-of-chinese-characters
-    jzr:components                  < character-components
-    jzr:factors                     < jzr:components
+    jzr/components                  < character-components
+    jzr/factors                     < jzr/components
     ~ xelatex unicode
     ~ sql rdbms
     ~ text-processing typesetting markdown editor text-editor
@@ -65,11 +66,11 @@
     mojikura-typesetter             = mkts MKTS
     ~ mojikura-typesetter typesetting
 
-* tag:    jzr:components
+* tag:    jzr/components
   about:  A recurring visual part of characters
 
 * url:    http://www.yywzw.com/pan/pan-03b-02-1.htm
-  tags:   cjk analysis-of-chinese-characters character-components jizura jzr:factors
+  tags:   cjk analysis-of-chinese-characters character-components jizura jzr/factors
   about:  discusses systems used in 蒋文钦《表形码编排汉语字典》,
           陈爱文等：《汉字编码的理论与实践》，学林出版社1986年8月
 
@@ -118,22 +119,22 @@
   url:    https://wiki.postgresql.org/images/9/97/Ciolli-window-2011.pdf
   url:    https://blog.statsbot.co/sql-window-functions-tutorial-b5075b87d129
   title:  PostgreSQL Window Functions
-  tags:   postgresql sql:windows sql:aggregation
+  tags:   postgresql sql/windows sql/aggregation
 
 * url:    https://blog.2ndquadrant.com/what-is-select-skip-locked-for-in-postgresql-9-5/
   url:    https://www.pgcon.org/2016/schedule/attachments/414_queues-pgcon-2016.pdf
   tags:   postgresql queue programming
 
 * url:    https://namakajiri.net/nikki/boltz-on-the-origin-of-chinese-characters/
-  tags:   chinese characters history cjk:polyphony 'Boltz, William G.'::name Boodberg::name
+  tags:   chinese characters history cjk/polyphony 'Boltz, William G.'::name Boodberg::name
   title:  Boltz on the Origins of Chinese Characters
 
 * url:    https://code.kx.com/q/tutorials/startingq/language/
-  tags:   sql programming:language compiles-to:sql q::name parsing
+  tags:   programming/language/compiles-to/sql q::name parsing
 
 * url:    https://joshuagrams.github.io/pep/
   title:  A Pint-sized Earley Parser
-  tags:   programming:language parsing earley-parser
+  tags:   programming/language parsing earley-parser
 
 * url:    https://github.com/Chalarangelo/30-seconds-of-code#readme
   title:  30 seconds of code: Curated collection of useful Javascript snippets that you can understand in 30 seconds or less.
