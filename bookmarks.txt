@@ -230,7 +230,31 @@
 * url:    https://github.com/JamieMason/ImageOptim-CLI
   tags:   kleinbild image_optim::name
 
+* url:    https://github.com/puleos/object-hash
+  about:  given a serializable value, returns a cryptographic hash representing all the sub-values
+          in arrays, object attributes
+  tags:   javascript cryptography/digest cryptography/hash object-hash stable-value-id
 
+* url:    https://github.com/mike-marcacci/node-redlock#usage-promise-style
+  tags:   serializable lock asynchronous redis::name
 
+* url:    https://medium.com/@weyoss/building-a-simple-message-queue-using-redis-server-and-node-js-964eda240a2a
+* url:    https://github.com/weyoss/redis-smq
+  tags:   queue message-queue redis::name
+  quote:
+          * Persistent:              No messages are lost in case of a consumer failure.
+          * Atomic:                  A message is delivered only once to one consumer (in FIFO order) so you would never fall into a situation where a message could be processed more than once.
+          * Fast:                    13K+ messages/second on a virtual machine of 4 CPU cores and 8GB RAM and running one consumer.
+          * Concurrent consumers:    A queue can be consumed by many consumers, launched on the same or on different hosts.
+          * Message TTL:             A message will expire and not be consumed if it has been in the queue for longer than the TTL.
+          * Message consume timeout: The amount of time for a consumer to consume a message. If the timeout exceeds, message processing is cancelled and the message is re-queued to be consumed again.
+          * Highly optimized:        No promises, no async/await, small memory footprint, no memory leaks.
+          * Monitorable:             Statistics (input/processing/acks/unacks messages rates, online consumers, queues, etc.) are provided in real-time.
+          * Logging:                 Supports JSON log format for troubleshooting and analytics purposes.
+          * Configurable:            Many options and features can be configured.
 
+* url:    https://github.com/smrchy/rsmq
+  tags:   queue message-queue redis::name
 
+* url:    http://bitmote.com/index.php?post/2012/11/19/Using-ANSI-Color-Codes-to-Colorize-Your-Bash-Prompt-on-Linux
+  tags:   bash terminal ansi-colors ansi-codes
