@@ -1,0 +1,25 @@
+{
+  "name": "bookmarks-organizer",
+  "version": "0.1.0",
+  "description": "## Installation",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "py.test -s -r apP python_modules/tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://flow@192.168.178.48/home/flow/gogs-repositories/flow/bookmarks-organizer.git"
+  },
+  "keywords": [
+    "bookmarks",
+    "organizer"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cnd": "^4.3.1"
+  }
+}
