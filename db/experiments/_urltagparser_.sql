@@ -19,12 +19,12 @@ tags:
 
 
 -- ---------------------------------------------------------------------------------------------------------
-drop schema if exists _UTP_ cascade;
-create schema _UTP_;
+drop schema if exists _LEX_ cascade;
+create schema _LEX_;
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _UTP_.word_probes ( probe text not null );
-insert into _UTP_.word_probes values
+create table _LEX_.word_probes ( probe text not null );
+insert into _LEX_.word_probes values
   ( 'LearnWCFInSixEasyMonths' ),
   ( 'résumé' ),
   ( 'réSumé' ),
@@ -36,30 +36,32 @@ insert into _UTP_.word_probes values
   ( 'CamelCaseXYZ' );
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _UTP_.word_splitters ( id integer, splitter text not null );
-insert into _UTP_.word_splitters ( id, splitter ) values
-  -- ( 1, '(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])'                            ),
-  ( 2, '(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])'                  );
-  -- ( 3, '(?<=[a-z])(?=[A-Z])'                                           ),
-  -- ( 4, '((?<=[a-z]))((?=[A-Z]))|((?<=[A-Z]))((?=[A-Z][a-z]))'          );
+create table _LEX_.patterns (
+  key     text not null unique primary key,
+  pattern text not null );
+
+-- ---------------------------------------------------------------------------------------------------------
+insert into _LEX_.patterns values
+  ( 'lex_camel', '(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])' );
+
+-- ---------------------------------------------------------------------------------------------------------
+create function _LEX_.lex_camel( ¶text text ) returns text[] stable strict language sql as $$
+  select regexp_split_to_array(
+    ¶text,
+    ( select pattern from _LEX_.patterns where key = 'lex_camel' ) ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 select
-    s.splitter,
     p.probe,
-    regexp_split_to_array( p.probe, s.splitter ) as result,
-    s.id
+    _LEX_.lex_camel( p.probe ) as result
   from
-    _UTP_.word_probes    as p,
-    _UTP_.word_splitters as s
+    _LEX_.word_probes    as p
   order by
-    s.id,
-    p.probe,
-    s.splitter;
+    p.probe;
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _UTP_.phrase_probes ( probe text not null );
-insert into _UTP_.phrase_probes values
+create table _LEX_.phrase_probes ( probe text not null );
+insert into _LEX_.phrase_probes values
   ( 'foo/bar' ),
   ( 'this_that' ),
   ( '...yeah' ),
@@ -71,8 +73,8 @@ insert into _UTP_.phrase_probes values
   ( 'this-that' );
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _UTP_.phrase_splitters ( id integer, splitter text not null );
-insert into _UTP_.phrase_splitters ( id, splitter ) values
+create table _LEX_.phrase_splitters ( id integer, splitter text not null );
+insert into _LEX_.phrase_splitters ( id, splitter ) values
   -- ( 1, '(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])'                            ),
   ( 1, '[-_/,.;:~+*''"&%$^°=?´`@{[()\]}]+'                  );
   -- ( 2, '(\w+)|[^\w\s]'                  );
@@ -86,8 +88,8 @@ select
     regexp_split_to_array( p.probe, s.splitter ) as result,
     s.id
   from
-    _UTP_.phrase_probes    as p,
-    _UTP_.phrase_splitters as s
+    _LEX_.phrase_probes    as p,
+    _LEX_.phrase_splitters as s
   order by
     s.id,
     p.probe,
