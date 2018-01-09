@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -e
-cd "$(readlink -f "$0" | xargs dirname)"/..
+home=$(realpath "$(readlink -f "$0" | xargs dirname)"/..)
+cd "$home"
 
+source bin/_bmo-prepare-environment
 
 sudo -u postgres psql               --set QUIET=on --set ON_ERROR_STOP=1 -f db/teardown.sql
                  psql -U bmo -d bmo --set QUIET=on --set ON_ERROR_STOP=1 -f db/000-main.sql
