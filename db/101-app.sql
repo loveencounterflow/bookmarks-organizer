@@ -9,6 +9,7 @@
 \set _TITLE       :blue:reverse'  ':O:blue' '
 
 \echo :_TITLE'110-prepare.sql':O            \ir './110-prepare.sql'
-\echo :_TITLE'120-src.sql':O                \ir './120-src.sql'
+\echo :_TITLE'120-utp.sql':O                \ir './120-utp.sql'
+\echo :_TITLE'150-src.sql':O                \ir './150-src.sql'
 
 
