@@ -1,7 +1,7 @@
 
 \ir './010-trm.sql'
 \pset tuples_only off
-\timing on
+-- \timing on
 \set X :yellow
 
 /*
@@ -9,73 +9,47 @@
 Fields with multiple URLs:
   * split into fields with one URL each using urls_url_splitter (not implemented)
 
-URLs:
+field `url`:
   * each URL gets split into phrases using url_phrase_splitter
   * each phrase gets split into words with camelcase_splitter
 
-tags:
+field `tags`:
   * split into 'tag lexemes' using tag_splitter
 
 */
 
+-- ---------------------------------------------------------------------------------------------------------
+drop schema if exists UTP cascade;
+create schema UTP;
 
 -- ---------------------------------------------------------------------------------------------------------
-drop schema if exists _LEX_ cascade;
-create schema _LEX_;
-
--- ---------------------------------------------------------------------------------------------------------
-create table _LEX_.word_probes ( probe text not null );
-insert into _LEX_.word_probes values
-  ( 'LearnWCFInSixEasyMonths' ),
-  ( 'résumé' ),
-  ( 'réSumé' ),
-  ( 'lower' ),
-  ( 'INITIAL' ),
-  ( 'Initial' ),
-  ( 'ABCWordDEF' ),
-  ( 'dromedaryCase' ),
-  ( 'CamelCaseXYZ' );
-
--- ---------------------------------------------------------------------------------------------------------
-create table _LEX_.patterns (
+create table UTP.patterns (
   key     text not null unique primary key,
   pattern text not null );
 
 -- ---------------------------------------------------------------------------------------------------------
-insert into _LEX_.patterns values
-  ( 'lex_camel', '(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])' );
+insert into UTP.patterns values
+  ( 'lex_camel',            '(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])'        ),
+  ( 'split_url_phrase',     '[-_/,.;:~+*''"&%$^°=?´`@{[()\]}]+'                   );
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _LEX_.lex_camel( ¶text text ) returns text[] stable strict language sql as $$
+create function UTP.lex_camel( ¶text text ) returns text[] stable strict language sql as $$
   select regexp_split_to_array(
     ¶text,
-    ( select pattern from _LEX_.patterns where key = 'lex_camel' ) ); $$;
+    ( select pattern from UTP.patterns where key = 'lex_camel' ) ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-select
-    p.probe,
-    _LEX_.lex_camel( p.probe ) as result
-  from
-    _LEX_.word_probes    as p
-  order by
-    p.probe;
+create function UTP.split_url_phrase( ¶text text ) returns text[] stable strict language sql as $$
+  select regexp_split_to_array(
+    ¶text,
+    ( select pattern from UTP.patterns where key = 'split_url_phrase' ) ); $$;
+
+\quit
+
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _LEX_.phrase_probes ( probe text not null );
-insert into _LEX_.phrase_probes values
-  ( 'foo/bar' ),
-  ( 'this_that' ),
-  ( '...yeah' ),
-  ( 'this_(that)' ),
-  ( '(bracketed)' ),
-  ( 'foo(bracketed)bar' ),
-  ( 'http://foo.com/a-new-way/of-thinking' ),
-  ( 'http://foo.com/汉字编码的理论与实践/学林出版社1986年8月' ),
-  ( 'this-that' );
-
--- ---------------------------------------------------------------------------------------------------------
-create table _LEX_.phrase_splitters ( id integer, splitter text not null );
-insert into _LEX_.phrase_splitters ( id, splitter ) values
+create table UTP.phrase_splitters ( id integer, splitter text not null );
+insert into UTP.phrase_splitters ( id, splitter ) values
   -- ( 1, '(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])'                            ),
   ( 1, '[-_/,.;:~+*''"&%$^°=?´`@{[()\]}]+'                  );
   -- ( 2, '(\w+)|[^\w\s]'                  );
@@ -89,8 +63,8 @@ select
     regexp_split_to_array( p.probe, s.splitter ) as result,
     s.id
   from
-    _LEX_.phrase_probes    as p,
-    _LEX_.phrase_splitters as s
+    UTP.phrase_probes    as p,
+    UTP.phrase_splitters as s
   order by
     s.id,
     p.probe,
