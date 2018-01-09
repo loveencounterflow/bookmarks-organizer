@@ -2,7 +2,7 @@
 /* ### NOTE should at any rate turn off pager, otherwise some informative intermittent select statements may
   cause the scripts to stop and wait for user input to terminate paged output:*/
 \pset pager off
-\pset tuples_only on
+-- \pset tuples_only on
 \set orange       '\x1b[38;05;208m'
 \set yellow       '\x1b[38;05;226m'
 \set reset        '\x1b[0m'

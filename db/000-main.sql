@@ -2,7 +2,9 @@
 /* ### NOTE should at any rate turn off pager, otherwise some informative intermittent select statements may
   cause the scripts to stop and wait for user input to terminate paged output:*/
 \pset pager off
-\pset tuples_only on
+-- \pset tuples_only on
+\pset null '∎'
+
 \ir './010-trm.sql'
 \set _TITLE       :yellow:reverse'  ':O:yellow' '
 

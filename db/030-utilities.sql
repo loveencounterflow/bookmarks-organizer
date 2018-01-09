@@ -17,11 +17,12 @@ drop schema if exists U cascade;
 create schema U;
 
 -- .........................................................................................................
-create domain U.null_text             as text     check ( value is null   );
-create domain U.null_integer          as integer  check ( value is null   );
-create domain U.nonnegative_integer   as integer  check ( value >= 0      );
-create domain U.positive_integer      as integer  check ( value >= 1      );
-create domain U.nonempty_text         as text     check ( value != ''     );
+create domain U.null_text             as text     check ( value is null                 );
+create domain U.null_integer          as integer  check ( value is null                 );
+create domain U.nonnegative_integer   as integer  check ( value >= 0                    );
+create domain U.positive_integer      as integer  check ( value >= 1                    );
+create domain U.nonempty_text         as text     check ( value != ''                   );
+create domain U.chr                   as text     check ( character_length( value ) = 1 );
 
 -- ---------------------------------------------------------------------------------------------------------
 create function U.text_array_from_json( jsonb )
@@ -146,7 +147,7 @@ create function ¶( ¶key text ) returns text volatile language sql as $$
   select value from U.variables where key = ¶key; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-drop function if exists ¶( text, text ) cascade;
+drop function if exists ¶( text, anyelement ) cascade;
 create function ¶( ¶key text, ¶value anyelement ) returns void volatile language sql as $$
   insert into U.variables values ( ¶key, ¶value )
   on conflict ( key ) do update set value = ¶value; $$;
@@ -155,3 +156,7 @@ create function ¶( ¶key text, ¶value anyelement ) returns void volatile langu
 do $$ begin
   perform ¶( 'username', current_user );
   end; $$;
+
+
+\quit
+

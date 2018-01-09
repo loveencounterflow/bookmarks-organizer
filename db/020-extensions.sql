@@ -31,7 +31,7 @@ create extension if not exists plpython3u with schema pg_catalog;
 create extension if not exists plpgsql    with schema _plpgsql;
 create extension if not exists pgcrypto   with schema _pgcrypto;
 -- create extension if not exists pgtap    with schema pg_catalog;
--- create extension if not exists pgtap with schema tap;
+-- create extension if not exists pgtap;
 -- comment on extension pgtap    is 'Testing framework; see http://pgtap.org/documentation.html';
 create extension if not exists tablefunc with schema _tablefunc;
 set search_path = public, pg_catalog, _plpgsql, _pgcrypto;
