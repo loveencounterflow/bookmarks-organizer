@@ -6,10 +6,6 @@
 
 /* ====================================================================================================== */
 begin;
--- select plan( 10 );
--- select * from no_plan();
--- \pset format aligned
--- \pset tuples_only false
 
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists T cascade;
@@ -26,7 +22,7 @@ select array_agg( table_name::text ) from v1;
 -- ---------------------------------------------------------------------------------------------------------
 create table T.probes_and_matchers ( function_name text not null, probe text, matcher text[] );
 insert into T.probes_and_matchers values
-  -- ( 'UTP.lex_camel',  null,                       null                              ),
+  ( 'UTP.lex_camel',  null,                       null                              ),
   ( 'UTP.lex_camel',  'ABCWordDEF',               '{ABC,Word,DEF}'                  ),
   ( 'UTP.lex_camel',  'CamelCaseXYZ',             '{Camel,Case,XYZ}'                ),
   ( 'UTP.lex_camel',  'INITIAL',                  '{INITIAL}'                       ),
@@ -35,9 +31,9 @@ insert into T.probes_and_matchers values
   ( 'UTP.lex_camel',  'dromedaryCase',            '{dromedary,Case}'                ),
   ( 'UTP.lex_camel',  'lower',                    '{lower}'                         ),
   ( 'UTP.lex_camel',  'réSumé',                   '{ré,Sumé}'                       ),
-  ( 'UTP.lex_camel',  'résumé**',                   '{résumé}'                        ),
+  ( 'UTP.lex_camel',  'résumé',                   '{résumé}'                        ),
   -- .......................................................................................................
-  -- ( 'UTP.split_url_phrase', null,                                                         null          ),
+  ( 'UTP.split_url_phrase', null,                                                         null          ),
   ( 'UTP.split_url_phrase', '(bracketed)',                                                '{bracketed}' ),
   ( 'UTP.split_url_phrase', '...yeah',                                                    '{yeah}' ),
   ( 'UTP.split_url_phrase', 'foo(bracketed)bar',                                          '{foo,bracketed,bar}' ),
@@ -48,47 +44,17 @@ insert into T.probes_and_matchers values
   ( 'UTP.split_url_phrase', 'this_(that)',                                                '{this,that}' ),
   ( 'UTP.split_url_phrase', 'this_that',                                                  '{this,that}' );
 
--- -- ---------------------------------------------------------------------------------------------------------
--- create materialized view T.test_lex_camel as (
---   with v1 as ( select
---       probe,
---       UTP.lex_camel( probe ) as result,
---       matcher
---     from T.probes_and_matchers
---     order by probe )
---   select probe, result, result is not distinct from matcher as ok from v1 );
 
 -- -- ---------------------------------------------------------------------------------------------------------
--- create materialized view T.test_split_url_phrase as (
---   with v1 as ( select
---       probe,
---       UTP.split_url_phrase( probe ) as result,
---       matcher
---     from T.split_url_phrase_probes_and_matchers
---     order by probe )
---   select probe, result, result is not distinct from matcher as ok from v1 );
+-- create function T._is_distinct_from( anyelement, anyelement ) returns boolean immutable language sql as $$
+--   select $1 is distinct from $2; $$;
 
-create table T._probes_matchers_and_results (
-  function_name text not null,
-  probe         text,
-  result_txt    text not null,
-  ok            boolean not null
-  );
-
-
-
--- ---------------------------------------------------------------------------------------------------------
-create function T._is_distinct_from( anyelement, anyelement ) returns boolean immutable language sql as $$
-  select $1 is distinct from $2; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function T._is_distinct_from( anyarray, anyarray ) returns boolean immutable language sql as $$
-  select $1 is distinct from $2; $$;
+-- -- ---------------------------------------------------------------------------------------------------------
+-- create function T._is_distinct_from( anyarray, anyarray ) returns boolean immutable language sql as $$
+--   select $1 is distinct from $2; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function T.test_functions( ¶pam_table_name text )
-  -- returns setof T._probes_matchers_and_results
-  -- returns text[]
   returns table (
     function_name_txt text,
     probe_txt         text,
@@ -111,6 +77,9 @@ create function T.test_functions( ¶pam_table_name text )
       execute ¶Q  into ¶result;
       select      into result_txt  quote_nullable( ¶result.d );
       select      into ok          ¶result.d is not distinct from ¶x.matcher;
+      if not ok then
+        perform log( '10091', probe_txt, result_txt );
+        end if;
       return next;
       end loop;
   end; $outer$;
@@ -127,8 +96,7 @@ select
     case when ok then '' else '!!!' end as ok
   from T.test_functions_results;
 
-
-/* ====================================================================================================== */
+-- ---------------------------------------------------------------------------------------------------------
 create materialized view T.all_result_counts as (
   select null::text as category, null::integer as count where false union all
   -- .........................................................................................................
@@ -141,8 +109,8 @@ create materialized view T.all_result_counts as (
 -- ---------------------------------------------------------------------------------------------------------
 select * from T.all_result_counts;
 
-/* ###################################################################################################### */
 
+/* ====================================================================================================== */
 rollback;
 \ir './stop.test.sql'
 \quit
