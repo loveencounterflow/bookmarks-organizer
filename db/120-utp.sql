@@ -30,7 +30,55 @@ create table UTP.patterns (
 -- ---------------------------------------------------------------------------------------------------------
 insert into UTP.patterns values
   ( 'lex_camel',            '(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])'        ),
-  ( 'split_url_phrase',     '[-_/,.;:~+*''"&%$^°=?´`@{[()\]}]+'                   );
+  ( 'split_url_phrase',     '[-_/,.;:~+*''"&%$^°=?´`@{[()\]}]+'                   ),
+( 'xxx', ''
+  ||      '( [^''"\s=/:]+ )'     /* anything except quotes and whitespace                              */
+  ||      '|'                   /* or                                                                 */
+  ||      '( [''"] )'            /* an opening quote                                                   */
+  ||      '('                   /* followed by                                                        */
+  ||        '(?:'               /*   the following:                                                   */
+  ||          '\\.'             /*     an escaped character                                           */
+  ||          '|'               /*     or                                                             */
+  ||          '(?! \2 )'        /*     (as long as we're not right at the matching quote)             */
+  ||          '.'               /*     any other character,                                           */
+  ||          ')*'              /*     repeated.                                                      */
+  ||        ')'                 /*                                                                    */
+  ||      '\2'                  /* corresponding closing quote                                        */
+  ||      '|'                   /* or                                                                 */
+  ||      '( \s+ )'             /* whitespace                                                         */
+  ||      '|'                   /* or                                                                 */
+  ||      '( [=/:]+ )'          /* special characters                                                 */
+  ||      '|'                   /* or                                                                 */
+  ||      '( [''"]* )'           /* lone quotes                                                        */
+  );
+
+-- ( 'xxx', ''
+--   ||      '( [^''"\s=/:]+ )'     /* anything except quotes and whitespace                              */
+--   ||      '|'                   /* or                                                                 */
+--   ||      '( [''"] )'            /* an opening quote                                                   */
+--   ||      '('                   /* followed by                                                        */
+--   ||        '(?:'               /*   the following:                                                   */
+--   ||          '\\.'             /*     an escaped character                                           */
+--   ||          '|'               /*     or                                                             */
+--   ||          '(?! \2 )'        /*     (as long as we're not right at the matching quote)             */
+--   ||          '.'               /*     any other character,                                           */
+--   ||          ')*'              /*     repeated.                                                      */
+--   ||        ')'                 /*                                                                    */
+--   ||      '\2'                  /* corresponding closing quote                                        */
+--   ||      '|'                   /* or                                                                 */
+--   ||      '( \s+ )'             /* whitespace                                                         */
+--   ||      '|'                   /* or                                                                 */
+--   ||      '( [=/:]+ )'          /* special characters                                                 */
+--   ||      '|'                   /* or                                                                 */
+--   ||      '( [''"]* )'           /* lone quotes                                                        */
+--   );
+--
+
+-- # thx to https://stackoverflow.com/a/16710842/7568091
+-- # thx to https://stackoverflow.com/a/13240255/7568091
+-- rex = re.compile( r"""
+
+--   """, re.DOTALL | re.VERBOSE )
 
 -- ---------------------------------------------------------------------------------------------------------
 create function UTP.lex_camel( ¶text text ) returns text[] stable strict language sql as $$
@@ -46,33 +94,6 @@ create function UTP.split_url_phrase( ¶text text ) returns text[] stable strict
     '' ); $$;
 
 \quit
-
-
--- ---------------------------------------------------------------------------------------------------------
-create table UTP.phrase_splitters ( id integer, splitter text not null );
-insert into UTP.phrase_splitters ( id, splitter ) values
-  -- ( 1, '(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])'                            ),
-  ( 1, '[-_/,.;:~+*''"&%$^°=?´`@{[()\]}]+'                  );
-  -- ( 2, '(\w+)|[^\w\s]'                  );
-  -- ( 3, '(?<=[a-z])(?=[A-Z])'                                           ),
-  -- ( 4, '((?<=[a-z]))((?=[A-Z]))|((?<=[A-Z]))((?=[A-Z][a-z]))'          );
-
--- ---------------------------------------------------------------------------------------------------------
-select
-    s.splitter,
-    p.probe,
-    regexp_split_to_array( p.probe, s.splitter ) as result,
-    s.id
-  from
-    UTP.phrase_probes    as p,
-    UTP.phrase_splitters as s
-  order by
-    s.id,
-    p.probe,
-    s.splitter;
-
-
-/* ###################################################################################################### */
 
 
 /* ###################################################################################################### */
