@@ -90,100 +90,64 @@ create function T.test_functions( ¶pam_table_name text )
   -- returns setof T._probes_matchers_and_results
   -- returns text[]
   returns table (
-    ¶function_name  text,
-    ¶probe_txt      text,
-    ¶result_txt     text,
-    ¶ok             boolean )
+    function_name_txt text,
+    probe_txt         text,
+    result_txt        text,
+    ok                boolean )
   volatile language plpgsql as $outer$
   declare
+    ¶function_name  text;
     ¶probe          text;
     ¶x              record;
     ¶result         record;
     ¶Q              text;
-  --   ¶result anyelement;
   begin
     for ¶x in execute $$ select function_name, probe, matcher from $$||¶pam_table_name loop
-      ¶function_name  := ¶x.function_name;
-      ¶probe          := ¶x.probe;
-      ¶probe_txt      := quote_literal( ¶x.probe );
-      ¶Q              := $$ select * from $$||¶function_name||$$( $$||quote_literal( ¶x.probe )||$$ ) as d $$;
-      perform log( '>>>', ¶Q );
+      ¶function_name    :=  ¶x.function_name;
+      function_name_txt :=  quote_literal( ¶function_name );
+      ¶probe            :=  ¶x.probe;
+      probe_txt         :=  quote_literal( ¶x.probe );
+      ¶Q                :=  $$ select * from $$||¶function_name||$$( $$||quote_literal( ¶x.probe )||$$ ) as d $$;
       execute ¶Q  into ¶result;
-      perform log( '>>>', pg_typeof( ¶result )::text );
-      perform log( '>>>', ¶result::text );
-      select  into ¶result_txt  quote_literal( ¶result.d );
-      select  into ¶ok  ¶result.d is not distinct from ¶x.matcher;
-      -- ¶ok := T._is_distinct_from( ¶result, ¶x.matcher );
-      -- select quote_literal( result ) into ¶result_txt;
+      select      into result_txt  quote_literal( ¶result.d );
+      select      into ok          ¶result.d is not distinct from ¶x.matcher;
       return next;
       end loop;
   end; $outer$;
 
-        -- -- ¶ok             := T._is_distinct_from( x.matcher, ¶result );
-        -- with v1 as ( select
-        --     probe,
-        --     UTP.split_url_phrase( probe ) as result,
-        --     matcher
-        --   from T.split_url_phrase_probes_and_matchers
-        --   order by function_name, probe )
-        -- select probe, result, result is not distinct from matcher as ok from v1;
-
--- -- ---------------------------------------------------------------------------------------------------------
--- create function T.test_functions( ¶pam_table_name text )
---   -- returns setof T._probes_matchers_and_results
---   -- returns text[]
---   returns table (
---     function_name text not null,
---     probe         text,
---     result_txt    text not null,
---     ok            boolean not null )
---   volatile language plpgsql as $outer$
---   declare
---     ¶function_names text[];
---   begin
---     execute $$
---       select array_agg( function_name )
---         from ( select distinct function_name from $$||¶pam_table_name||$$ ) as d; $$
---         into ¶function_names;
---     with v1 as ( select unnest ¶function_names as function_name )
---     execute $$ select
---     for ¶function_name in ¶function_names array loop
---       end loop;
---     return query execute $$
---       with v1 as ( select
---           probe,
---           UTP.split_url_phrase( probe ) as result,
---           matcher
---         from T.split_url_phrase_probes_and_matchers
---         order by function_name, probe )
---       select probe, result, result is not distinct from matcher as ok from v1;
---       $$;
---   end; $outer$;
+-- ---------------------------------------------------------------------------------------------------------
+create materialized view T.test_functions_results as (
+  select * from T.test_functions( 'T.probes_and_matchers' ) );
 
 -- ---------------------------------------------------------------------------------------------------------
-select * from T.test_functions( 'T.probes_and_matchers' );
-\quit
-
--- ---------------------------------------------------------------------------------------------------------
-select '( ' || quote_literal( probe ) || ', ' || quote_literal( result ) || ' ),' from T.test_split_url_phrase;
+select
+    function_name_txt,
+    probe_txt,
+    result_txt,
+    case when ok then '' else '!!!' end as ok
+  from T.test_functions_results;
 
 
 /* ====================================================================================================== */
 create materialized view T.all_result_counts as (
-  select null::text as test, null::text as category, null::integer as count where false union all
+  select null::text as category, null::integer as count where false union all
   -- .........................................................................................................
-  select 'test_lex_camel', 'total',   count( * ) from T.test_lex_camel                        union all
-  select 'test_lex_camel', 'passed',  count( * ) from T.test_lex_camel where      ok          union all
-  select 'test_lex_camel', 'failed',  count( * ) from T.test_lex_camel where not  ok          union all
+  select 'total',   count(*) from T.test_functions_results                union all
+  select 'passed',  count(*) from T.test_functions_results where      ok  union all
+  select 'failed',  count(*) from T.test_functions_results where  not ok  union all
   -- .........................................................................................................
-  select 'test_split_url_phrase', 'total',   count( * ) from T.test_split_url_phrase                        union all
-  select 'test_split_url_phrase', 'passed',  count( * ) from T.test_split_url_phrase where      ok          union all
-  select 'test_split_url_phrase', 'failed',  count( * ) from T.test_split_url_phrase where not  ok          union all
-  -- .........................................................................................................
-  select null, null, null where false );
+  select null, null where false );
 
 -- ---------------------------------------------------------------------------------------------------------
 select * from T.all_result_counts;
+
+/* ###################################################################################################### */
+
+rollback;
+\ir './stop.test.sql'
+\quit
+
+
 
 -- ---------------------------------------------------------------------------------------------------------
 with v1 as ( select distinct
@@ -198,11 +162,16 @@ select
     order by n
     ;
 
+  -- -- .........................................................................................................
+  -- select 'test_lex_camel', 'total',   count( * ) from T.test_lex_camel                        union all
+  -- select 'test_lex_camel', 'passed',  count( * ) from T.test_lex_camel where      ok          union all
+  -- select 'test_lex_camel', 'failed',  count( * ) from T.test_lex_camel where not  ok          union all
+  -- -- .........................................................................................................
+  -- select 'test_split_url_phrase', 'total',   count( * ) from T.test_split_url_phrase                        union all
+  -- select 'test_split_url_phrase', 'passed',  count( * ) from T.test_split_url_phrase where      ok          union all
+  -- select 'test_split_url_phrase', 'failed',  count( * ) from T.test_split_url_phrase where not  ok          union all
 
-/* ###################################################################################################### */
-
-rollback;
-\ir './stop.test.sql'
-\quit
-
+-- select
+--     '( ' || function_name_txt || ', ' || probe_txt || ', ' || result_txt || ' ),'
+--   from T.test_functions_results;
 
