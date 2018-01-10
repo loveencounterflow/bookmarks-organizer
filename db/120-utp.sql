@@ -40,9 +40,10 @@ create function UTP.lex_camel( ¶text text ) returns text[] stable strict langua
 
 -- ---------------------------------------------------------------------------------------------------------
 create function UTP.split_url_phrase( ¶text text ) returns text[] stable strict language sql as $$
-  select regexp_split_to_array(
+  select array_remove( regexp_split_to_array(
     ¶text,
-    ( select pattern from UTP.patterns where key = 'split_url_phrase' ) ); $$;
+    ( select pattern from UTP.patterns where key = 'split_url_phrase' ) ),
+    '' ); $$;
 
 \quit
 
