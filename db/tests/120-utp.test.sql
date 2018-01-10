@@ -54,7 +54,7 @@ insert into T.probes_and_matchers values
 --   select $1 is distinct from $2; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function T.test_functions( ¶pam_table_name text )
+create function T.test_functions( ¶pam_table_name regclass )
   returns table (
     function_name_txt text,
     probe_txt         text,
@@ -69,7 +69,7 @@ create function T.test_functions( ¶pam_table_name text )
     ¶Q1             text;
     ¶Q2             text;
   begin
-    ¶Q1 := format( $$ select function_name, probe, matcher from %I $$, ¶pam_table_name );
+    ¶Q1 := format( $$ select function_name, probe, matcher from %s $$, ¶pam_table_name );
     for ¶x in execute ¶Q1 loop
       ¶function_name    :=  ¶x.function_name;
       function_name_txt :=  quote_literal( ¶function_name );
@@ -85,39 +85,6 @@ create function T.test_functions( ¶pam_table_name text )
       return next;
       end loop;
   end; $outer$;
-
--- -- ---------------------------------------------------------------------------------------------------------
--- create function T.test_functions( ¶pam_table_name text )
---   returns table (
---     function_name_txt text,
---     probe_txt         text,
---     result_txt        text,
---     ok                boolean )
---   volatile language plpgsql as $outer$
---   declare
---     ¶function_name  text;
---     ¶probe          text;
---     ¶x              record;
---     ¶result         record;
---     ¶Q1             text;
---     ¶Q2             text;
---   begin
---     ¶Q1 := $$ select function_name, probe, matcher from $$||¶pam_table_name;
---     for ¶x in execute ¶Q1 loop
---       ¶function_name    :=  ¶x.function_name;
---       function_name_txt :=  quote_literal( ¶function_name );
---       ¶probe            :=  ¶x.probe;
---       probe_txt         :=  quote_nullable( ¶x.probe );
---       ¶Q2               :=  $$ select * from $$||¶function_name||$$( $$||quote_nullable( ¶x.probe )||$$ ) as d $$;
---       execute ¶Q2 into ¶result;
---       select      into result_txt  quote_nullable( ¶result.d );
---       select      into ok          ¶result.d is not distinct from ¶x.matcher;
---       if not ok then
---         perform log( '10091', probe_txt, result_txt );
---         end if;
---       return next;
---       end loop;
---   end; $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create materialized view T.test_functions_results as (
