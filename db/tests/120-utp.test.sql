@@ -66,15 +66,17 @@ create function T.test_functions( ¶pam_table_name text )
     ¶probe          text;
     ¶x              record;
     ¶result         record;
-    ¶Q              text;
+    ¶Q1             text;
+    ¶Q2             text;
   begin
-    for ¶x in execute $$ select function_name, probe, matcher from $$||¶pam_table_name loop
+    ¶Q1 := $$ select function_name, probe, matcher from $$||¶pam_table_name;
+    for ¶x in execute ¶Q1 loop
       ¶function_name    :=  ¶x.function_name;
       function_name_txt :=  quote_literal( ¶function_name );
       ¶probe            :=  ¶x.probe;
       probe_txt         :=  quote_nullable( ¶x.probe );
-      ¶Q                :=  $$ select * from $$||¶function_name||$$( $$||quote_nullable( ¶x.probe )||$$ ) as d $$;
-      execute ¶Q  into ¶result;
+      ¶Q2               :=  $$ select * from $$||¶function_name||$$( $$||quote_nullable( ¶x.probe )||$$ ) as d $$;
+      execute ¶Q2 into ¶result;
       select      into result_txt  quote_nullable( ¶result.d );
       select      into ok          ¶result.d is not distinct from ¶x.matcher;
       if not ok then
