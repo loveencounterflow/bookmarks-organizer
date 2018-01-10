@@ -20,7 +20,7 @@ with v1 as ( select table_name::text
 select array_agg( table_name::text ) from v1;
 
 -- ---------------------------------------------------------------------------------------------------------
-create table T.probes_and_matchers ( function_name text not null, probe text, matcher text[] );
+create table T.probes_and_matchers ( function_name NAMEOF.function not null, probe text, matcher text[] );
 insert into T.probes_and_matchers values
   ( 'UTP.lex_camel',  null,                       null                              ),
   ( 'UTP.lex_camel',  'ABCWordDEF',               '{ABC,Word,DEF}'                  ),
@@ -44,47 +44,39 @@ insert into T.probes_and_matchers values
   ( 'UTP.split_url_phrase', 'this_(that)',                                                '{this,that}' ),
   ( 'UTP.split_url_phrase', 'this_that',                                                  '{this,that}' );
 
-
--- -- ---------------------------------------------------------------------------------------------------------
--- create function T._is_distinct_from( anyelement, anyelement ) returns boolean immutable language sql as $$
---   select $1 is distinct from $2; $$;
-
--- -- ---------------------------------------------------------------------------------------------------------
--- create function T._is_distinct_from( anyarray, anyarray ) returns boolean immutable language sql as $$
---   select $1 is distinct from $2; $$;
-
 -- ---------------------------------------------------------------------------------------------------------
-create function T.test_functions( ¶pam_table_name regclass )
+/* thx to https://stackoverflow.com/a/10711349/7568091 for using `regclass` and `format( '...%s...' )` */
+create function T.test_functions( ¶pm_table_name NAMEOF.relation )
   returns table (
-    function_name_txt text,
-    probe_txt         text,
-    result_txt        text,
+    function_name_q   text,
+    probe_q           text,
+    result_q          text,
     ok                boolean )
   volatile language plpgsql as $outer$
   declare
-    ¶function_name  text;
-    ¶probe          text;
     ¶x              record;
     ¶result         record;
     ¶Q1             text;
     ¶Q2             text;
   begin
-    ¶Q1 := format( $$ select function_name, probe, matcher from %s $$, ¶pam_table_name );
+    ¶Q1 := format( $$ select function_name::NAMEOF.function, probe, matcher from %s $$, ¶pm_table_name );
+    -- .....................................................................................................
     for ¶x in execute ¶Q1 loop
-      ¶function_name    :=  ¶x.function_name;
-      function_name_txt :=  quote_literal( ¶function_name );
-      ¶probe            :=  ¶x.probe;
-      probe_txt         :=  quote_nullable( ¶x.probe );
-      ¶Q2               :=  $$ select * from $$||¶function_name||$$( $$||quote_nullable( ¶x.probe )||$$ ) as d $$;
-      execute ¶Q2 into ¶result;
-      select      into result_txt  quote_nullable( ¶result.d );
-      select      into ok          ¶result.d is not distinct from ¶x.matcher;
+      function_name_q   :=  quote_literal( ¶x.function_name );
+      probe_q           :=  quote_nullable( ¶x.probe );
+      ¶Q2               :=  format( $$ select * from %s( $1 ) as d $$, ¶x.function_name );
+      -- ...................................................................................................
+      execute ¶Q2 using ¶x.probe                          into ¶result;
+      select  quote_nullable( ¶result.d )                 into result_q;
+      select  ¶result.d is not distinct from ¶x.matcher   into ok;
+      -- ...................................................................................................
       if not ok then
-        perform log( '10091', probe_txt, result_txt );
+        perform log( '10091', probe_q, result_q );
         end if;
       return next;
       end loop;
-  end; $outer$;
+    -- .....................................................................................................
+    end; $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create materialized view T.test_functions_results as (
@@ -92,9 +84,9 @@ create materialized view T.test_functions_results as (
 
 -- ---------------------------------------------------------------------------------------------------------
 select
-    function_name_txt,
-    probe_txt,
-    result_txt,
+    function_name_q,
+    probe_q,
+    result_q,
     case when ok then '' else '!!!' end as ok
   from T.test_functions_results;
 

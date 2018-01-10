@@ -25,6 +25,33 @@ create domain U.nonempty_text         as text     check ( value != ''           
 create domain U.chr                   as text     check ( character_length( value ) = 1 );
 
 -- ---------------------------------------------------------------------------------------------------------
+drop schema if exists NAMEOF cascade;
+create schema NAMEOF;
+
+-- ---------------------------------------------------------------------------------------------------------
+/* aliases for names of DB objects; see table at https://www.postgresql.org/docs/current/static/datatype-oid.html */
+create domain NAMEOF.function   as regproc;         /* pg_proc       */
+create domain NAMEOF.operator   as regoper;         /* pg_operator   */
+create domain NAMEOF.relation   as regclass;        /* pg_class      */
+create domain NAMEOF.data_type  as regtype;         /* pg_type       */
+create domain NAMEOF.role       as regrole;         /* pg_authid     */
+create domain NAMEOF.schema     as regnamespace;    /* pg_namespace  */
+-- create domain NAMEOF.numeric_object_identifier     as oid;             /* any           */
+-- create domain NAMEOF.function_with_atypes          as regprocedure;    /* pg_proc       */
+-- create domain NAMEOF.operator_with_atypes          as regoperator;     /* pg_operator   */
+-- create domain NAMEOF.text_search_configuration     as regconfig;       /* pg_ts_config  */
+-- create domain NAMEOF.text_search_dictionary        as regdictionary;   /* pg_ts_dict    */
+
+
+-- -- ---------------------------------------------------------------------------------------------------------
+-- create function T._is_distinct_from( anyelement, anyelement ) returns boolean immutable language sql as $$
+--   select $1 is distinct from $2; $$;
+
+-- -- ---------------------------------------------------------------------------------------------------------
+-- create function T._is_distinct_from( anyarray, anyarray ) returns boolean immutable language sql as $$
+--   select $1 is distinct from $2; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
 create function U.text_array_from_json( jsonb )
   /* Accepts a textual JSON-compliant representation of an array and returns an SQL `array` with text
   elements. This is needed primarily to pass `variadic text[]` arguments to public / RPC UDFs.
