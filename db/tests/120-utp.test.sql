@@ -1,4 +1,6 @@
 
+
+
 /* ###################################################################################################### */
 \ir './start.test.sql'
 \ir '../120-utp.sql'
@@ -42,7 +44,31 @@ insert into T.probes_and_matchers values
   ( 'UTP.split_url_phrase', 'http://foo.com/汉字编码的理论与实践/学林出版社1986年8月',    '{http,foo,com,汉字编码的理论与实践,学林出版社1986年8月}' ),
   ( 'UTP.split_url_phrase', 'this-that',                                                  '{this,that}' ),
   ( 'UTP.split_url_phrase', 'this_(that)',                                                '{this,that}' ),
-  ( 'UTP.split_url_phrase', 'this_that',                                                  '{this,that}' );
+  ( 'UTP.split_url_phrase', 'this_that',                                                  '{this,that}' ),
+  -- .......................................................................................................
+  ( 'UTP.lex_tags', null,                                                         null          ),
+  ( 'UTP.lex_tags', $$tag$$,                                                        '{tag}'               ),
+  ( 'UTP.lex_tags', $$name=tag$$,                                                   '{name,=,tag}'        ),
+  ( 'UTP.lex_tags', $$tag$$,                                                       null ),
+  ( 'UTP.lex_tags', $$tag foo 'bar' "baz" 'gnu x' "moo y"$$,                   null ),
+  ( 'UTP.lex_tags', $$tag='value with spaces 1'$$,                                null ),
+  ( 'UTP.lex_tags', $$tag="value with spaces 2"$$,                                 null ),
+  ( 'UTP.lex_tags', $$tag="value with spaces and \\"quotes\\" 2"$$,                null ),
+  ( 'UTP.lex_tags', $$q=tag q=foo q='bar' q="baz" q='gnu x' q="moo y"$$,       null ),
+  ( 'UTP.lex_tags', $$tag::q foo::q 'bar'::q "baz"::q 'gnu x'::q "moo y"::q$$, null ),
+  ( 'UTP.lex_tags', $$programming/languages/sql$$,                                 null ),
+  ( 'UTP.lex_tags', $$ctx/tag$$,                                                   null ),
+  ( 'UTP.lex_tags', $$tag=value$$,                                                 null ),
+  ( 'UTP.lex_tags', $$ctx/tag='value with spaces 1'$$,                             null ),
+  ( 'UTP.lex_tags', $$ctx/tag="value with spaces 2"$$,                             null ),
+  ( 'UTP.lex_tags', $$"Gun, Son of A." ::name$$,                                   null ),
+  ( 'UTP.lex_tags', $$"Gun, Son of A."::name$$,                                    null ),
+  ( 'UTP.lex_tags', $$"Gun, Son of A.::name"$$,                                    null ),
+  ( 'UTP.lex_tags', $$name="Gun, Son of A." 'another tag'$$,                     null ),
+  ( 'UTP.lex_tags', $$'tag with spaces'$$,                                         null ),
+  ( 'UTP.lex_tags', $$tag foo 'bar baz'$$,                                         null ),
+  ( 'UTP.lex_tags', $$tag foo "bar baz"$$,                                         null ),
+  ( 'UTP.lex_tags', $$tag 'foo "bar baz" gnu'$$,                                 null );
 
 -- ---------------------------------------------------------------------------------------------------------
 /* thx to https://stackoverflow.com/a/10711349/7568091 for using `regclass` and `format( '...%s...' )` */
