@@ -106,10 +106,10 @@ create function T.test_functions( ¶pam_table_name text )
       ¶function_name    :=  ¶x.function_name;
       function_name_txt :=  quote_literal( ¶function_name );
       ¶probe            :=  ¶x.probe;
-      probe_txt         :=  quote_literal( ¶x.probe );
-      ¶Q                :=  $$ select * from $$||¶function_name||$$( $$||quote_literal( ¶x.probe )||$$ ) as d $$;
+      probe_txt         :=  quote_nullable( ¶x.probe );
+      ¶Q                :=  $$ select * from $$||¶function_name||$$( $$||quote_nullable( ¶x.probe )||$$ ) as d $$;
       execute ¶Q  into ¶result;
-      select      into result_txt  quote_literal( ¶result.d );
+      select      into result_txt  quote_nullable( ¶result.d );
       select      into ok          ¶result.d is not distinct from ¶x.matcher;
       return next;
       end loop;
