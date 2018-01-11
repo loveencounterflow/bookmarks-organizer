@@ -227,7 +227,7 @@ insert into _FSM2_.transitions
   ( '(start)',            '!start',       'NOP',    's1',       'NOP'           ),
   ( 's1',                 'identifier',   'NOP',    's2',       'LD T'          ),
   ( 's2',                 'equals',       'MV T C', 's3',       'NOP'           ),
-  ( 's3',                 'identifier',   'NOP',    's4',       'NOP'           ),
+  ( 's3',                 'identifier',   'NOP',    's4',       'LD T'          ),
   ( 's4',                 'stop!',        'NOP',    'complete', 'NOP'           );
 
 -- ---------------------------------------------------------------------------------------------------------
