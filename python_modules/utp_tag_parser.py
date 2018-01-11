@@ -44,6 +44,7 @@ def lex_tags( tags_txt ):
         #   raise SyntaxError( "illegal tag characters in " + rpr( tags_txt ) )
         R.append( group )
         break
+  R = [ r.replace( '\\', '' ) for r in R ]
   return R
 
 
