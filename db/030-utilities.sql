@@ -42,6 +42,44 @@ create domain NAMEOF.schema     as regnamespace;    /* pg_namespace  */
 -- create domain NAMEOF.text_search_configuration     as regconfig;       /* pg_ts_config  */
 -- create domain NAMEOF.text_search_dictionary        as regdictionary;   /* pg_ts_dict    */
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  */
+/* thx to https://stackoverflow.com/a/24006432/7568091 */
+/*
+
+functions to turn a select into json, text, display it:
+
+-- select array_to_json(  array_agg( t ) ) from ( select 1 as a union all select 2 ) as t;
+-- select json_agg( t ) from ( select 1 as a union all select 2 ) as t;
+-- \quit
+
+    X := json_agg( t )::text from ( select aid, act from _FSM2_.journal where bid = new.bid union select 111111, new.act ) as t;
+    perform log( '00902', 'existing', X );
+    X := json_agg( t )::text from ( select new ) as t;
+*/
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  */
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  */
+/*
+
+turn a table with keys and values into a single JSON object:
+
+
+drop table if exists d cascade;
+create table d ( key text, value text );
+insert into d values
+  ( 'key_A', 'value_a' ),
+  ( 'key_B', 'value_b' );
+
+with  keys    as ( select array_agg( key    order by key ) as k from d ),
+      values  as ( select array_agg( value  order by key ) as v from d )
+  select jsonb_object( keys.k, values.v ) from keys, values;
+
+               jsonb_object
+------------------------------------------
+ {"key_A": "value_a", "key_B": "value_b"}
+
+*/
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  */
 
 -- -- ---------------------------------------------------------------------------------------------------------
 -- create function T._is_distinct_from( anyelement, anyelement ) returns boolean immutable language sql as $$

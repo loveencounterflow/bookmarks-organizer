@@ -31,6 +31,7 @@
 # *stop*
 
 * readme: `tag`—simple tag
+* readme: `minortag1 minortag2 #majortag minortag1`—hash indicates primary position of bookmark, 1st tag otherwise
           `'tag with spaces'`—spaced tag
           `ctx/tag`—tag with context specifier
           `tag=value`—valued tag
@@ -259,3 +260,9 @@
 
 * url:    http://bitmote.com/index.php?post/2012/11/19/Using-ANSI-Color-Codes-to-Colorize-Your-Bash-Prompt-on-Linux
   tags:   bash terminal ansi-colors ansi-codes
+
+* url:    http://www.patorjk.com/software/taag
+  title:  Text To ASCII Art Generator (TAAG)
+  tags:   ascii-art figlet::name
+
+
