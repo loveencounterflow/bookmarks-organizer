@@ -24,8 +24,9 @@ create table _FSM2_.acts (
 create table _FSM2_.transitions (
   tail          text                    references _FSM2_.states    ( state   ),
   act           text                    references _FSM2_.acts      ( act     ),
-  precmd        text,                    -- references _FSM2_.recipes   ( rcpkey  ),
+  precmd        text,
   point         text                    references _FSM2_.states    ( state   ),
+  postcmd       text,
   primary key ( tail, act ) );
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -101,11 +102,10 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
         limit 1;
       end if;
     -- .....................................................................................................
-    /* Perform associated SMAL commands: */
-    perform log( '00902', 'tail', ¶tail );
+    /* Obtain transition from tail and act: */
     ¶transition :=  _FSM2_.proceed2( ¶tail, new.act );
-    X := json_agg( t )::text from ( select ¶transition ) as t;
-    perform log( '00902', 'transition', X );
+    -- .....................................................................................................
+    /* Perform associated SMAL pre-update commands: */
     perform _FSM2_.smal( ¶transition.precmd, new.data );
     -- .....................................................................................................
     /* Insert new line into journal and update register copy: */
@@ -113,9 +113,15 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
       ( new.bid, ¶tail, new.act, ¶transition.point, new.data )
       returning aid into ¶aid;
     -- .....................................................................................................
+    /* Perform associated SMAL post-update commands: */
+    perform _FSM2_.smal( ¶transition.postcmd, new.data );
+    -- .....................................................................................................
     update _FSM2_.journal set registers = _FSM2_.registers_as_json() where aid = ¶aid;
     -- .....................................................................................................
     return null; end; $$;
+    -- X := json_agg( t )::text from ( select ¶transition ) as t;
+    -- perform log( '00902', 'tail', ¶tail );
+    -- perform log( '00902', 'transition', X );
 
 -- ---------------------------------------------------------------------------------------------------------
 create trigger instead_of_insert_into_receiver instead of insert on _FSM2_.receiver
@@ -162,9 +168,10 @@ NL Y    # set register Y to NULL
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile strict language plpgsql as $$
   declare
-    ¶parts  text[];
-    ¶base   text;
-    ¶regkey text;
+    ¶parts      text[];
+    ¶base       text;
+    ¶regkey_1   text;
+    ¶regkey_2   text;
   begin
     if ¶cmd is null then return; end if;
     if ¶cmd = 'NOP' then return; end if;
@@ -173,10 +180,19 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile str
     ¶base   :=  ¶parts[ 1 ];
     case ¶base
       when 'LD' then
-        ¶regkey :=  ¶parts[ 2 ];
+        ¶regkey_1 :=  ¶parts[ 2 ];
         update _FSM2_.registers
           set data = ¶data
-          where regkey = ¶regkey;
+          where regkey = ¶regkey_1;
+      when 'MV' then
+        ¶regkey_1 :=  ¶parts[ 2 ];
+        ¶regkey_2 :=  ¶parts[ 3 ];
+        update _FSM2_.registers
+          set data = r1.data from ( select data from _FSM2_.registers where regkey = ¶regkey_1 ) as r1
+          where regkey = ¶regkey_2;
+        update _FSM2_.registers
+          set data = null
+          where regkey = ¶regkey_1;
       end case;
     end; $$;
 
@@ -207,12 +223,12 @@ insert into _FSM2_.acts values
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.transitions
-  ( tail,                 act,            precmd,   point         ) values
-  ( '(start)',            '!start',       'NOP',    's1'          ),
-  ( 's1',                 'identifier',   'LD T',   's2'          ),
-  ( 's2',                 'equals',       'NOP',    's3'          ),
-  ( 's3',                 'identifier',   'NOP',    's4'          ),
-  ( 's4',                 'stop!',        'NOP',    'complete'    );
+  ( tail,                 act,            precmd,   point,      postcmd         ) values
+  ( '(start)',            '!start',       'NOP',    's1',       'NOP'           ),
+  ( 's1',                 'identifier',   'NOP',    's2',       'LD T'          ),
+  ( 's2',                 'equals',       'MV T C', 's3',       'NOP'           ),
+  ( 's3',                 'identifier',   'NOP',    's4',       'NOP'           ),
+  ( 's4',                 'stop!',        'NOP',    'complete', 'NOP'           );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.registers ( regkey, name ) values
