@@ -94,7 +94,7 @@ create function _FSM_.on_before_insert_into_journal() returns trigger language p
     if ¶new_state is null then
       select nxt_state
         from _FSM_._jobs_events_and_next_states
-        where job_id = 13
+        where job_id = new.job_id
         order by id desc
         limit 1
         into ¶prv_state;

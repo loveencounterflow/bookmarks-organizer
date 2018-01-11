@@ -13,7 +13,8 @@
   tags:   "Gun, Son of A."::name
   tags:   "Gun, Son of A.::name"
   tags:   name="Gun, Son of A."
-
+  # maximal form: contextual tag with typed value
+  tags:   IT/programming/language=SQL::name
 
 * url:    https://github.com/kittykatattack/learningPixi
   url:    http://pixijs.download/release/docs
