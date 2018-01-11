@@ -129,9 +129,6 @@ NL Y    # set register Y to NULL
 
 */
 
--- -- ---------------------------------------------------------------------------------------------------------
--- create function _FSM2_.LD( ¶regkey text ) returns void volatile language sql as $$
---   select _FSM2_.LD( )
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.LD( ¶aid integer, ¶regkey text ) returns void volatile language sql as $$
   update _FSM2_.registers
@@ -199,9 +196,9 @@ select * from _FSM2_.journal;
 \echo 'job_transitions'
 select * from _FSM2_.job_transitions;
 
-select * from _FSM2_.registers;
+select * from _FSM2_.registers order by regkey;
 do $$ begin perform _FSM2_.LD( 3, 'C' ); end; $$;
-select * from _FSM2_.registers;
+select * from _FSM2_.registers order by regkey;
 
 
 
