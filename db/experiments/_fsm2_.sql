@@ -2,6 +2,17 @@
 /* thx to http://felixge.de/2017/07/27/implementing-state-machines-in-postgresql.html */
 
 
+/*
+
+███████╗███████╗███╗   ███╗
+██╔════╝██╔════╝████╗ ████║
+█████╗  ███████╗██╔████╔██║
+██╔══╝  ╚════██║██║╚██╔╝██║
+██║     ███████║██║ ╚═╝ ██║
+╚═╝     ╚══════╝╚═╝     ╚═╝
+
+*/
+
 
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists _FSM2_ cascade;
@@ -59,8 +70,26 @@ create function _FSM2_.registers_as_json() returns json stable language sql as $
     select json_object( keys.x, values.x ) from keys, values; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.proceed2( ¶tail text, ¶act text ) returns _FSM2_.transitions stable language sql as $$
+create function _FSM2_.proceed( ¶tail text, ¶act text ) returns _FSM2_.transitions stable language sql as $$
   select * from _FSM2_.transitions where ( tail = ¶tail ) and ( act = ¶act ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function _FSM2_._journal_excerpt_as_tabular( ¶bid integer ) returns text
+  immutable strict language plpgsql as $$
+  declare
+    excerpt json;
+  begin
+    /* thx to https://stackoverflow.com/a/39456483/7568091 */
+    select into excerpt
+           '[["aid","bid","tail","act","point","data","registers"]]'::jsonb ||  -- !!!!
+        jsonb_agg( info ) from (
+          select jsonb_build_array(
+            aid, bid, tail, act, point, data, registers                         -- !!!!
+            ) as info from ( select
+            aid, bid, tail, act, point, data, registers                         -- !!!!
+            from _FSM2_.journal where bid = ¶bid order by aid ) as x1 ) as x2;
+    return U.tabulate( excerpt );
+    end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT should probably use `lock for update` */
@@ -70,42 +99,34 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     ¶tail       text;
     ¶aid        integer;
     ¶transition _FSM2_.transitions%rowtype;
-    X text;
+    -- X text;
   begin
     -- .....................................................................................................
     if new.act = '!start' then
       if exists ( select 1 from _FSM2_.journal where bid = new.bid ) then
         raise exception 'batch with BatchID % already exists', new.bid;
         end if;
-      end if;
-    -- -- .....................................................................................................
-    -- if ¶new_state is null then
-    --   select point
-    --     from _FSM2_._batches_events_and_next_states
-    --     where bid = new.bid
-    --     order by aid desc
-    --     limit 1
-    --     into ¶tail;
-    --   raise exception
-    --     'invalid act: ( state %, act % ) -> null for entry (%)',
-    --       ¶tail, new.act, row_to_json( new );
-    --   end if;
-    -- .....................................................................................................
-    if new.act = '!start' then
       ¶tail := '(start)';
+    -- .....................................................................................................
     else
-      select into ¶tail
-          point as tail
-        from _FSM2_.journal
-        where bid = new.bid
-        order by aid desc
-        limit 1;
+      /* ### TAINT consider to use lag() instead */
+      select into ¶tail point from _FSM2_.journal where bid = new.bid order by aid desc limit 1;
       end if;
     -- .....................................................................................................
     /* Obtain transition from tail and act: */
-    ¶transition :=  _FSM2_.proceed2( ¶tail, new.act );
+    ¶transition :=  _FSM2_.proceed( ¶tail, new.act );
+    -- .....................................................................................................
+    /* Error out in case no matching transition was found: */
+    if ¶transition is null then
+      perform log( '19088', 'Journal excerpt up to problematic act:' );
+      perform log( _FSM2_._journal_excerpt_as_tabular( new.bid ) );
+      raise exception
+        'invalid act: ( state %, act % ) -> null for entry (%)',
+          ¶tail, new.act, row_to_json( new );
+      end if;
     -- .....................................................................................................
     /* Perform associated SMAL pre-update commands: */
+    -- X := json_agg( t )::text from ( select ¶transition ) as t; perform log( '00902', 'transition', X );
     perform _FSM2_.smal( ¶transition.precmd, new.data );
     -- .....................................................................................................
     /* Insert new line into journal and update register copy: */
@@ -119,32 +140,12 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     update _FSM2_.journal set registers = _FSM2_.registers_as_json() where aid = ¶aid;
     -- .....................................................................................................
     return null; end; $$;
-    -- X := json_agg( t )::text from ( select ¶transition ) as t;
+
     -- perform log( '00902', 'tail', ¶tail );
-    -- perform log( '00902', 'transition', X );
 
 -- ---------------------------------------------------------------------------------------------------------
 create trigger instead_of_insert_into_receiver instead of insert on _FSM2_.receiver
 for each row execute procedure _FSM2_.instead_of_insert_into_receiver();
-
--- -- ---------------------------------------------------------------------------------------------------------
--- create view _FSM2_._batches_events_and_next_states as ( select
---     aid                                                                                 as aid,
---     bid                                                                                 as bid,
---     act                                                                                 as act,
---     _FSM2_.proceed_agg( act ) over ( partition by bid order by aid )                    as point,
---     data                                                                                as data
---   from _FSM2_.journal );
-
--- -- ---------------------------------------------------------------------------------------------------------
--- create view _FSM2_.job_transitions as ( select
---     aid                                                                                 as aid,
---     bid                                                                                 as bid,
---     coalesce( lag( point ) over ( partition by bid order by aid ), '(start)' )          as tail,
---     act                                                                                 as act,
---     point                                                                               as point,
---     data                                                                                as data
---   from _FSM2_._batches_events_and_next_states );
 
 
 /*
@@ -154,46 +155,63 @@ for each row execute procedure _FSM2_.instead_of_insert_into_receiver();
 ███████╗██╔████╔██║███████║██║
 ╚════██║██║╚██╔╝██║██╔══██║██║
 ███████║██║ ╚═╝ ██║██║  ██║███████╗
-╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝ http://www.patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=SmAL
+╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝ http://www.patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=SMAL
 
 State Machine Assembly Language
 
-LD T    # load data to register T
-MV T C  # move contents of register T to register C and set register T to NULL
-NL *    # set all registers to NULL
-NL Y    # set register Y to NULL
+NOP       # no operation (may also use SQL `null` value)
+LOD T     # load data to register T
+MOV T C   # move contents of register T to register C and set register T to NULL
+NUL *     # set all registers to NULL
+NUL Y     # set register Y to NULL
 
 */
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile strict language plpgsql as $$
+create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile language plpgsql as $$
   declare
     ¶parts      text[];
     ¶base       text;
     ¶regkey_1   text;
     ¶regkey_2   text;
+    ¶count      integer := 0;
   begin
     if ¶cmd is null then return; end if;
+    /* ### TAINT should check whether there are extraneous arguments with NOP */
     if ¶cmd = 'NOP' then return; end if;
     ¶cmd    :=  trim( both from ¶cmd );
     ¶parts  :=  regexp_split_to_array( ¶cmd, '\s+' );
     ¶base   :=  ¶parts[ 1 ];
-    case ¶base
-      when 'LD' then
+    -- .....................................................................................................
+    <<on_count_null>> begin case ¶base
+      -- ...................................................................................................
+      when 'NUL' then
         ¶regkey_1 :=  ¶parts[ 2 ];
-        update _FSM2_.registers
-          set data = ¶data
-          where regkey = ¶regkey_1;
-      when 'MV' then
+        if ¶regkey_1 = '*' then
+          update _FSM2_.registers set data = null;
+        else
+          update _FSM2_.registers set data = null where regkey = ¶regkey_1 returning 1 into ¶count;
+          end if;
+      -- ...................................................................................................
+      when 'LOD' then
+        ¶regkey_1 :=  ¶parts[ 2 ];
+        update _FSM2_.registers set data = ¶data where regkey = ¶regkey_1 returning 1 into ¶count;
+      -- ...................................................................................................
+      when 'MOV' then
         ¶regkey_1 :=  ¶parts[ 2 ];
         ¶regkey_2 :=  ¶parts[ 3 ];
         update _FSM2_.registers
           set data = r1.data from ( select data from _FSM2_.registers where regkey = ¶regkey_1 ) as r1
-          where regkey = ¶regkey_2;
-        update _FSM2_.registers
-          set data = null
-          where regkey = ¶regkey_1;
-      end case;
+          where regkey = ¶regkey_2 returning 1 into ¶count;
+        exit on_count_null when ¶count is null;
+        update _FSM2_.registers set data = null where regkey = ¶regkey_1 returning 1 into ¶count;
+      -- ...................................................................................................
+      end case; end;
+    -- .....................................................................................................
+    if ¶count is null then
+      raise exception 'invalid regkey in %', ¶cmd;
+      end if;
+    -- .....................................................................................................
     end; $$;
 
 
@@ -207,6 +225,7 @@ insert into _FSM2_.states values
    ( 's2'         ),
    ( 's3'         ),
    ( 's4'         ),
+   ( 's5'         ),
    ( 'complete'   );
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -214,21 +233,24 @@ insert into _FSM2_.acts values
   ( '!start'          ),
   ( 'identifier'      ),
   ( 'equals'          ),
+  ( 'dcolon'          ),
   ( 'stop!'           );
 
 -- -- ---------------------------------------------------------------------------------------------------------
 -- insert into _FSM2_.recipes values
 --   ( 'NOP',   null          ),
---   ( 'LD T',  $$_FSM2_.LD( 'T' )$$  );
+--   ( 'LOD T',  $$_FSM2_.LOD( 'T' )$$  );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.transitions
-  ( tail,                 act,            precmd,   point,      postcmd         ) values
-  ( '(start)',            '!start',       'NOP',    's1',       'NOP'           ),
-  ( 's1',                 'identifier',   'NOP',    's2',       'LD T'          ),
-  ( 's2',                 'equals',       'MV T C', 's3',       'NOP'           ),
-  ( 's3',                 'identifier',   'NOP',    's4',       'LD T'          ),
-  ( 's4',                 'stop!',        'NOP',    'complete', 'NOP'           );
+  ( tail,                 act,            precmd,   point,      postcmd       ) values
+  ( '(start)',            '!start',       'NUL *',  's1',       'NOP'         ),
+  ( 's1',                 'identifier',   'NOP',    's2',       'LOD T'       ),
+  ( 's2',                 'equals',       'NOP',    's3',       'NOP'         ),
+  ( 's3',                 'identifier',   'NOP',    's4',       'LOD V'       ),
+  ( 's4',                 'dcolon',       'NOP',    's5',       'NOP'         ),
+  ( 's5',                 'identifier',   'NOP',    's5',       'LOD Y'       ),
+  ( 's4',                 'stop!',        'NOP',    'complete', 'NOP'         );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.registers ( regkey, name ) values
@@ -248,6 +270,20 @@ insert into _FSM2_.receiver values ( 1, 'equals',      '='     );
 -- insert into _FSM2_.receiver values ( 1, 'equals',      '='     );
 insert into _FSM2_.receiver values ( 1, 'identifier',  'red'   );
 
+insert into _FSM2_.receiver values ( 2, '!start',      null    );
+insert into _FSM2_.receiver values ( 2, 'identifier',  'foo'    );
+insert into _FSM2_.receiver values ( 2, 'equals',      '::'   );
+-- insert into _FSM2_.receiver values ( 2, 'equals',      '='     );
+insert into _FSM2_.receiver values ( 2, 'identifier',  'q'   );
+
+insert into _FSM2_.receiver values ( 3, '!start',      null    );
+insert into _FSM2_.receiver values ( 3, 'identifier',  'author'    );
+insert into _FSM2_.receiver values ( 3, 'equals',      '='     );
+insert into _FSM2_.receiver values ( 3, 'identifier',  'Faulkner'    );
+insert into _FSM2_.receiver values ( 3, 'dcolon',      '::'   );
+-- insert into _FSM2_.receiver values ( 3, 'equals',      '='     );
+insert into _FSM2_.receiver values ( 3, 'identifier',  'name'   );
+
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo 'journal'
@@ -262,7 +298,7 @@ select * from _FSM2_.journal;
 \quit
 
 select * from _FSM2_.registers order by regkey;
-do $$ begin perform _FSM2_.LD( 3, 'C' ); end; $$;
+do $$ begin perform _FSM2_.LOD( 3, 'C' ); end; $$;
 select * from _FSM2_.registers order by regkey;
 
 
@@ -277,10 +313,11 @@ select * from _FSM2_.registers order by regkey;
 
 
 ------------------------------------+------------------------------------------------------------------------
-notation                            |  context         tag         value       type
+notation                            |  context          tag         value       type
 ------------------------------------+------------------------------------------------------------------------
-IT/programming/language=SQL::name   |  IT/programming  language    SQL         name
-foo::q                              |  ∎               foo         ∎           q
+color=red                           |  ∎                color       red         ∎
+IT/programming/language=SQL::name   |  IT/programming   language    SQL         name
+foo::q                              |  ∎                foo         ∎           q
 
 
 

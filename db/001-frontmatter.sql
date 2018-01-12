@@ -16,6 +16,6 @@
 \echo :_TITLE'035-sh':_O                      \ir './035-sh.sql'
 \echo :_TITLE'040-os':_O                      \ir './040-os.sql'
 \echo :_TITLE'050-init':_O                    \ir './050-init.sql'
-\echo :_TITLE'051-python-functions.sql':_O    \ir './051-python-functions.sql.sql'
+\echo :_TITLE'051-python-functions':_O        \ir './051-python-functions.sql'
 \echo :_TITLE'060-fdw':_O                     \ir './060-fdw.sql'
 \echo :_TITLE'199-bye':_O                     \ir './199-bye.sql'

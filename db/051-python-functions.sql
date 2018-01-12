@@ -1,11 +1,12 @@
 
--- ---------------------------------------------------------------------------------------------------------
-drop schema if exists _U_ cascade;
-create schema _U_;
+
+-- -- ---------------------------------------------------------------------------------------------------------
+-- create function U.tabulate( data_ json ) returns text strict immutable language plpgsql as $$
+--   $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
-create function _U_.tabulate( data_ jsonb ) returns text strict immutable language plpython3u as $$
+create function U.tabulate( data_ json ) returns text strict immutable language plpython3u as $$
   plpy.execute( 'select INIT.py_init()' )
   ctx   = GD[ 'ctx' ]
   import json
@@ -15,6 +16,6 @@ create function _U_.tabulate( data_ jsonb ) returns text strict immutable langua
 reset role;
 
 
-do $$ begin perform log( _U_.tabulate( '[ ["body","radius / km", "mass / 10^29 kg"], ["Sun",696000,1989100000],["Earth",6371,5973.6], ["Moon",1737,73.5],["Mars",3390,641.85]]'::jsonb
-  ) ); end; $$;
+-- do $$ begin perform log( _U_.tabulate( '[ ["body","radius / km", "mass / 10^29 kg"], ["Sun",696000,1989100000],["Earth",6371,5973.6], ["Moon",1737,73.5],["Mars",3390,641.85]]'::jsonb
+--   ) ); end; $$;
 
