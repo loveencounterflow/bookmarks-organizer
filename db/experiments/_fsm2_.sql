@@ -36,6 +36,21 @@ create table _FSM2_.transitions (
   postcmd       text,
   primary key ( tail, act ) );
 
+-- -- ---------------------------------------------------------------------------------------------------------
+create function _FSM2_._act_is_starred( ¶act text ) returns boolean stable language sql as $$
+  select exists ( select 1 from _FSM2_.transitions where act = ¶act and tail = '*' ); $$;
+
+-- -- ---------------------------------------------------------------------------------------------------------
+create function _FSM2_._star_count_ok( ¶tail text, ¶act text ) returns boolean volatile language sql as $$
+  select case when ¶tail = '*' or _FSM2_._act_is_starred( ¶act ) then
+    ( select count(*) = 0 from _FSM2_.transitions where act = ¶act )
+    else true end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+alter table _FSM2_.transitions
+  add constraint "starred acts must have no more than one transition"
+  check ( _FSM2_._star_count_ok( tail, act ) );
+
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.journal (
   aid           serial    primary key,
@@ -84,12 +99,9 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     ¶transition _FSM2_.transitions%rowtype;
     -- X text;
   begin
-    -- .....................................................................................................
-    if new.act = 'start' then
-      -- if exists ( select 1 from _FSM2_.journal where bid = new.bid ) then
-      --   raise exception 'batch with BatchID % already exists', new.bid;
-      --   end if;
-      ¶tail := '(start)';
+    if _FSM2_._act_is_starred( new.act ) then
+      perform log( '77981', 'act', new.act, 'is a star' );
+      -- end if;
     -- .....................................................................................................
     else
       /* ### TAINT consider to use lag() instead */
