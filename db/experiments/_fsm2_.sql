@@ -102,7 +102,7 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     -- X text;
   begin
     -- .....................................................................................................
-    if new.act = '!start' then
+    if new.act = 'start' then
       if exists ( select 1 from _FSM2_.journal where bid = new.bid ) then
         raise exception 'batch with BatchID % already exists', new.bid;
         end if;
@@ -230,27 +230,23 @@ insert into _FSM2_.states values
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.acts values
-  ( '!start'          ),
+  ( 'start'           ),
   ( 'identifier'      ),
   ( 'equals'          ),
   ( 'dcolon'          ),
-  ( 'stop!'           );
-
--- -- ---------------------------------------------------------------------------------------------------------
--- insert into _FSM2_.recipes values
---   ( 'NOP',   null          ),
---   ( 'LOD T',  $$_FSM2_.LOD( 'T' )$$  );
+  ( 'stop'            );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.transitions
-  ( tail,                 act,            precmd,   point,      postcmd       ) values
-  ( '(start)',            '!start',       'NUL *',  's1',       'NOP'         ),
-  ( 's1',                 'identifier',   'NOP',    's2',       'LOD T'       ),
-  ( 's2',                 'equals',       'NOP',    's3',       'NOP'         ),
-  ( 's3',                 'identifier',   'NOP',    's4',       'LOD V'       ),
-  ( 's4',                 'dcolon',       'NOP',    's5',       'NOP'         ),
-  ( 's5',                 'identifier',   'NOP',    's5',       'LOD Y'       ),
-  ( 's4',                 'stop!',        'NOP',    'complete', 'NOP'         );
+  ( tail,                 act,                precmd,       point,          postcmd           ) values
+  ( '(start)',            'start',            'NUL *',      's1',           'NOP'             ),
+  ( 's1',                 'identifier',       'NOP',        's2',           'LOD T'           ),
+  ( 's2',                 'equals',           'NOP',        's3',           'NOP'             ),
+  ( 's3',                 'identifier',       'NOP',        's4',           'LOD V'           ),
+  ( 's4',                 'dcolon',           'NOP',        's5',           'NOP'             ),
+  ( 's5',                 'identifier',       'NOP',        's5',           'LOD Y'           ),
+  ( 's5',                 'stop',             'NOP',        'complete',     'NOP'             ),
+  ( 's4',                 'stop',             'NOP',        'complete',     'NOP'             );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.registers ( regkey, name ) values
@@ -264,30 +260,35 @@ insert into _FSM2_.registers ( regkey, name ) values
 
 -- ---------------------------------------------------------------------------------------------------------
 -- truncate _FSM2_.journal;
-insert into _FSM2_.receiver values ( 1, '!start',      null    );
+insert into _FSM2_.receiver values ( 1, 'start',      null    );
 insert into _FSM2_.receiver values ( 1, 'identifier',  'color' );
 insert into _FSM2_.receiver values ( 1, 'equals',      '='     );
 -- insert into _FSM2_.receiver values ( 1, 'equals',      '='     );
 insert into _FSM2_.receiver values ( 1, 'identifier',  'red'   );
+insert into _FSM2_.receiver values ( 1, 'stop',       null   );
 
-insert into _FSM2_.receiver values ( 2, '!start',      null    );
+insert into _FSM2_.receiver values ( 2, 'start',      null    );
 insert into _FSM2_.receiver values ( 2, 'identifier',  'foo'    );
 insert into _FSM2_.receiver values ( 2, 'equals',      '::'   );
 -- insert into _FSM2_.receiver values ( 2, 'equals',      '='     );
 insert into _FSM2_.receiver values ( 2, 'identifier',  'q'   );
+insert into _FSM2_.receiver values ( 2, 'stop',       null   );
 
-insert into _FSM2_.receiver values ( 3, '!start',      null    );
+insert into _FSM2_.receiver values ( 3, 'start',      null    );
 insert into _FSM2_.receiver values ( 3, 'identifier',  'author'    );
 insert into _FSM2_.receiver values ( 3, 'equals',      '='     );
 insert into _FSM2_.receiver values ( 3, 'identifier',  'Faulkner'    );
 insert into _FSM2_.receiver values ( 3, 'dcolon',      '::'   );
 -- insert into _FSM2_.receiver values ( 3, 'equals',      '='     );
 insert into _FSM2_.receiver values ( 3, 'identifier',  'name'   );
+insert into _FSM2_.receiver values ( 3, 'stop',       null   );
 
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo 'journal'
 select * from _FSM2_.journal;
+\echo 'journal (completed)'
+select * from _FSM2_.journal where point = 'complete';
 -- \echo 'transitions'
 -- select * from _FSM2_.transitions;
 -- \echo '_batches_events_and_next_states'
