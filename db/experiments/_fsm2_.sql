@@ -253,7 +253,6 @@ insert into _FSM2_.acts values
 insert into _FSM2_.transitions
   ( tail,                 act,                precmd,       point,          postcmd           ) values
   ( '*',                  'reset',            'CLR',        'last',         'NOP'             ),
-  ( 's1',                  'reset',            'CLR',        'last',         'NOP'             ),
   ( 'last',               'clear',            'CLR',        'first',        'NOP'             ),
   ( 'first',              'start',            'NUL *',      's1',           'NOP'             ),
   ( 's1',                 'identifier',       'NOP',        's2',           'LOD T'           ),
@@ -265,8 +264,6 @@ insert into _FSM2_.transitions
   ( 's5',                 'stop',             'NOP',        'last',         'NOP'             ),
   ( 's4',                 'stop',             'NOP',        'last',         'NOP'             );
 
-select tail, act, _FSM2_._star_count_ok( tail, act ) from _FSM2_.transitions;
-\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.registers ( regkey, name ) values
