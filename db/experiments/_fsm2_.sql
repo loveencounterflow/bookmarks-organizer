@@ -101,7 +101,7 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
   begin
     if _FSM2_._act_is_starred( new.act ) then
       perform log( '77981', 'act', new.act, 'is a star' );
-      -- end if;
+      ¶tail := '*';
     -- .....................................................................................................
     else
       /* ### TAINT consider to use lag() instead */
@@ -169,44 +169,59 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
     ¶base       text;
     ¶regkey_1   text;
     ¶regkey_2   text;
-    ¶count      integer := 0;
+    ¶count      integer :=  0;
+    ¶next_cmd   text    :=  null;
+  -- .......................................................................................................
   begin
-    if ¶cmd is null then return; end if;
-    /* ### TAINT should check whether there are extraneous arguments with NOP */
-    if ¶cmd = 'NOP' then return; end if;
-    ¶cmd    :=  trim( both from ¶cmd );
-    ¶parts  :=  regexp_split_to_array( ¶cmd, '\s+' );
-    ¶base   :=  ¶parts[ 1 ];
     -- .....................................................................................................
-    <<on_count_null>> begin case ¶base
+    loop
       -- ...................................................................................................
-      when 'NUL' then
-        ¶regkey_1 :=  ¶parts[ 2 ];
-        if ¶regkey_1 = '*' then
-          update _FSM2_.registers set data = null;
-        else
+      if ¶next_cmd is not null then
+        ¶cmd      :=  ¶next_cmd;
+        ¶next_cmd :=  null;
+      elsif ¶cmd is null then
+        return;
+        end if;
+      -- ...................................................................................................
+      /* ### TAINT should check whether there are extraneous arguments with NOP */
+      if ¶cmd = 'NOP' then return; end if;
+      ¶cmd    :=  trim( both from ¶cmd );
+      ¶parts  :=  regexp_split_to_array( ¶cmd, '\s+' );
+      ¶base   :=  ¶parts[ 1 ];
+      -- ...................................................................................................
+      <<on_count_null>> begin case ¶base
+        -- .................................................................................................
+        when 'CLR' then
+          truncate table _FSM2_.journal;
+          ¶next_cmd := 'NUL *';
+        -- .................................................................................................
+        when 'NUL' then
+          ¶regkey_1 := ¶parts[ 2 ];
+          if ¶regkey_1 = '*' then
+            update _FSM2_.registers set data = null;
+          else
+            update _FSM2_.registers set data = null where regkey = ¶regkey_1 returning 1 into ¶count;
+            end if;
+        -- .................................................................................................
+        when 'LOD' then
+          ¶regkey_1 :=  ¶parts[ 2 ];
+          update _FSM2_.registers set data = ¶data where regkey = ¶regkey_1 returning 1 into ¶count;
+        -- .................................................................................................
+        when 'MOV' then
+          ¶regkey_1 :=  ¶parts[ 2 ];
+          ¶regkey_2 :=  ¶parts[ 3 ];
+          update _FSM2_.registers
+            set data = r1.data from ( select data from _FSM2_.registers where regkey = ¶regkey_1 ) as r1
+            where regkey = ¶regkey_2 returning 1 into ¶count;
+          exit on_count_null when ¶count is null;
           update _FSM2_.registers set data = null where regkey = ¶regkey_1 returning 1 into ¶count;
-          end if;
+        -- .................................................................................................
+        else raise exception 'unknown command %', ¶cmd;
+        end case; end;
       -- ...................................................................................................
-      when 'LOD' then
-        ¶regkey_1 :=  ¶parts[ 2 ];
-        update _FSM2_.registers set data = ¶data where regkey = ¶regkey_1 returning 1 into ¶count;
-      -- ...................................................................................................
-      when 'MOV' then
-        ¶regkey_1 :=  ¶parts[ 2 ];
-        ¶regkey_2 :=  ¶parts[ 3 ];
-        update _FSM2_.registers
-          set data = r1.data from ( select data from _FSM2_.registers where regkey = ¶regkey_1 ) as r1
-          where regkey = ¶regkey_2 returning 1 into ¶count;
-        exit on_count_null when ¶count is null;
-        update _FSM2_.registers set data = null where regkey = ¶regkey_1 returning 1 into ¶count;
-      -- ...................................................................................................
-      end case; end;
-    -- .....................................................................................................
-    if ¶count is null then
-      raise exception 'invalid regkey in %', ¶cmd;
-      end if;
-    -- .....................................................................................................
+      if ¶count is null then raise exception 'invalid regkey in %', ¶cmd; end if;
+      exit when ¶next_cmd is null;
+      end loop;
     end; $$;
 
 
