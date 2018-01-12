@@ -75,21 +75,10 @@ create function _FSM2_.proceed( ¶tail text, ¶act text ) returns _FSM2_.transit
 
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_._journal_excerpt_as_tabular( ¶bid integer ) returns text
-  immutable strict language plpgsql as $$
-  declare
-    excerpt json;
-  begin
-    /* thx to https://stackoverflow.com/a/39456483/7568091 */
-    select into excerpt
-           '[["aid","bid","tail","act","point","data","registers"]]'::jsonb ||  -- !!!!
-        jsonb_agg( info ) from (
-          select jsonb_build_array(
-            aid, bid, tail, act, point, data, registers                         -- !!!!
-            ) as info from ( select
-            aid, bid, tail, act, point, data, registers                         -- !!!!
-            from _FSM2_.journal where bid = ¶bid order by aid ) as x1 ) as x2;
-    return U.tabulate( excerpt );
-    end; $$;
+  immutable strict language sql as $outer$
+    select U.tabulate_query(
+      format( $$ select * from _FSM2_.journal where bid = %L order by aid; $$, ¶bid ) );
+    $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT should probably use `lock for update` */
@@ -279,7 +268,7 @@ insert into _FSM2_.receiver values ( 3, 'identifier',  'author'    );
 insert into _FSM2_.receiver values ( 3, 'equals',      '='     );
 insert into _FSM2_.receiver values ( 3, 'identifier',  'Faulkner'    );
 insert into _FSM2_.receiver values ( 3, 'dcolon',      '::'   );
--- insert into _FSM2_.receiver values ( 3, 'equals',      '='     );
+insert into _FSM2_.receiver values ( 3, 'equals',      '='     );
 insert into _FSM2_.receiver values ( 3, 'identifier',  'name'   );
 insert into _FSM2_.receiver values ( 3, 'stop',       null   );
 
