@@ -288,6 +288,14 @@ _table_formats = {"simple":
                               headerrow=DataRow("|", "|", "|"),
                               datarow=DataRow("|", "|", "|"),
                               padding=1, with_header_hide=None),
+                  # "psqlu":
+                  # TableFormat(lineabove=Line("╒", "═", "╤", "╕"),
+                  #             linebelowheader=Line("╞", "═", "╪", "╡"),
+                  #             linebetweenrows=Line("├", "─", "┼", "┤"),
+                  #             linebelow=Line("╘", "═", "╧", "╛"),
+                  #             headerrow=DataRow("│", "│", "│"),
+                  #             datarow=DataRow("│", "│", "│"),
+                  #             padding=1, with_header_hide=None),
                   "rst":
                   TableFormat(lineabove=Line("", "=", "  ", ""),
                               linebelowheader=Line("", "=", "  ", ""),

@@ -1,4 +1,5 @@
 
+
 /* thx to http://felixge.de/2017/07/27/implementing-state-machines-in-postgresql.html */
 
 
@@ -25,11 +26,6 @@ create table _FSM2_.states (
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.acts (
   act text unique not null primary key );
-
--- -- ---------------------------------------------------------------------------------------------------------
--- create table _FSM2_.recipes (
---   rcpkey        text unique not null primary key,
---   recipe        text );
 
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.transitions (
@@ -207,33 +203,43 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.states values
-   ( '(start)'    ),
+   ( '*'          ),
+   ( 'first'      ),
    ( 's1'         ),
    ( 's2'         ),
    ( 's3'         ),
    ( 's4'         ),
    ( 's5'         ),
-   ( 'complete'   );
+   ( 'last'       );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.acts values
+  ( 'clear'           ),
   ( 'start'           ),
   ( 'identifier'      ),
   ( 'equals'          ),
   ( 'dcolon'          ),
+  ( 'reset'           ),
   ( 'stop'            );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.transitions
   ( tail,                 act,                precmd,       point,          postcmd           ) values
-  ( '(start)',            'start',            'NUL *',      's1',           'NOP'             ),
+  ( '*',                  'reset',            'CLR',        'last',         'NOP'             ),
+  ( 's1',                  'reset',            'CLR',        'last',         'NOP'             ),
+  ( 'last',               'clear',            'CLR',        'first',        'NOP'             ),
+  ( 'first',              'start',            'NUL *',      's1',           'NOP'             ),
   ( 's1',                 'identifier',       'NOP',        's2',           'LOD T'           ),
   ( 's2',                 'equals',           'NOP',        's3',           'NOP'             ),
   ( 's3',                 'identifier',       'NOP',        's4',           'LOD V'           ),
   ( 's4',                 'dcolon',           'NOP',        's5',           'NOP'             ),
   ( 's5',                 'identifier',       'NOP',        's5',           'LOD Y'           ),
-  ( 's5',                 'stop',             'NOP',        'complete',     'NOP'             ),
-  ( 's4',                 'stop',             'NOP',        'complete',     'NOP'             );
+  ( 's1',                 'stop',             'NOP',        'last',         'NOP'             ),
+  ( 's5',                 'stop',             'NOP',        'last',         'NOP'             ),
+  ( 's4',                 'stop',             'NOP',        'last',         'NOP'             );
+
+select tail, act, _FSM2_._star_count_ok( tail, act ) from _FSM2_.transitions;
+\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into _FSM2_.registers ( regkey, name ) values
@@ -245,38 +251,50 @@ insert into _FSM2_.registers ( regkey, name ) values
 
 /* ###################################################################################################### */
 
+-- select array_agg( tail ) as "start" from _FSM2_.transitions where act = 'start';
+-- select array_agg( tail ) as "stop"  from _FSM2_.transitions where act = 'stop';
+-- select array_agg( tail ) as "reset" from _FSM2_.transitions where act = 'reset';
+-- select array_agg( tail ) as "clear" from _FSM2_.transitions where act = 'clear';
+-- select exists ( select 1 from _FSM2_.transitions where act = 'reset' and tail = '*' );
+-- select exists ( select 1 from _FSM2_.transitions where act = 'clear' and tail = '*' );
+
+-- \quit
+
 -- ---------------------------------------------------------------------------------------------------------
 -- truncate _FSM2_.journal;
-insert into _FSM2_.receiver values ( 'start',      null    );
-insert into _FSM2_.receiver values ( 'identifier',  'color' );
-insert into _FSM2_.receiver values ( 'equals',      '='     );
--- insert into _FSM2_.receiver values ( 'equals',      '='     );
-insert into _FSM2_.receiver values ( 'identifier',  'red'   );
-insert into _FSM2_.receiver values ( 'stop',       null   );
+insert into _FSM2_.receiver values ( 'reset'                      );
+insert into _FSM2_.receiver values ( 'start'                      );
+insert into _FSM2_.receiver values ( 'identifier',  'color'       );
+insert into _FSM2_.receiver values ( 'equals',      '='           );
+-- insert into _FSM2_.receiver values ( 'equals',      '='          );
+-- insert into _FSM2_.receiver values ( 'start',      null           );
+insert into _FSM2_.receiver values ( 'identifier',  'red'         );
+insert into _FSM2_.receiver values ( 'stop'                       );
 
-insert into _FSM2_.receiver values ( 'start',      null    );
-insert into _FSM2_.receiver values ( 'identifier',  'foo'    );
-insert into _FSM2_.receiver values ( 'equals',      '::'   );
--- insert into _FSM2_.receiver values ( 'equals',      '='     );
-insert into _FSM2_.receiver values ( 'identifier',  'q'   );
-insert into _FSM2_.receiver values ( 'stop',       null   );
+insert into _FSM2_.receiver values ( 'start'                      );
+-- insert into _FSM2_.receiver values ( 'stop'                      );
+insert into _FSM2_.receiver values ( 'identifier',  'foo'         );
+insert into _FSM2_.receiver values ( 'equals',      '::'          );
+-- insert into _FSM2_.receiver values ( 'equals',      '='          );
+insert into _FSM2_.receiver values ( 'identifier',  'q'           );
+insert into _FSM2_.receiver values ( 'stop'                       );
 
-insert into _FSM2_.receiver values ( 'start',      null    );
-insert into _FSM2_.receiver values ( 'identifier',  'author'    );
-insert into _FSM2_.receiver values ( 'equals',      '='     );
+insert into _FSM2_.receiver values ( 'start'                      );
+insert into _FSM2_.receiver values ( 'identifier',  'author'      );
+insert into _FSM2_.receiver values ( 'equals',      '='           );
 insert into _FSM2_.receiver values ( 'identifier',  'Faulkner'    );
 
-insert into _FSM2_.receiver values ( 'dcolon',      '::'   );
-insert into _FSM2_.receiver values ( 'identifier',  'name'   );
-insert into _FSM2_.receiver values ( 'stop',       null   );
--- insert into _FSM2_.receiver values ( 'equals',      '='     );
+insert into _FSM2_.receiver values ( 'dcolon',      '::'          );
+insert into _FSM2_.receiver values ( 'identifier',  'name'        );
+insert into _FSM2_.receiver values ( 'stop'                       );
+-- insert into _FSM2_.receiver values ( 'equals',      '='          );
 
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo 'journal'
 select * from _FSM2_.journal;
 \echo 'journal (completed)'
-select * from _FSM2_.journal where point = 'complete';
+select * from _FSM2_.journal where point = 'last';
 -- \echo 'transitions'
 -- select * from _FSM2_.transitions;
 -- \echo '_batches_events_and_next_states'
@@ -331,5 +349,5 @@ create function _FSM2_.proceed( ¶tail text, ¶act text ) returns text stable la
 create aggregate _FSM2_.proceed_agg( text ) (
   sfunc     = _FSM2_.proceed,
   stype     = text,
-  initcond  = '(start)' );
+  initcond  = 'first' );
 
