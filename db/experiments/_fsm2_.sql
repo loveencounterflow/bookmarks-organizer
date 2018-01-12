@@ -43,7 +43,6 @@ create table _FSM2_.transitions (
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.journal (
   aid           serial    primary key,
-  bid           integer   not null,
   tail          text                    references _FSM2_.states    ( state   ),
   act           text      not null      references _FSM2_.acts      ( act     ),
   point         text                    references _FSM2_.states    ( state   ),
@@ -52,10 +51,10 @@ create table _FSM2_.journal (
 
 -- ---------------------------------------------------------------------------------------------------------
 create view _FSM2_.receiver as ( select
-    bid,
     act,
     data
-  from _FSM2_.journal );
+  from _FSM2_.journal
+  order by aid );
 
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.registers (
@@ -74,10 +73,9 @@ create function _FSM2_.proceed( ¶tail text, ¶act text ) returns _FSM2_.transit
   select * from _FSM2_.transitions where ( tail = ¶tail ) and ( act = ¶act ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_._journal_excerpt_as_tabular( ¶bid integer ) returns text
+create function _FSM2_._journal_as_tabular() returns text
   immutable strict language sql as $outer$
-    select U.tabulate_query(
-      format( $$ select * from _FSM2_.journal where bid = %L order by aid; $$, ¶bid ) );
+    select U.tabulate_query( $$ select * from _FSM2_.journal order by aid; $$ );
     $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -92,14 +90,14 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
   begin
     -- .....................................................................................................
     if new.act = 'start' then
-      if exists ( select 1 from _FSM2_.journal where bid = new.bid ) then
-        raise exception 'batch with BatchID % already exists', new.bid;
-        end if;
+      -- if exists ( select 1 from _FSM2_.journal where bid = new.bid ) then
+      --   raise exception 'batch with BatchID % already exists', new.bid;
+      --   end if;
       ¶tail := '(start)';
     -- .....................................................................................................
     else
       /* ### TAINT consider to use lag() instead */
-      select into ¶tail point from _FSM2_.journal where bid = new.bid order by aid desc limit 1;
+      select into ¶tail point from _FSM2_.journal order by aid desc limit 1;
       end if;
     -- .....................................................................................................
     /* Obtain transition from tail and act: */
@@ -108,7 +106,7 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     /* Error out in case no matching transition was found: */
     if ¶transition is null then
       perform log( '19088', 'Journal excerpt up to problematic act:' );
-      perform log( _FSM2_._journal_excerpt_as_tabular( new.bid ) );
+      perform log( _FSM2_._journal_as_tabular() );
       raise exception
         'invalid act: ( state %, act % ) -> null for entry (%)',
           ¶tail, new.act, row_to_json( new );
@@ -119,8 +117,8 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     perform _FSM2_.smal( ¶transition.precmd, new.data );
     -- .....................................................................................................
     /* Insert new line into journal and update register copy: */
-    insert into _FSM2_.journal ( bid, tail, act, point, data ) values
-      ( new.bid, ¶tail, new.act, ¶transition.point, new.data )
+    insert into _FSM2_.journal ( tail, act, point, data ) values
+      ( ¶tail, new.act, ¶transition.point, new.data )
       returning aid into ¶aid;
     -- .....................................................................................................
     /* Perform associated SMAL post-update commands: */
@@ -249,28 +247,29 @@ insert into _FSM2_.registers ( regkey, name ) values
 
 -- ---------------------------------------------------------------------------------------------------------
 -- truncate _FSM2_.journal;
-insert into _FSM2_.receiver values ( 1, 'start',      null    );
-insert into _FSM2_.receiver values ( 1, 'identifier',  'color' );
-insert into _FSM2_.receiver values ( 1, 'equals',      '='     );
--- insert into _FSM2_.receiver values ( 1, 'equals',      '='     );
-insert into _FSM2_.receiver values ( 1, 'identifier',  'red'   );
-insert into _FSM2_.receiver values ( 1, 'stop',       null   );
+insert into _FSM2_.receiver values ( 'start',      null    );
+insert into _FSM2_.receiver values ( 'identifier',  'color' );
+insert into _FSM2_.receiver values ( 'equals',      '='     );
+-- insert into _FSM2_.receiver values ( 'equals',      '='     );
+insert into _FSM2_.receiver values ( 'identifier',  'red'   );
+insert into _FSM2_.receiver values ( 'stop',       null   );
 
-insert into _FSM2_.receiver values ( 2, 'start',      null    );
-insert into _FSM2_.receiver values ( 2, 'identifier',  'foo'    );
-insert into _FSM2_.receiver values ( 2, 'equals',      '::'   );
--- insert into _FSM2_.receiver values ( 2, 'equals',      '='     );
-insert into _FSM2_.receiver values ( 2, 'identifier',  'q'   );
-insert into _FSM2_.receiver values ( 2, 'stop',       null   );
+insert into _FSM2_.receiver values ( 'start',      null    );
+insert into _FSM2_.receiver values ( 'identifier',  'foo'    );
+insert into _FSM2_.receiver values ( 'equals',      '::'   );
+-- insert into _FSM2_.receiver values ( 'equals',      '='     );
+insert into _FSM2_.receiver values ( 'identifier',  'q'   );
+insert into _FSM2_.receiver values ( 'stop',       null   );
 
-insert into _FSM2_.receiver values ( 3, 'start',      null    );
-insert into _FSM2_.receiver values ( 3, 'identifier',  'author'    );
-insert into _FSM2_.receiver values ( 3, 'equals',      '='     );
-insert into _FSM2_.receiver values ( 3, 'identifier',  'Faulkner'    );
-insert into _FSM2_.receiver values ( 3, 'dcolon',      '::'   );
-insert into _FSM2_.receiver values ( 3, 'equals',      '='     );
-insert into _FSM2_.receiver values ( 3, 'identifier',  'name'   );
-insert into _FSM2_.receiver values ( 3, 'stop',       null   );
+insert into _FSM2_.receiver values ( 'start',      null    );
+insert into _FSM2_.receiver values ( 'identifier',  'author'    );
+insert into _FSM2_.receiver values ( 'equals',      '='     );
+insert into _FSM2_.receiver values ( 'identifier',  'Faulkner'    );
+
+insert into _FSM2_.receiver values ( 'dcolon',      '::'   );
+insert into _FSM2_.receiver values ( 'identifier',  'name'   );
+insert into _FSM2_.receiver values ( 'stop',       null   );
+-- insert into _FSM2_.receiver values ( 'equals',      '='     );
 
 
 -- ---------------------------------------------------------------------------------------------------------
