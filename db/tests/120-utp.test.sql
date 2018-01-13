@@ -68,6 +68,8 @@ insert into T.probes_and_matchers values
   ( 'UTP.lex_tags', '''tag with spaces'''                                       , '{"tag with spaces"}'                                                                 ),
   ( 'UTP.lex_tags', 'tag foo ''bar baz'''                                       , '{tag," ",foo," ","bar baz"}'                                                         ),
   ( 'UTP.lex_tags', 'tag foo "bar baz"'                                         , '{tag," ",foo," ","bar baz"}'                                                         ),
+  ( 'UTP.lex_tags', 'IT/programming/language=SQL::name'                         , '{IT,/,programming,/,language,=,SQL,::,name}'                                                         ),
+  ( 'UTP.lex_tags', 'IT/programming/language'                                   , '{IT,/,programming,/,language}'                                                         ),
   ( 'UTP.lex_tags', 'tag ''foo "bar baz" gnu'''                                 , E'{tag," ","foo \\"bar baz\\" gnu"}'                                                  );
 
 -- ---------------------------------------------------------------------------------------------------------

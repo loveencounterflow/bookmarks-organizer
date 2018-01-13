@@ -77,6 +77,7 @@ create table _FSM2_.registers (
   name    text unique not null,
   data    text default null );
 
+-- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_._on_before_insert_into_registers() returns trigger volatile language plpgsql as $outer$
   declare
     ¶q  text;
@@ -151,6 +152,7 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     /* Perform associated SMAL post-update commands: */
     perform _FSM2_.smal( ¶transition.postcmd, new.data );
     -- .....................................................................................................
+    /* Reflect state of registers table into `journal ( registers )`: */
     update _FSM2_.journal set registers = _FSM2_.registers_as_json() where aid = ¶aid;
     -- .....................................................................................................
     return null; end; $$;
@@ -316,6 +318,7 @@ insert into _FSM2_.acts values
   ( 'CLEAR'           ),
   ( 'START'           ),
   ( 'identifier'      ),
+  ( 'slash'           ),
   ( 'equals'          ),
   ( 'dcolon'          ),
   ( 'RESET'           ),
@@ -329,6 +332,9 @@ insert into _FSM2_.transitions
   ( 'FIRST',              'START',            'NUL *',      's1',           'NOP'             ),
   ( 's1',                 'identifier',       'NOP',        's2',           'LOD T'           ),
   ( 's2',                 'equals',           'NOP',        's3',           'NOP'             ),
+
+  ( 's2',                 'slash',            'MOV T C',      's1',           'NOP'             ),
+
   ( 's3',                 'identifier',       'NOP',        's4',           'LOD V'           ),
   ( 's4',                 'dcolon',           'NOP',        's5',           'NOP'             ),
   ( 's5',                 'identifier',       'NOP',        's5',           'LOD Y'           ),
@@ -383,9 +389,10 @@ insert into _FSM2_.receiver values ( 'equals',      '::'          );
 insert into _FSM2_.receiver values ( 'identifier',  'q'           );
 insert into _FSM2_.receiver values ( 'STOP'                       );
 select * from _FSM2_.journal;
+select * from _FSM2_.registers order by regkey;
 
 /* author=Faulkner::name */
--- insert into _FSM2_.receiver values ( 'CLEAR'                      );
+insert into _FSM2_.receiver values ( 'CLEAR'                      );
 insert into _FSM2_.receiver values ( 'START'                      );
 insert into _FSM2_.receiver values ( 'identifier',  'author'      );
 insert into _FSM2_.receiver values ( 'equals',      '='           );
@@ -395,11 +402,25 @@ insert into _FSM2_.receiver values ( 'identifier',  'name'        );
 insert into _FSM2_.receiver values ( 'STOP'                       );
 -- insert into _FSM2_.receiver values ( 'equals',      '='          );
 select * from _FSM2_.journal;
+select * from _FSM2_.registers order by regkey;
 
 
 /* IT/programming/language=SQL::name */
-insert into _FSM2_.receiver values ( 'CLEAR'                      );
-insert into _FSM2_.receiver values ( 'START'                      );
+/* '{IT,/,programming,/,language,=,SQL,::,name}' */
+insert into _FSM2_.receiver values ( 'CLEAR'                        );
+insert into _FSM2_.receiver values ( 'START'                        );
+insert into _FSM2_.receiver values ( 'identifier',  'IT'            );
+insert into _FSM2_.receiver values ( 'slash',       '/'             );
+insert into _FSM2_.receiver values ( 'identifier',  'programming'   );
+insert into _FSM2_.receiver values ( 'slash',       '/'             );
+insert into _FSM2_.receiver values ( 'identifier',  'language'      );
+insert into _FSM2_.receiver values ( 'equals',      '='             );
+insert into _FSM2_.receiver values ( 'identifier',  'SQL'           );
+insert into _FSM2_.receiver values ( 'dcolon',      '::'            );
+insert into _FSM2_.receiver values ( 'identifier',  'name'          );
+insert into _FSM2_.receiver values ( 'STOP'                         );
+select * from _FSM2_.journal;
+select * from _FSM2_.registers order by regkey;
 
 \quit
 
