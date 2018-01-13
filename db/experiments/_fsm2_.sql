@@ -373,6 +373,7 @@ select * from _FSM2_.journal;
 -- \quit
 
 
+/* foo::q */
 insert into _FSM2_.receiver values ( 'RESET'                      );
 insert into _FSM2_.receiver values ( 'START'                      );
 -- insert into _FSM2_.receiver values ( 'STOP'                      );
@@ -383,7 +384,8 @@ insert into _FSM2_.receiver values ( 'identifier',  'q'           );
 insert into _FSM2_.receiver values ( 'STOP'                       );
 select * from _FSM2_.journal;
 
-insert into _FSM2_.receiver values ( 'CLEAR'                      );
+/* author=Faulkner::name */
+-- insert into _FSM2_.receiver values ( 'CLEAR'                      );
 insert into _FSM2_.receiver values ( 'START'                      );
 insert into _FSM2_.receiver values ( 'identifier',  'author'      );
 insert into _FSM2_.receiver values ( 'equals',      '='           );
@@ -393,6 +395,11 @@ insert into _FSM2_.receiver values ( 'identifier',  'name'        );
 insert into _FSM2_.receiver values ( 'STOP'                       );
 -- insert into _FSM2_.receiver values ( 'equals',      '='          );
 select * from _FSM2_.journal;
+
+
+/* IT/programming/language=SQL::name */
+insert into _FSM2_.receiver values ( 'CLEAR'                      );
+insert into _FSM2_.receiver values ( 'START'                      );
 
 \quit
 
