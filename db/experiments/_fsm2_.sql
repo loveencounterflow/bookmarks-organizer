@@ -73,6 +73,20 @@ create table _FSM2_.registers (
   name    text unique not null,
   data    text default null );
 
+create function _FSM2_._on_before_insert_into_registers() returns trigger volatile language plpgsql as $outer$
+  declare
+    ¶q  text;
+  begin
+    perform log( '44090', new::text );
+    execute format( $$ alter table _FSM2_.journal
+      add column %I text; $$, new.regkey );
+    return new;
+    end; $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create trigger on_before_insert_into_registers before insert on _FSM2_.registers
+for each row execute procedure _FSM2_._on_before_insert_into_registers();
+
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.registers_as_json() returns json stable language sql as $$
   with  keys    as ( select array_agg( regkey order by regkey ) as x from _FSM2_.registers ),
@@ -113,7 +127,7 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     -- .....................................................................................................
     /* Error out in case no matching transition was found: */
     if ¶transition is null then
-      perform log( '19088', 'Journal excerpt up to problematic act:' );
+      perform log( '19088', 'Journal up to problematic act:' );
       perform log( _FSM2_._journal_as_tabular() );
       raise exception
         'invalid act: ( state %, act % ) -> null for entry (%)',
@@ -128,6 +142,7 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     insert into _FSM2_.journal ( tail, act, point, data ) values
       ( ¶tail, new.act, ¶transition.point, new.data )
       returning aid into ¶aid;
+    perform _FSM2_._smal_cpy();
     -- .....................................................................................................
     /* Perform associated SMAL post-update commands: */
     perform _FSM2_.smal( ¶transition.postcmd, new.data );
@@ -163,7 +178,58 @@ NUL Y     # set register Y to NULL
 */
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile language plpgsql as $$
+create function _FSM2_._smal_get_current_aid() returns integer stable language sql as $$
+  select max( aid ) from _FSM2_.journal; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+/* ### TAINT functions that use registers should be compiled once before first use */
+/* ### TAINT inefficient; could be single statement instead of loop */
+create function _FSM2_._smal_cpy() returns void volatile language plpgsql as $outer$
+  declare
+    ¶aid  integer := _FSM2_._smal_get_current_aid();
+    ¶row  record;
+  -- .......................................................................................................
+  begin
+    if ( select count(*) from _FSM2_.journal limit 2 ) < 2 then return; end if;
+    for ¶row in ( select * from _FSM2_.registers ) loop
+      execute format( $$
+          with prv_row as ( select %I from _FSM2_.journal where aid = $1 - 1 )
+          update _FSM2_.journal
+          set %I = prv_row.%I
+          from prv_row
+          where aid = $2;
+        $$, ¶row.regkey, ¶row.regkey, ¶row.regkey )
+        using ¶aid, ¶aid;
+      end loop;
+    end; $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+/* ### TAINT functions that use registers should be compiled once before first use */
+create function _FSM2_._smal_lod( ¶regkey text, ¶data text ) returns void volatile language plpgsql as $outer$
+  declare
+    ¶aid  integer := _FSM2_._smal_get_current_aid();
+    ¶row  record;
+  -- .......................................................................................................
+  begin
+    -- .....................................................................................................
+    /* set ¶data to all registers when key is star: */
+    if ¶regkey = '*' then
+      for ¶row in ( select * from _FSM2_.registers ) loop
+        execute format(
+          $$ update _FSM2_.journal set %I = null where aid = $1; $$, ¶row.regkey )
+          using ¶aid;
+        end loop;
+    -- .....................................................................................................
+    else
+      execute format(
+        $$ update _FSM2_.journal set %I = $1 where aid = $2; $$, ¶regkey )
+        using ¶data, ¶aid;
+      end if;
+    -- .....................................................................................................
+    end; $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile language plpgsql as $outer$
   declare
     ¶parts      text[];
     ¶base       text;
@@ -199,6 +265,7 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
           ¶regkey_1 := ¶parts[ 2 ];
           if ¶regkey_1 = '*' then
             update _FSM2_.registers set data = null;
+            perform _FSM2_._smal_lod( '*', null );
           else
             update _FSM2_.registers set data = null where regkey = ¶regkey_1 returning 1 into ¶count;
             end if;
@@ -206,6 +273,7 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
         when 'LOD' then
           ¶regkey_1 :=  ¶parts[ 2 ];
           update _FSM2_.registers set data = ¶data where regkey = ¶regkey_1 returning 1 into ¶count;
+          perform _FSM2_._smal_lod( ¶regkey_1, ¶data );
         -- .................................................................................................
         when 'MOV' then
           ¶regkey_1 :=  ¶parts[ 2 ];
@@ -222,7 +290,7 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
       if ¶count is null then raise exception 'invalid regkey in %', ¶cmd; end if;
       exit when ¶next_cmd is null;
       end loop;
-    end; $$;
+    end; $outer$;
 
 
 
@@ -294,8 +362,9 @@ insert into _FSM2_.receiver values ( 'equals',      '='           );
 -- insert into _FSM2_.receiver values ( 'START',      null           );
 insert into _FSM2_.receiver values ( 'identifier',  'red'         );
 insert into _FSM2_.receiver values ( 'STOP'                       );
-select registers from _FSM2_.journal where point = 'LAST';
-insert into _FSM2_.receiver values ( 'CLEAR'                      );
+select * from _FSM2_.journal;
+-- select registers from _FSM2_.journal where point = 'LAST';
+-- insert into _FSM2_.receiver values ( 'CLEAR'                      );
 
 -- \quit
 
@@ -308,23 +377,27 @@ insert into _FSM2_.receiver values ( 'equals',      '::'          );
 -- insert into _FSM2_.receiver values ( 'equals',      '='          );
 insert into _FSM2_.receiver values ( 'identifier',  'q'           );
 insert into _FSM2_.receiver values ( 'STOP'                       );
+select * from _FSM2_.journal;
 
--- insert into _FSM2_.receiver values ( 'START'                      );
--- insert into _FSM2_.receiver values ( 'identifier',  'author'      );
--- insert into _FSM2_.receiver values ( 'equals',      '='           );
--- insert into _FSM2_.receiver values ( 'identifier',  'Faulkner'    );
+insert into _FSM2_.receiver values ( 'CLEAR'                      );
+insert into _FSM2_.receiver values ( 'START'                      );
+insert into _FSM2_.receiver values ( 'identifier',  'author'      );
+insert into _FSM2_.receiver values ( 'equals',      '='           );
+insert into _FSM2_.receiver values ( 'identifier',  'Faulkner'    );
+insert into _FSM2_.receiver values ( 'dcolon',      '::'          );
+insert into _FSM2_.receiver values ( 'identifier',  'name'        );
+insert into _FSM2_.receiver values ( 'STOP'                       );
+-- insert into _FSM2_.receiver values ( 'equals',      '='          );
+select * from _FSM2_.journal;
 
--- insert into _FSM2_.receiver values ( 'dcolon',      '::'          );
--- insert into _FSM2_.receiver values ( 'identifier',  'name'        );
--- insert into _FSM2_.receiver values ( 'STOP'                       );
--- -- insert into _FSM2_.receiver values ( 'equals',      '='          );
-
+\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo 'journal'
 select * from _FSM2_.journal;
 \echo 'journal (completed)'
 select * from _FSM2_.journal where point = 'LAST';
+-- select * from _FSM2_.receiver;
 -- \echo 'transitions'
 -- select * from _FSM2_.transitions;
 -- \echo '_batches_events_and_next_states'
