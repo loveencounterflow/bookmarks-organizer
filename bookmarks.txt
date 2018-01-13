@@ -265,4 +265,9 @@
   title:  Text To ASCII Art Generator (TAAG)
   tags:   ascii-art figlet::name
 
+* url:    https://wikidiff.com/passive/reactive
+  title:  What's the difference?
+  about:  Enter *any* two terms and see their definitions side by side.
+  tags:   language antonyms synonyms thesaurus lexicon
+
 

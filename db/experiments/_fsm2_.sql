@@ -1,5 +1,8 @@
 
 
+
+
+
 /* thx to http://felixge.de/2017/07/27/implementing-state-machines-in-postgresql.html */
 
 
@@ -18,6 +21,7 @@
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists _FSM2_ cascade;
 create schema _FSM2_;
+
 
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.states (
@@ -434,6 +438,37 @@ foo::q                              |  ∎                foo         ∎       
 
 \quit
 
+
+
+create table _FSM2_.journal (
+  aid serial primary key,
+  foo text
+  );
+create table _FSM2_.registers (
+  aid integer references _FSM2_.journal ( aid ),
+  facets jsonb
+  );
+
+insert into _FSM2_.journal ( foo ) values ( 42 ), ( 'helo' ), ( array[ 1, '2' ] );
+insert into _FSM2_.registers values ( 1, '{"a":1,"b":2}' );
+insert into _FSM2_.registers values ( 2, '{"a":42,"b":12}' );
+select * from _FSM2_.journal;
+select * from _FSM2_.registers;
+
+select from _FSM2_.journal;
+
+-- select aid, ( select * from jsonb_each( facets ) ) as v1 from _FSM2_.registers;
+-- select
+--     j.aid,
+--     j.foo,
+
+--   from _FSM2_.journal as j
+--   left join _FSM2_.registers as r using ( aid );
+
+\quit
+
+
+/* aggregate function */
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT probably better to use domains or other means to ensure integrity */
