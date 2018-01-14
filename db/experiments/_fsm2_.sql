@@ -57,13 +57,13 @@ alter table _FSM2_.transitions
   check ( _FSM2_._star_count_ok( tail, act ) );
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _FSM2_.journal (
+create table _FSM2_._raw_journal (
   aid           serial    primary key,
   tail          text                    references _FSM2_.states    ( state   ),
   act           text      not null      references _FSM2_.acts      ( act     ),
   point         text                    references _FSM2_.states    ( state   ),
   data          jsonb,
-  registers     json );
+  registers     jsonb );
 
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.registers (
@@ -74,17 +74,11 @@ create table _FSM2_.registers (
 
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.registers_as_jsonb() returns jsonb stable language sql as $$
-  select jsonb_agg( jsonb_build_array( r.regkey, r.data ) order by id ) from _FSM2_.registers as r; $$;
-
-/* Same, but as object:
-  with  keys    as ( select array_agg( regkey order by regkey ) as x from _FSM2_.registers ),
-        values  as ( select array_agg( data   order by regkey ) as x from _FSM2_.registers )
-    select jsonb_object( keys.x, values.x ) from keys, values; $$;
-*/
+  select jsonb_agg( r.data order by id ) from _FSM2_.registers as r; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.get_current_aid() returns integer stable language sql as $$
-  select max( aid ) from _FSM2_.journal; $$;
+  select max( aid ) from _FSM2_._raw_journal; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.proceed( ¶tail text, ¶act text ) returns _FSM2_.transitions stable language sql as $$
@@ -93,7 +87,7 @@ create function _FSM2_.proceed( ¶tail text, ¶act text ) returns _FSM2_.transit
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_._journal_as_tabular() returns text
   immutable strict language sql as $outer$
-    select U.tabulate_query( $$ select * from _FSM2_.journal order by aid; $$ );
+    select U.tabulate_query( $$ select * from _FSM2_._raw_journal order by aid; $$ );
     $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -112,13 +106,13 @@ create function _FSM2_.xxxxxxx( ¶act text, ¶data jsonb ) returns void volatile
       if ¶transition is null then ...
     */
     if _FSM2_._act_is_starred( ¶act ) then
-      /* Starred acts always succeed, even on an empty journal where there is no previous act and, thus, no
+      /* Starred acts always succeed, even on an empty _raw_journal where there is no previous act and, thus, no
       tail; when can therefore always set the tail to '*'. */
       ¶tail := '*';
     -- .....................................................................................................
     else
       /* ### TAINT consider to use lag() instead */
-      select into ¶tail point from _FSM2_.journal order by aid desc limit 1;
+      select into ¶tail point from _FSM2_._raw_journal order by aid desc limit 1;
       end if;
     -- .....................................................................................................
     /* Obtain transition from tail and act: */
@@ -137,8 +131,8 @@ create function _FSM2_.xxxxxxx( ¶act text, ¶data jsonb ) returns void volatile
     -- X := json_agg( t )::text from ( select ¶transition ) as t; perform log( '00902', 'transition', X );
     perform _FSM2_.smal( ¶transition.precmd, ¶data );
     -- .....................................................................................................
-    /* Insert new line into journal and update register copy: */
-    insert into _FSM2_.journal ( tail, act, point, data ) values
+    /* Insert new line into _raw_journal and update register copy: */
+    insert into _FSM2_._raw_journal ( tail, act, point, data ) values
       ( ¶tail, ¶act, ¶transition.point, ¶data )
       returning aid into ¶aid;
     -- perform _FSM2_._smal_cpy();
@@ -146,8 +140,8 @@ create function _FSM2_.xxxxxxx( ¶act text, ¶data jsonb ) returns void volatile
     /* Perform associated SMAL post-update commands: */
     perform _FSM2_.smal( ¶transition.postcmd, ¶data );
     -- .....................................................................................................
-    /* Reflect state of registers table into `journal ( registers )`: */
-    update _FSM2_.journal set registers = _FSM2_.registers_as_jsonb() where aid = ¶aid;
+    /* Reflect state of registers table into `_raw_journal ( registers )`: */
+    update _FSM2_._raw_journal set registers = _FSM2_.registers_as_jsonb() where aid = ¶aid;
     -- .....................................................................................................
     end; $$;
 
@@ -194,11 +188,11 @@ create function _FSM2_._smal_cpy() returns void volatile language plpgsql as $ou
     ¶row  record;
   -- .......................................................................................................
   begin
-    if ( select count(*) from _FSM2_.journal limit 2 ) < 2 then return; end if;
+    if ( select count(*) from _FSM2_._raw_journal limit 2 ) < 2 then return; end if;
     for ¶row in ( select * from _FSM2_.registers ) loop
       execute format( $$
-          with prv_row as ( select %I from _FSM2_.journal where aid = $1 - 1 )
-          update _FSM2_.journal
+          with prv_row as ( select %I from _FSM2_._raw_journal where aid = $1 - 1 )
+          update _FSM2_._raw_journal
           set %I = prv_row.%I
           from prv_row
           where aid = $2;
@@ -250,7 +244,7 @@ create function _FSM2_.smal( ¶cmd text, ¶data jsonb ) returns void volatile la
       <<on_count_null>> begin case ¶base
         -- .................................................................................................
         when 'CLR' then
-          truncate table _FSM2_.journal;
+          truncate table _FSM2_._raw_journal;
           ¶next_cmd := 'NUL *';
         -- .................................................................................................
         when 'NUL' then
@@ -346,6 +340,7 @@ insert into _FSM2_.registers ( regkey, name ) values
 -- \quit
 
 
+
 -- ---------------------------------------------------------------------------------------------------------
 /* color=red */
 do $$ begin
@@ -358,9 +353,40 @@ do $$ begin
   perform _FSM2_.xxxxxxx( 'identifier',  'red'         );
   perform _FSM2_.xxxxxxx( 'STOP'                       );
   end; $$;
--- select registers from _FSM2_.journal where point = 'LAST';
+-- select registers from _FSM2_._raw_journal where point = 'LAST';
 -- perform _FSM2_.xxxxxxx( 'CLEAR'                      );
+select * from _FSM2_._raw_journal;
+
+create table _FSM2_.regtype (
+  "C" jsonb,
+  "T" jsonb,
+  "V" jsonb,
+  "Y" jsonb );
+
+do $$ begin perform log( U.tabulate_query( 'select registers from _fsm2_._raw_journal' ) ); end; $$;
+create view _FSM2_.journal as ( select
+    j1.aid      as aid1,
+    j1.tail     as tail,
+    j1.act      as act,
+    j1.point    as point,
+    j1.data     as data,
+    j2."C"      as "C",
+    j2."T"      as "T",
+    j2."V"      as "V",
+    j2."Y"      as "Y"
+  from _FSM2_._raw_journal as j1
+  left join ( select
+    aid,
+    registers->>0 as "C",
+    registers->>1 as "T",
+    registers->>2 as "V",
+    registers->>3 as "Y"
+  from _FSM2_._raw_journal ) as j2 using ( aid )
+  )
+  ;
 select * from _FSM2_.journal;
+\quit
+
 
 /* foo::q */
 do $$ begin
