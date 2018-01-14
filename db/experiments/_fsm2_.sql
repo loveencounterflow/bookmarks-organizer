@@ -24,17 +24,6 @@
 drop schema if exists _FSM2_ cascade;
 create schema _FSM2_;
 
--- create table _FSM2_.d( x jsonb );
--- insert into _FSM2_.d values
---   ( to_jsonb( 'color'::text ) ),
---   ( to_jsonb( 42 ) ),
---   ( to_jsonb( array[ 'foo', 'bar' ] ) );
--- select * from _FSM2_.d;
-
--- \quit
-
-
-
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.states (
   state text unique not null primary key );
@@ -73,15 +62,8 @@ create table _FSM2_.journal (
   tail          text                    references _FSM2_.states    ( state   ),
   act           text      not null      references _FSM2_.acts      ( act     ),
   point         text                    references _FSM2_.states    ( state   ),
-  data          text,
+  data          jsonb,
   registers     json );
-
--- ---------------------------------------------------------------------------------------------------------
-create view _FSM2_.receiver as ( select
-    act,
-    data
-  from _FSM2_.journal
-  order by aid );
 
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.registers (
@@ -92,7 +74,7 @@ create table _FSM2_.registers (
 
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.registers_as_jsonb() returns jsonb stable language sql as $$
-  select jsonb_agg( jsonb_build_array( r.regkey, r.data ) ) from _FSM2_.registers as r; $$;
+  select jsonb_agg( jsonb_build_array( r.regkey, r.data ) order by id ) from _FSM2_.registers as r; $$;
 
 /* Same, but as object:
   with  keys    as ( select array_agg( regkey order by regkey ) as x from _FSM2_.registers ),
@@ -100,6 +82,9 @@ create function _FSM2_.registers_as_jsonb() returns jsonb stable language sql as
     select jsonb_object( keys.x, values.x ) from keys, values; $$;
 */
 
+-- ---------------------------------------------------------------------------------------------------------
+create function _FSM2_.get_current_aid() returns integer stable language sql as $$
+  select max( aid ) from _FSM2_.journal; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.proceed( ¶tail text, ¶act text ) returns _FSM2_.transitions stable language sql as $$
@@ -113,7 +98,7 @@ create function _FSM2_._journal_as_tabular() returns text
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT should probably use `lock for update` */
-create function _FSM2_.instead_of_insert_into_receiver() returns trigger language plpgsql as $$
+create function _FSM2_.xxxxxxx( ¶act text, ¶data jsonb ) returns void volatile language plpgsql as $$
   declare
     ¶new_state  text;
     ¶tail       text;
@@ -123,10 +108,10 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
   -- .......................................................................................................
   begin
     /* ### TAINT rewrite this as
-      ¶transition :=  _FSM2_.proceed( '*', new.act );
+      ¶transition :=  _FSM2_.proceed( '*', ¶act );
       if ¶transition is null then ...
     */
-    if _FSM2_._act_is_starred( new.act ) then
+    if _FSM2_._act_is_starred( ¶act ) then
       /* Starred acts always succeed, even on an empty journal where there is no previous act and, thus, no
       tail; when can therefore always set the tail to '*'. */
       ¶tail := '*';
@@ -137,7 +122,7 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
       end if;
     -- .....................................................................................................
     /* Obtain transition from tail and act: */
-    ¶transition :=  _FSM2_.proceed( ¶tail, new.act );
+    ¶transition :=  _FSM2_.proceed( ¶tail, ¶act );
     -- .....................................................................................................
     /* Error out in case no matching transition was found: */
     if ¶transition is null then
@@ -145,30 +130,39 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
       perform log( _FSM2_._journal_as_tabular() );
       raise exception
         'invalid act: ( state %, act % ) -> null for entry (%)',
-          ¶tail, new.act, row_to_json( new );
+          ¶tail, ¶act, row_to_json( new );
       end if;
     -- .....................................................................................................
     /* Perform associated SMAL pre-update commands: */
     -- X := json_agg( t )::text from ( select ¶transition ) as t; perform log( '00902', 'transition', X );
-    perform _FSM2_.smal( ¶transition.precmd, new.data );
+    perform _FSM2_.smal( ¶transition.precmd, ¶data );
     -- .....................................................................................................
     /* Insert new line into journal and update register copy: */
     insert into _FSM2_.journal ( tail, act, point, data ) values
-      ( ¶tail, new.act, ¶transition.point, new.data )
+      ( ¶tail, ¶act, ¶transition.point, ¶data )
       returning aid into ¶aid;
     -- perform _FSM2_._smal_cpy();
     -- .....................................................................................................
     /* Perform associated SMAL post-update commands: */
-    perform _FSM2_.smal( ¶transition.postcmd, new.data );
+    perform _FSM2_.smal( ¶transition.postcmd, ¶data );
     -- .....................................................................................................
     /* Reflect state of registers table into `journal ( registers )`: */
     update _FSM2_.journal set registers = _FSM2_.registers_as_jsonb() where aid = ¶aid;
     -- .....................................................................................................
-    return null; end; $$;
+    end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create trigger instead_of_insert_into_receiver instead of insert on _FSM2_.receiver
-for each row execute procedure _FSM2_.instead_of_insert_into_receiver();
+create function _FSM2_.xxxxxxx( ¶act text, ¶data text ) returns void volatile language sql as $$
+  select _FSM2_.xxxxxxx( ¶act, jb( ¶data ) ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function _FSM2_.xxxxxxx( ¶act text, ¶data anyelement ) returns void volatile language sql as $$
+  select _FSM2_.xxxxxxx( ¶act, jb( ¶data ) ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function _FSM2_.xxxxxxx( ¶act text ) returns void volatile language sql as $$
+  select _FSM2_.xxxxxxx( ¶act, jb( null ) ); $$;
+
 
 
 /*
@@ -191,16 +185,12 @@ NUL Y     # set register Y to NULL
 */
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_._smal_get_current_aid() returns integer stable language sql as $$
-  select max( aid ) from _FSM2_.journal; $$;
-
--- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT functions that use registers should be compiled once before first use */
 /* ### TAINT inefficient; could be single statement instead of loop */
 /*
 create function _FSM2_._smal_cpy() returns void volatile language plpgsql as $outer$
   declare
-    ¶aid  integer := _FSM2_._smal_get_current_aid();
+    ¶aid  integer := _FSM2_.get_current_aid();
     ¶row  record;
   -- .......................................................................................................
   begin
@@ -219,41 +209,26 @@ create function _FSM2_._smal_cpy() returns void volatile language plpgsql as $ou
 */
 
 -- ---------------------------------------------------------------------------------------------------------
-/* ### TAINT functions that use registers should be compiled once before first use */
-/*
-create function _FSM2_._smal_lod( ¶regkey text, ¶data text ) returns void volatile language plpgsql as $outer$
+create function _FSM2_._smal_lod( ¶cmd_parts text[], ¶data jsonb ) returns text volatile language plpgsql as $$
   declare
-    ¶aid  integer := _FSM2_._smal_get_current_aid();
-    ¶row  record;
-  -- .......................................................................................................
+    ¶count        integer :=  0;
+    ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
   begin
-    -- .....................................................................................................
-    / * set ¶data to all registers when key is star: * /
-    if ¶regkey = '*' then
-      for ¶row in ( select * from _FSM2_.registers ) loop
-        execute format(
-          $$ update _FSM2_.journal set %I = null where aid = $1; $$, ¶row.regkey )
-          using ¶aid;
-        end loop;
-    -- .....................................................................................................
-    else
-      execute format(
-        $$ update _FSM2_.journal set %I = $1 where aid = $2; $$, ¶regkey )
-        using ¶data, ¶aid;
-      end if;
-    -- .....................................................................................................
-    end; $outer$;
-*/
+    -- ¶regkey_1 := ¶cmd_parts[ 2 ];
+    update _FSM2_.registers
+      set data = to_jsonb( ¶data )
+      where regkey = ¶regkey_1 returning 1 into ¶count;
+    return null; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile language plpgsql as $outer$
+create function _FSM2_.smal( ¶cmd text, ¶data jsonb ) returns void volatile language plpgsql as $outer$
   declare
-    ¶parts      text[];
-    ¶base       text;
-    ¶regkey_1   text;
-    ¶regkey_2   text;
-    ¶count      integer :=  0;
-    ¶next_cmd   text    :=  null;
+    ¶cmd_parts    text[];
+    ¶base         text;
+    ¶regkey_1     text;
+    ¶regkey_2     text;
+    ¶count        integer :=  0;
+    ¶next_cmd     text    :=  null;
   -- .......................................................................................................
   begin
     -- .....................................................................................................
@@ -268,9 +243,9 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
       -- ...................................................................................................
       /* ### TAINT should check whether there are extraneous arguments with NOP */
       if ¶cmd = 'NOP' then return; end if;
-      ¶cmd    :=  trim( both from ¶cmd );
-      ¶parts  :=  regexp_split_to_array( ¶cmd, '\s+' );
-      ¶base   :=  ¶parts[ 1 ];
+      ¶cmd        :=  trim( both from ¶cmd );
+      ¶cmd_parts  :=  regexp_split_to_array( ¶cmd, '\s+' );
+      ¶base       :=  ¶cmd_parts[ 1 ];
       -- ...................................................................................................
       <<on_count_null>> begin case ¶base
         -- .................................................................................................
@@ -279,7 +254,7 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
           ¶next_cmd := 'NUL *';
         -- .................................................................................................
         when 'NUL' then
-          ¶regkey_1 := ¶parts[ 2 ];
+          ¶regkey_1 := ¶cmd_parts[ 2 ];
           if ¶regkey_1 = '*' then
             update _FSM2_.registers set data = null;
             -- perform _FSM2_._smal_lod( '*', null );
@@ -287,15 +262,11 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
             update _FSM2_.registers set data = null where regkey = ¶regkey_1 returning 1 into ¶count;
             end if;
         -- .................................................................................................
-        when 'LOD' then
-          ¶regkey_1 :=  ¶parts[ 2 ];
-          update _FSM2_.registers set data = to_jsonb( ¶data )
-            where regkey = ¶regkey_1 returning 1 into ¶count;
-          -- perform _FSM2_._smal_lod( ¶regkey_1, ¶data );
+        when 'LOD' then ¶next_cmd := _FSM2_._smal_lod( ¶cmd_parts, ¶data );
         -- .................................................................................................
         when 'MOV' then
-          ¶regkey_1 :=  ¶parts[ 2 ];
-          ¶regkey_2 :=  ¶parts[ 3 ];
+          ¶regkey_1 :=  ¶cmd_parts[ 2 ];
+          ¶regkey_2 :=  ¶cmd_parts[ 3 ];
           update _FSM2_.registers
             set data = r1.data from ( select data from _FSM2_.registers where regkey = ¶regkey_1 ) as r1
             where regkey = ¶regkey_2 returning 1 into ¶count;
@@ -374,63 +345,68 @@ insert into _FSM2_.registers ( regkey, name ) values
 
 -- \quit
 
+
 -- ---------------------------------------------------------------------------------------------------------
--- truncate _FSM2_.journal;
-insert into _FSM2_.receiver values ( 'RESET'                      );
-insert into _FSM2_.receiver values ( 'START'                      );
-insert into _FSM2_.receiver values ( 'identifier',  'color'       );
-insert into _FSM2_.receiver values ( 'equals',      '='           );
--- insert into _FSM2_.receiver values ( 'equals',      '='          );
--- insert into _FSM2_.receiver values ( 'START',      null           );
-insert into _FSM2_.receiver values ( 'identifier',  'red'         );
-insert into _FSM2_.receiver values ( 'STOP'                       );
-select * from _FSM2_.journal;
+/* color=red */
+do $$ begin
+  perform _FSM2_.xxxxxxx( 'RESET'                      );
+  perform _FSM2_.xxxxxxx( 'START'                      );
+  perform _FSM2_.xxxxxxx( 'identifier',  'color'       );
+  perform _FSM2_.xxxxxxx( 'equals',      '='           );
+  -- perform _FSM2_.xxxxxxx( 'equals',      '='          );
+  -- perform _FSM2_.xxxxxxx( 'START',      null           );
+  perform _FSM2_.xxxxxxx( 'identifier',  'red'         );
+  perform _FSM2_.xxxxxxx( 'STOP'                       );
+  end; $$;
 -- select registers from _FSM2_.journal where point = 'LAST';
--- insert into _FSM2_.receiver values ( 'CLEAR'                      );
-
--- \quit
-
+-- perform _FSM2_.xxxxxxx( 'CLEAR'                      );
+select * from _FSM2_.journal;
 
 /* foo::q */
-insert into _FSM2_.receiver values ( 'RESET'                      );
-insert into _FSM2_.receiver values ( 'START'                      );
--- insert into _FSM2_.receiver values ( 'STOP'                      );
-insert into _FSM2_.receiver values ( 'identifier',  'foo'         );
-insert into _FSM2_.receiver values ( 'equals',      '::'          );
--- insert into _FSM2_.receiver values ( 'equals',      '='          );
-insert into _FSM2_.receiver values ( 'identifier',  'q'           );
-insert into _FSM2_.receiver values ( 'STOP'                       );
+do $$ begin
+  perform _FSM2_.xxxxxxx( 'RESET'                      );
+  perform _FSM2_.xxxxxxx( 'START'                      );
+  -- perform _FSM2_.xxxxxxx( 'STOP'                      );
+  perform _FSM2_.xxxxxxx( 'identifier',  'foo'         );
+  perform _FSM2_.xxxxxxx( 'equals',      '::'          );
+  -- perform _FSM2_.xxxxxxx( 'equals',      '='          );
+  perform _FSM2_.xxxxxxx( 'identifier',  'q'           );
+  perform _FSM2_.xxxxxxx( 'STOP'                       );
+  end; $$;
 select * from _FSM2_.journal;
 select * from _FSM2_.registers order by regkey;
 
 /* author=Faulkner::name */
-insert into _FSM2_.receiver values ( 'CLEAR'                      );
-insert into _FSM2_.receiver values ( 'START'                      );
-insert into _FSM2_.receiver values ( 'identifier',  'author'      );
-insert into _FSM2_.receiver values ( 'equals',      '='           );
-insert into _FSM2_.receiver values ( 'identifier',  'Faulkner'    );
-insert into _FSM2_.receiver values ( 'dcolon',      '::'          );
-insert into _FSM2_.receiver values ( 'identifier',  'name'        );
-insert into _FSM2_.receiver values ( 'STOP'                       );
--- insert into _FSM2_.receiver values ( 'equals',      '='          );
+do $$ begin
+  perform _FSM2_.xxxxxxx( 'CLEAR'                      );
+  perform _FSM2_.xxxxxxx( 'START'                      );
+  perform _FSM2_.xxxxxxx( 'identifier',  'author'      );
+  perform _FSM2_.xxxxxxx( 'equals',      '='           );
+  perform _FSM2_.xxxxxxx( 'identifier',  'Faulkner'    );
+  perform _FSM2_.xxxxxxx( 'dcolon',      '::'          );
+  perform _FSM2_.xxxxxxx( 'identifier',  'name'        );
+  perform _FSM2_.xxxxxxx( 'STOP'                       );
+  -- perform _FSM2_.xxxxxxx( 'equals',      '='          );
+  end; $$;
 select * from _FSM2_.journal;
 select * from _FSM2_.registers order by regkey;
 
-
 /* IT/programming/language=SQL::name */
 /* '{IT,/,programming,/,language,=,SQL,::,name}' */
-insert into _FSM2_.receiver values ( 'CLEAR'                        );
-insert into _FSM2_.receiver values ( 'START'                        );
-insert into _FSM2_.receiver values ( 'identifier',  'IT'            );
-insert into _FSM2_.receiver values ( 'slash',       '/'             );
-insert into _FSM2_.receiver values ( 'identifier',  'programming'   );
-insert into _FSM2_.receiver values ( 'slash',       '/'             );
-insert into _FSM2_.receiver values ( 'identifier',  'language'      );
-insert into _FSM2_.receiver values ( 'equals',      '='             );
-insert into _FSM2_.receiver values ( 'identifier',  'SQL'           );
-insert into _FSM2_.receiver values ( 'dcolon',      '::'            );
-insert into _FSM2_.receiver values ( 'identifier',  'name'          );
-insert into _FSM2_.receiver values ( 'STOP'                         );
+do $$ begin
+  perform _FSM2_.xxxxxxx( 'CLEAR'                        );
+  perform _FSM2_.xxxxxxx( 'START'                        );
+  perform _FSM2_.xxxxxxx( 'identifier',  'IT'            );
+  perform _FSM2_.xxxxxxx( 'slash',       '/'             );
+  perform _FSM2_.xxxxxxx( 'identifier',  'programming'   );
+  perform _FSM2_.xxxxxxx( 'slash',       '/'             );
+  perform _FSM2_.xxxxxxx( 'identifier',  'language'      );
+  perform _FSM2_.xxxxxxx( 'equals',      '='             );
+  perform _FSM2_.xxxxxxx( 'identifier',  'SQL'           );
+  perform _FSM2_.xxxxxxx( 'dcolon',      '::'            );
+  perform _FSM2_.xxxxxxx( 'identifier',  'name'          );
+  perform _FSM2_.xxxxxxx( 'STOP'                         );
+  end; $$;
 select * from _FSM2_.journal;
 select * from _FSM2_.registers order by regkey;
 
