@@ -74,9 +74,15 @@ create view _FSM2_.receiver as ( select
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.registers (
   regkey  text unique not null primary key check ( regkey::U.chr = regkey ),
-  name    text unique not null,
-  data    text default null );
+  name    text unique not null );
 
+-- ---------------------------------------------------------------------------------------------------------
+create table _FSM2_.regstates (
+  aid     integer unique not null references _FSM2_.journal ( aid ),
+  regkey  text    unique not null references _FSM2_.registers ( regkey ),
+  data    text    default null );
+
+/*
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_._on_before_insert_into_registers() returns trigger volatile language plpgsql as $outer$
   declare
@@ -91,6 +97,7 @@ create function _FSM2_._on_before_insert_into_registers() returns trigger volati
 -- ---------------------------------------------------------------------------------------------------------
 create trigger on_before_insert_into_registers before insert on _FSM2_.registers
 for each row execute procedure _FSM2_._on_before_insert_into_registers();
+*/
 
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.registers_as_json() returns json stable language sql as $$
@@ -117,9 +124,15 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     ¶aid        integer;
     ¶transition _FSM2_.transitions%rowtype;
     -- X text;
+  -- .......................................................................................................
   begin
+    /* ### TAINT rewrite this as
+      ¶transition :=  _FSM2_.proceed( '*', new.act );
+      if ¶transition is null then ...
+    */
     if _FSM2_._act_is_starred( new.act ) then
-      perform log( '77981', 'act', new.act, 'is a star' );
+      /* Starred acts always succeed, even on an empty journal where there is no previous act and, thus, no
+      tail; when can therefore always set the tail to '*'. */
       ¶tail := '*';
     -- .....................................................................................................
     else
@@ -157,8 +170,6 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     -- .....................................................................................................
     return null; end; $$;
 
-    -- perform log( '00902', 'tail', ¶tail );
-
 -- ---------------------------------------------------------------------------------------------------------
 create trigger instead_of_insert_into_receiver instead of insert on _FSM2_.receiver
 for each row execute procedure _FSM2_.instead_of_insert_into_receiver();
@@ -190,6 +201,7 @@ create function _FSM2_._smal_get_current_aid() returns integer stable language s
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT functions that use registers should be compiled once before first use */
 /* ### TAINT inefficient; could be single statement instead of loop */
+/*
 create function _FSM2_._smal_cpy() returns void volatile language plpgsql as $outer$
   declare
     ¶aid  integer := _FSM2_._smal_get_current_aid();
@@ -208,9 +220,11 @@ create function _FSM2_._smal_cpy() returns void volatile language plpgsql as $ou
         using ¶aid, ¶aid;
       end loop;
     end; $outer$;
+*/
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT functions that use registers should be compiled once before first use */
+/*
 create function _FSM2_._smal_lod( ¶regkey text, ¶data text ) returns void volatile language plpgsql as $outer$
   declare
     ¶aid  integer := _FSM2_._smal_get_current_aid();
@@ -218,7 +232,7 @@ create function _FSM2_._smal_lod( ¶regkey text, ¶data text ) returns void vola
   -- .......................................................................................................
   begin
     -- .....................................................................................................
-    /* set ¶data to all registers when key is star: */
+    / * set ¶data to all registers when key is star: * /
     if ¶regkey = '*' then
       for ¶row in ( select * from _FSM2_.registers ) loop
         execute format(
@@ -233,6 +247,7 @@ create function _FSM2_._smal_lod( ¶regkey text, ¶data text ) returns void vola
       end if;
     -- .....................................................................................................
     end; $outer$;
+*/
 
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile language plpgsql as $outer$
@@ -271,7 +286,7 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
           ¶regkey_1 := ¶parts[ 2 ];
           if ¶regkey_1 = '*' then
             update _FSM2_.registers set data = null;
-            perform _FSM2_._smal_lod( '*', null );
+            -- perform _FSM2_._smal_lod( '*', null );
           else
             update _FSM2_.registers set data = null where regkey = ¶regkey_1 returning 1 into ¶count;
             end if;
@@ -279,7 +294,7 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
         when 'LOD' then
           ¶regkey_1 :=  ¶parts[ 2 ];
           update _FSM2_.registers set data = ¶data where regkey = ¶regkey_1 returning 1 into ¶count;
-          perform _FSM2_._smal_lod( ¶regkey_1, ¶data );
+          -- perform _FSM2_._smal_lod( ¶regkey_1, ¶data );
         -- .................................................................................................
         when 'MOV' then
           ¶regkey_1 :=  ¶parts[ 2 ];
