@@ -92,8 +92,14 @@ create table FA.registers (
   data    jsonb );
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FA.registers_as_jsonb() returns jsonb stable language sql as $$
+create function FA.registers_as_jsonb_list() returns jsonb stable language sql as $$
   select jsonb_agg( r.data order by id ) from FA.registers as r; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA.registers_as_jsonb_object() returns jsonb stable language sql as $$
+  with  keys    as ( select array_agg( name order by id ) as k from FA.registers ),
+        values  as ( select array_agg( data order by id ) as v from FA.registers )
+  select jsonb_object( keys.k, values.v::text[] ) from keys, values; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FA.get_current_aid() returns integer stable language sql as $$
@@ -201,7 +207,7 @@ create function FA.push( ¶act text, ¶data jsonb ) returns void volatile langua
     perform FA.smal( ¶transition.postcmd, ¶data, ¶transition );
     -- .....................................................................................................
     /* Reflect state of registers table into `raw_journal ( registers )`: */
-    update FA.raw_journal set registers = FA.registers_as_jsonb() where aid = ¶aid;
+    update FA.raw_journal set registers = FA.registers_as_jsonb_list() where aid = ¶aid;
     -- .....................................................................................................
     end; $$;
 
@@ -416,6 +422,7 @@ insert into FA.transitions
   ( tail,                 act,                precmd,       point,          postcmd           ) values
   ( '*',                  'RESET',            'CLR',        'FIRST',        'NOP'             ),
   ( 'LAST',               'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
+  ( 'FIRST',              'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
   ( 'FIRST',              'START',            'NUL *',      's1',           'NOP'             ),
   ( 's1',                 'identifier',       'LOD T',      's2',           'NOP'             ),
   ( 's2',                 'equals',           'NOP',        's3',           'NOP'             ),
@@ -438,6 +445,7 @@ insert into FA.registers ( id, regkey, name ) values
 
 -- ---------------------------------------------------------------------------------------------------------
 do $$ begin perform FA.create_journal(); end; $$;
+do $$ begin perform FA.push( 'RESET' ); end; $$;
 
 
 /* ###################################################################################################### */
@@ -449,7 +457,37 @@ do $$ begin perform FA.create_journal(); end; $$;
 -- select exists ( select 1 from FA.transitions where act = 'RESET' and tail = '*' );
 -- select exists ( select 1 from FA.transitions where act = 'CLEAR' and tail = '*' );
 
--- \quit
+
+create function FA.feed_pairs( ¶acts_and_data text[] ) returns jsonb volatile strict language plpgsql as $$
+  declare
+    R jsonb;
+  begin
+    perform FA.push( 'CLEAR'  );
+    perform FA.push( 'START'  );
+    perform FA.push( pair[ 1 ], pair[ 2 ] ) from U.unnest_2d_1d( ¶acts_and_data ) as pair;
+    perform FA.push( 'STOP'   );
+    R := FA.registers_as_jsonb_object();
+    return R;
+    end; $$;
+
+
+select FA.feed_pairs( array[
+    array[ 'identifier',  'foo'  ],
+    array[ 'equals',      '::'   ],
+    array[ 'identifier',  'q'    ]
+    ] );
+
+
+\quit
+
+select FA.feed_pairs( array[
+    array[ 'identifier',  'foo'  ],
+    array[ 'equals',      '::'   ],
+    array[ 'identifier',  'q'    ]
+    ] );
+select * from FA.journal;
+
+\quit
 
 
 
