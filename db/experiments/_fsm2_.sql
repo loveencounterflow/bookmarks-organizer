@@ -30,39 +30,6 @@
 drop schema if exists FA cascade;
 create schema FA;
 
-
--- create type FA.d as ( a int, b text );
-
--- create function FA.f() returns FA.d immutable language plpgsql as $$
---   declare
---     x FA.d;
---   begin
---     x.a := 100;
---     x.b := 'helo';
---     x := ( 108, 'yes' );
---     x := 'yes';
---     return x;
---     end; $$;
-
--- do $$
---   declare
---     x FA.d;
---     a integer;
---     b text;
---   begin
---     x.a := 42;
---     x.b := 42;
---     perform log( x::text );
---     ( a, b ) := FA.f();
---     x := FA.f();
---     b := x.b;
---     perform log( x::text );
---     perform log( b );
---     end; $$;
-
--- -- \quit
-
-
 -- ---------------------------------------------------------------------------------------------------------
 create table FA.states (
   state text unique not null primary key );
