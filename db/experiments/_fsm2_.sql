@@ -76,6 +76,8 @@ create table FA.raw_journal (
   tail          text                    references FA.states    ( state   ),
   act           text      not null      references FA.acts      ( act     ),
   point         text                    references FA.states    ( state   ),
+  precmd        text,
+  postcmd       text,
   data          jsonb,
   registers     jsonb );
 
@@ -84,7 +86,7 @@ create view FA.raw_result as ( select * from FA.raw_journal where point = 'LAST'
 
 -- ---------------------------------------------------------------------------------------------------------
 create table FA.registers (
-  id      serial,
+  id      integer check ( id::U.positive_integer = id ),
   regkey  text unique not null primary key check ( regkey::U.chr = regkey ),
   name    text unique not null,
   data    jsonb );
@@ -114,6 +116,8 @@ create function FA._get_create_journal_statement() returns text volatile languag
           j1.tail     as tail,
           j1.act      as act,
           j1.point    as point,
+          j1.precmd   as precmd,
+          j1.postcmd  as postcmd,
           j1.data     as data,
           ';
     select array_agg( format( 'j2.%I', regkey ) order by id ) from FA.registers into ¶names;
@@ -122,7 +126,7 @@ create function FA._get_create_journal_statement() returns text volatile languag
       left join ( select
         aid,
         ';
-    select array_agg( format( 'registers->>%s as %I', id, regkey ) order by id ) from FA.registers into ¶names;
+    select array_agg( format( 'registers->>%s as %I', id - 1, regkey ) order by id ) from FA.registers into ¶names;
     R := R || array_to_string( ¶names, ', ' );
     R := R || E'\n        from FA.raw_journal ) as j2 using ( aid ) );';
     return R;
@@ -184,8 +188,8 @@ create function FA.step( ¶act text, ¶data jsonb ) returns void volatile langua
     perform FA.smal( ¶transition.precmd, ¶data, ¶transition );
     -- .....................................................................................................
     /* Insert new line into raw_journal and update register copy: */
-    insert into FA.raw_journal ( tail, act, point, data ) values
-      ( ¶tail, ¶act, ¶transition.point, ¶data )
+    insert into FA.raw_journal ( tail, act, point, precmd, postcmd, data ) values
+      ( ¶tail, ¶act, ¶transition.point, ¶transition.precmd, ¶transition.postcmd, ¶data )
       returning aid into ¶aid;
     -- perform FA._smal_cpy();
     -- .....................................................................................................
@@ -243,6 +247,7 @@ create function FA._smal_clr( ¶cmd_parts text[], ¶data jsonb )
   begin
     R := ( 0, null );
     truncate table FA.raw_journal;
+    R.next_cmd := 'NUL *';
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -250,16 +255,18 @@ create function FA._smal_nul( ¶cmd_parts text[], ¶data jsonb )
   returns FA._smal_cmd_output volatile language plpgsql as $$
   declare
     R             FA._smal_cmd_output;
-    ¶regkey_1     text                :=  ¶cmd_parts[ 2 ];
+    ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
   begin
     R         := ( 0, null );
     ¶regkey_1 := ¶cmd_parts[ 2 ];
+    -- .....................................................................................................
     if ¶regkey_1 = '*' then
       update FA.registers set data = null;
-      -- perform FA._smal_lod( '*', null );
+    -- .....................................................................................................
     else
       update FA.registers set data = null where regkey = ¶regkey_1 returning 1 into R.count;
       end if;
+    -- .....................................................................................................
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -267,7 +274,7 @@ create function FA._smal_lod( ¶cmd_parts text[], ¶data jsonb )
   returns FA._smal_cmd_output volatile language plpgsql as $$
   declare
     R             FA._smal_cmd_output;
-    ¶regkey_1     text                :=  ¶cmd_parts[ 2 ];
+    ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
   begin
     R := ( 0, null );
     update FA.registers
@@ -280,8 +287,8 @@ create function FA._smal_mov( ¶cmd_parts text[], ¶data jsonb )
   returns FA._smal_cmd_output volatile language plpgsql as $$
   declare
     R             FA._smal_cmd_output;
-    ¶regkey_1     text                :=  ¶cmd_parts[ 2 ];
-    ¶regkey_2     text                :=  ¶cmd_parts[ 3 ];
+    ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
+    ¶regkey_2     text    :=  ¶cmd_parts[ 3 ];
   begin
     R := ( 0, null );
     update FA.registers
@@ -289,6 +296,48 @@ create function FA._smal_mov( ¶cmd_parts text[], ¶data jsonb )
       where regkey = ¶regkey_2 returning 1 into R.count;
     if R.count is null then return R; end if;
     update FA.registers set data = null where regkey = ¶regkey_1 returning 1 into R.count;
+    return R; end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA._smal_get( ¶regkey text ) returns jsonb stable language sql as $$
+  select data from FA.registers where regkey = ¶regkey; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA._smal_set( ¶regkey text, ¶data jsonb ) returns void volatile language sql as $$
+  update FA.registers set data = ¶data where regkey = ¶regkey; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA._smal_psh( ¶cmd_parts text[], ¶data jsonb )
+  returns FA._smal_cmd_output volatile language plpgsql as $$
+  declare
+    R             FA._smal_cmd_output;
+    ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
+    ¶regkey_2     text    :=  ¶cmd_parts[ 3 ];
+    ¶target_key   text    :=  null;
+    ¶target       jsonb;
+    ¶target_type  text;
+  begin
+    R := ( 0, null );
+    if ¶regkey_2 is null then
+      ¶target_key :=  ¶regkey_1;
+    else
+      ¶target_key :=  ¶regkey_2;
+      ¶data       :=  FA._smal_get( ¶regkey_1 );
+      R.next_cmd  := format( 'NUL %s', ¶regkey_1 );
+      end if;
+    ¶target := FA._smal_get( ¶target_key );
+    perform log( '¶target_key',  ¶target_key::text );
+    perform log( '¶target 1', ¶target::text );
+    perform log( '¶target 2', ( jsonb_typeof( ¶target ) is null )::text );
+    perform log( '¶target 3', ( jsonb_typeof( ¶target ) = 'null' )::text );
+    ¶target_type :=  jsonb_typeof( ¶target );
+    if ( ¶target_type is null ) or ( ¶target_type = 'null' ) then
+      ¶target = '[]'::jsonb;
+    elsif ( ¶target_type != 'array' ) then
+      ¶target = jsonb_build_array( ¶target );
+      end if;
+    ¶target := ¶target || ¶data;
+    perform FA._smal_set( ¶target_key, ¶target );
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -324,6 +373,7 @@ create function FA.smal( ¶cmd text, ¶data jsonb, ¶transition FA._transition )
         when 'NUL' then S := FA._smal_nul( ¶cmd_parts, ¶data );
         when 'LOD' then S := FA._smal_lod( ¶cmd_parts, ¶data );
         when 'MOV' then S := FA._smal_mov( ¶cmd_parts, ¶data );
+        when 'PSH' then S := FA._smal_psh( ¶cmd_parts, ¶data );
         else
           perform log();
           perform log( 'FA #19002', 'Journal up to problematic act:' );     perform log();
@@ -381,11 +431,12 @@ insert into FA.transitions
 
 
 -- ---------------------------------------------------------------------------------------------------------
-insert into FA.registers ( regkey, name ) values
-  ( 'C', 'context'   ),
-  ( 'T', 'tag'       ),
-  ( 'V', 'value'     ),
-  ( 'Y', 'type'      );
+insert into FA.registers ( id, regkey, name ) values
+  ( 1, 'C', 'context'   ),
+  ( 2, 'T', 'tag'       ),
+  ( 3, 'V', 'value'     ),
+  ( 4, 'Y', 'type'      );
+
 
 -- ---------------------------------------------------------------------------------------------------------
 do $$ begin perform FA.create_journal(); end; $$;
@@ -457,12 +508,12 @@ do $$ begin
   perform FA.step( 'slash',       '/'             );
   perform FA.step( 'identifier',  'programming'   );
   perform FA.step( 'slash',       '/'             );
-  perform FA.step( 'identifier',  'language'      );
-  perform FA.step( 'equals',      '='             );
-  perform FA.step( 'identifier',  'SQL'           );
-  perform FA.step( 'dcolon',      '::'            );
-  perform FA.step( 'identifier',  'name'          );
-  perform FA.step( 'STOP'                         );
+  -- perform FA.step( 'identifier',  'language'      );
+  -- perform FA.step( 'equals',      '='             );
+  -- perform FA.step( 'identifier',  'SQL'           );
+  -- perform FA.step( 'dcolon',      '::'            );
+  -- perform FA.step( 'identifier',  'name'          );
+  -- perform FA.step( 'STOP'                         );
   end; $$;
 select * from FA.journal;
 select * from FA.result;
