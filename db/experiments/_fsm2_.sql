@@ -3,6 +3,8 @@
 
 
 
+
+
 /* thx to http://felixge.de/2017/07/27/implementing-state-machines-in-postgresql.html */
 
 
@@ -21,6 +23,16 @@
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists _FSM2_ cascade;
 create schema _FSM2_;
+
+-- create table _FSM2_.d( x jsonb );
+-- insert into _FSM2_.d values
+--   ( to_jsonb( 'color'::text ) ),
+--   ( to_jsonb( 42 ) ),
+--   ( to_jsonb( array[ 'foo', 'bar' ] ) );
+-- select * from _FSM2_.d;
+
+-- \quit
+
 
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -73,37 +85,21 @@ create view _FSM2_.receiver as ( select
 
 -- ---------------------------------------------------------------------------------------------------------
 create table _FSM2_.registers (
+  id      serial,
   regkey  text unique not null primary key check ( regkey::U.chr = regkey ),
-  name    text unique not null );
+  name    text unique not null,
+  data    jsonb );
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _FSM2_.regstates (
-  aid     integer unique not null references _FSM2_.journal ( aid ),
-  regkey  text    unique not null references _FSM2_.registers ( regkey ),
-  data    text    default null );
+create function _FSM2_.registers_as_jsonb() returns jsonb stable language sql as $$
+  select jsonb_agg( jsonb_build_array( r.regkey, r.data ) ) from _FSM2_.registers as r; $$;
 
-/*
--- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_._on_before_insert_into_registers() returns trigger volatile language plpgsql as $outer$
-  declare
-    ¶q  text;
-  begin
-    perform log( '44090', new::text );
-    execute format( $$ alter table _FSM2_.journal
-      add column %I text; $$, new.regkey );
-    return new;
-    end; $outer$;
-
--- ---------------------------------------------------------------------------------------------------------
-create trigger on_before_insert_into_registers before insert on _FSM2_.registers
-for each row execute procedure _FSM2_._on_before_insert_into_registers();
-*/
-
--- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.registers_as_json() returns json stable language sql as $$
+/* Same, but as object:
   with  keys    as ( select array_agg( regkey order by regkey ) as x from _FSM2_.registers ),
         values  as ( select array_agg( data   order by regkey ) as x from _FSM2_.registers )
-    select json_object( keys.x, values.x ) from keys, values; $$;
+    select jsonb_object( keys.x, values.x ) from keys, values; $$;
+*/
+
 
 -- ---------------------------------------------------------------------------------------------------------
 create function _FSM2_.proceed( ¶tail text, ¶act text ) returns _FSM2_.transitions stable language sql as $$
@@ -160,13 +156,13 @@ create function _FSM2_.instead_of_insert_into_receiver() returns trigger languag
     insert into _FSM2_.journal ( tail, act, point, data ) values
       ( ¶tail, new.act, ¶transition.point, new.data )
       returning aid into ¶aid;
-    perform _FSM2_._smal_cpy();
+    -- perform _FSM2_._smal_cpy();
     -- .....................................................................................................
     /* Perform associated SMAL post-update commands: */
     perform _FSM2_.smal( ¶transition.postcmd, new.data );
     -- .....................................................................................................
     /* Reflect state of registers table into `journal ( registers )`: */
-    update _FSM2_.journal set registers = _FSM2_.registers_as_json() where aid = ¶aid;
+    update _FSM2_.journal set registers = _FSM2_.registers_as_jsonb() where aid = ¶aid;
     -- .....................................................................................................
     return null; end; $$;
 
@@ -293,7 +289,8 @@ create function _FSM2_.smal( ¶cmd text, ¶data text ) returns void volatile lan
         -- .................................................................................................
         when 'LOD' then
           ¶regkey_1 :=  ¶parts[ 2 ];
-          update _FSM2_.registers set data = ¶data where regkey = ¶regkey_1 returning 1 into ¶count;
+          update _FSM2_.registers set data = to_jsonb( ¶data )
+            where regkey = ¶regkey_1 returning 1 into ¶count;
           -- perform _FSM2_._smal_lod( ¶regkey_1, ¶data );
         -- .................................................................................................
         when 'MOV' then
