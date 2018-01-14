@@ -235,5 +235,19 @@ create function jb( ¶x anyelement ) returns jsonb immutable strict language sql
 comment on function jb( text )        is '`jb()` works almost like `to_jsonb()`, except that strings do not have to be quoted.';
 comment on function jb( anyelement )  is '`jb()` works almost like `to_jsonb()`, except that strings do not have to be quoted.';
 
+
+-- =========================================================================================================
+-- ARRAYS
+-- ---------------------------------------------------------------------------------------------------------
+/* thx to https://stackoverflow.com/a/8142998/7568091 */
+create function U.unnest_2d_1d( anyarray ) returns setof anyarray immutable strict language sql as $$
+  select
+      array_agg( $1[ d1 ][ d2 ] )
+  from
+    generate_subscripts( $1, 1 ) as d1,
+    generate_subscripts( $1, 2 ) as d2
+  group by d1
+  order by d1; $$;
+
 \quit
 
