@@ -2,165 +2,211 @@
 
 
 
-
-
-
 /* thx to http://felixge.de/2017/07/27/implementing-state-machines-in-postgresql.html */
 
 
-/*
+/* http://www.patorjk.com/software/taag/#p=display&f=Fraktur&t=Fa
 
-███████╗███████╗███╗   ███╗
-██╔════╝██╔════╝████╗ ████║
-█████╗  ███████╗██╔████╔██║
-██╔══╝  ╚════██║██║╚██╔╝██║
-██║     ███████║██║ ╚═╝ ██║
-╚═╝     ╚══════╝╚═╝     ╚═╝
-
+    .....
+ .H#######x.  '`+
+:############x.  !
+#~    `"*########"       u
+!      .  `f""""      us###u.
+ ~:...-` :#L <)##: .@## "####"
+    .   :###:>X##! 9###  9###
+ :~"##x 4####X ^`  9###  9###
+<  :###k'#####X    9###  9###
+  d####f '#####X   9###  9###
+ :####!    ?####>  "###*""###"
+ X###!      ####~   ^Y"   ^Y'
+ '###       X##f
+  '%#:     .#*"
+     ^----~"`
+       Finite Automaton
 */
 
 
 -- ---------------------------------------------------------------------------------------------------------
-drop schema if exists _FSM2_ cascade;
-create schema _FSM2_;
+drop schema if exists FA cascade;
+create schema FA;
+
+
+-- create type FA.d as ( a int, b text );
+
+-- create function FA.f() returns FA.d immutable language plpgsql as $$
+--   declare
+--     x FA.d;
+--   begin
+--     x.a := 100;
+--     x.b := 'helo';
+--     x := ( 108, 'yes' );
+--     x := 'yes';
+--     return x;
+--     end; $$;
+
+-- do $$
+--   declare
+--     x FA.d;
+--     a integer;
+--     b text;
+--   begin
+--     x.a := 42;
+--     x.b := 42;
+--     perform log( x::text );
+--     ( a, b ) := FA.f();
+--     x := FA.f();
+--     b := x.b;
+--     perform log( x::text );
+--     perform log( b );
+--     end; $$;
+
+-- -- \quit
+
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _FSM2_.states (
+create table FA.states (
   state text unique not null primary key );
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _FSM2_.acts (
+create table FA.acts (
   act text unique not null primary key );
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _FSM2_.transitions (
-  tail          text                    references _FSM2_.states    ( state   ),
-  act           text                    references _FSM2_.acts      ( act     ),
+create type FA._transition as (
+  tail          text,
+  act           text,
   precmd        text,
-  point         text                    references _FSM2_.states    ( state   ),
+  point         text,
+  postcmd       text );
+
+-- -- ---------------------------------------------------------------------------------------------------------
+create table FA.transitions (
+  tail          text                    references FA.states    ( state   ),
+  act           text                    references FA.acts      ( act     ),
+  precmd        text,
+  point         text                    references FA.states    ( state   ),
   postcmd       text,
   primary key ( tail, act ) );
 
 -- -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_._act_is_starred( ¶act text ) returns boolean stable language sql as $$
-  select exists ( select 1 from _FSM2_.transitions where act = ¶act and tail = '*' ); $$;
+create function FA._act_is_starred( ¶act text ) returns boolean stable language sql as $$
+  select exists ( select 1 from FA.transitions where act = ¶act and tail = '*' ); $$;
 
 -- -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_._star_count_ok( ¶tail text, ¶act text ) returns boolean volatile language sql as $$
-  select case when ¶tail = '*' or _FSM2_._act_is_starred( ¶act ) then
-    ( select count(*) = 0 from _FSM2_.transitions where act = ¶act )
+create function FA._star_count_ok( ¶tail text, ¶act text ) returns boolean volatile language sql as $$
+  select case when ¶tail = '*' or FA._act_is_starred( ¶act ) then
+    ( select count(*) = 0 from FA.transitions where act = ¶act )
     else true end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-alter table _FSM2_.transitions
+alter table FA.transitions
   add constraint "starred acts must have no more than one transition"
-  check ( _FSM2_._star_count_ok( tail, act ) );
+  check ( FA._star_count_ok( tail, act ) );
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _FSM2_.raw_journal (
+create table FA.raw_journal (
   aid           serial    primary key,
-  tail          text                    references _FSM2_.states    ( state   ),
-  act           text      not null      references _FSM2_.acts      ( act     ),
-  point         text                    references _FSM2_.states    ( state   ),
+  tail          text                    references FA.states    ( state   ),
+  act           text      not null      references FA.acts      ( act     ),
+  point         text                    references FA.states    ( state   ),
   data          jsonb,
   registers     jsonb );
 
 -- ---------------------------------------------------------------------------------------------------------
-create view _FSM2_.raw_result as ( select * from _FSM2_.raw_journal where point = 'LAST' );
+create view FA.raw_result as ( select * from FA.raw_journal where point = 'LAST' );
 
 -- ---------------------------------------------------------------------------------------------------------
-create table _FSM2_.registers (
+create table FA.registers (
   id      serial,
   regkey  text unique not null primary key check ( regkey::U.chr = regkey ),
   name    text unique not null,
   data    jsonb );
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.registers_as_jsonb() returns jsonb stable language sql as $$
-  select jsonb_agg( r.data order by id ) from _FSM2_.registers as r; $$;
+create function FA.registers_as_jsonb() returns jsonb stable language sql as $$
+  select jsonb_agg( r.data order by id ) from FA.registers as r; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.get_current_aid() returns integer stable language sql as $$
-  select max( aid ) from _FSM2_.raw_journal; $$;
+create function FA.get_current_aid() returns integer stable language sql as $$
+  select max( aid ) from FA.raw_journal; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.proceed( ¶tail text, ¶act text ) returns _FSM2_.transitions stable language sql as $$
-  select * from _FSM2_.transitions where ( tail = ¶tail ) and ( act = ¶act ); $$;
+create function FA.proceed( ¶tail text, ¶act text ) returns FA.transitions stable language sql as $$
+  select * from FA.transitions where ( tail = ¶tail ) and ( act = ¶act ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_._get_create_journal_statement() returns text volatile language plpgsql as $outer$
+create function FA._get_create_journal_statement() returns text volatile language plpgsql as $outer$
   declare
     R         text;
     ¶names    text[];
     ¶row      record;
   begin
     R := '
-      create view _FSM2_.journal as ( select
+      create view FA.journal as ( select
           j1.aid      as aid,
           j1.tail     as tail,
           j1.act      as act,
           j1.point    as point,
           j1.data     as data,
           ';
-    select array_agg( format( 'j2.%I', regkey ) order by id ) from _FSM2_.registers into ¶names;
+    select array_agg( format( 'j2.%I', regkey ) order by id ) from FA.registers into ¶names;
     R := R || array_to_string( ¶names, ', ' );
-    R := R || E'\n        from _FSM2_.raw_journal as j1
+    R := R || E'\n        from FA.raw_journal as j1
       left join ( select
         aid,
         ';
-    select array_agg( format( 'registers->>%s as %I', id, regkey ) order by id ) from _FSM2_.registers into ¶names;
+    select array_agg( format( 'registers->>%s as %I', id, regkey ) order by id ) from FA.registers into ¶names;
     R := R || array_to_string( ¶names, ', ' );
-    R := R || E'\n        from _FSM2_.raw_journal ) as j2 using ( aid ) );';
+    R := R || E'\n        from FA.raw_journal ) as j2 using ( aid ) );';
     return R;
     end; $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.create_journal() returns void volatile language plpgsql as $outer$
+create function FA.create_journal() returns void volatile language plpgsql as $outer$
   begin
-    drop view if exists _FSM2_.journal; -- cascade???
-    drop view if exists _FSM2_.result; -- cascade???
-    execute _FSM2_._get_create_journal_statement();
-    create view _FSM2_.result as ( select * from _FSM2_.journal where point = 'LAST' );
+    drop view if exists FA.journal; -- cascade???
+    drop view if exists FA.result; -- cascade???
+    execute FA._get_create_journal_statement();
+    create view FA.result as ( select * from FA.journal where point = 'LAST' );
     end; $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_._journal_as_tabular() returns text
+create function FA._journal_as_tabular() returns text
   immutable strict language sql as $outer$
-    select U.tabulate_query( $$ select * from _FSM2_.journal order by aid; $$ );
+    select U.tabulate_query( $$ select * from FA.journal order by aid; $$ );
     $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT should probably use `lock for update` */
-create function _FSM2_.step( ¶act text, ¶data jsonb ) returns void volatile language plpgsql as $$
+create function FA.step( ¶act text, ¶data jsonb ) returns void volatile language plpgsql as $$
   declare
     ¶new_state  text;
     ¶tail       text;
     ¶aid        integer;
-    ¶transition _FSM2_.transitions%rowtype;
-    -- X text;
+    ¶transition FA._transition;
   -- .......................................................................................................
   begin
     /* ### TAINT rewrite this as
-      ¶transition :=  _FSM2_.proceed( '*', ¶act );
+      ¶transition :=  FA.proceed( '*', ¶act );
       if ¶transition is null then ...
     */
-    if _FSM2_._act_is_starred( ¶act ) then
+    if FA._act_is_starred( ¶act ) then
       /* Starred acts always succeed, even on an empty raw_journal where there is no previous act and, thus, no
       tail; when can therefore always set the tail to '*'. */
       ¶tail := '*';
     -- .....................................................................................................
     else
       /* ### TAINT consider to use lag() instead */
-      select into ¶tail point from _FSM2_.raw_journal order by aid desc limit 1;
+      select into ¶tail point from FA.raw_journal order by aid desc limit 1;
       end if;
     -- .....................................................................................................
     /* Obtain transition from tail and act: */
-    ¶transition :=  _FSM2_.proceed( ¶tail, ¶act );
+    ¶transition :=  FA.proceed( ¶tail, ¶act );
     -- .....................................................................................................
     /* Error out in case no matching transition was found: */
     if ¶transition is null then
-      perform log( '19088', 'Journal up to problematic act:' );
-      perform log( _FSM2_._journal_as_tabular() );
+      perform log( 'FA #19001', 'Journal up to problematic act:' );
+      perform log( FA._journal_as_tabular() );
       raise exception
         'invalid act: { state: %, act: %, data: %, } -> null',
           ¶tail, ¶act, ¶data;
@@ -168,33 +214,33 @@ create function _FSM2_.step( ¶act text, ¶data jsonb ) returns void volatile la
     -- .....................................................................................................
     /* Perform associated SMAL pre-update commands: */
     -- X := json_agg( t )::text from ( select ¶transition ) as t; perform log( '00902', 'transition', X );
-    perform _FSM2_.smal( ¶transition.precmd, ¶data );
+    perform FA.smal( ¶transition.precmd, ¶data, ¶transition );
     -- .....................................................................................................
     /* Insert new line into raw_journal and update register copy: */
-    insert into _FSM2_.raw_journal ( tail, act, point, data ) values
+    insert into FA.raw_journal ( tail, act, point, data ) values
       ( ¶tail, ¶act, ¶transition.point, ¶data )
       returning aid into ¶aid;
-    -- perform _FSM2_._smal_cpy();
+    -- perform FA._smal_cpy();
     -- .....................................................................................................
     /* Perform associated SMAL post-update commands: */
-    perform _FSM2_.smal( ¶transition.postcmd, ¶data );
+    perform FA.smal( ¶transition.postcmd, ¶data, ¶transition );
     -- .....................................................................................................
     /* Reflect state of registers table into `raw_journal ( registers )`: */
-    update _FSM2_.raw_journal set registers = _FSM2_.registers_as_jsonb() where aid = ¶aid;
+    update FA.raw_journal set registers = FA.registers_as_jsonb() where aid = ¶aid;
     -- .....................................................................................................
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.step( ¶act text, ¶data text ) returns void volatile language sql as $$
-  select _FSM2_.step( ¶act, jb( ¶data ) ); $$;
+create function FA.step( ¶act text, ¶data text ) returns void volatile language sql as $$
+  select FA.step( ¶act, jb( ¶data ) ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.step( ¶act text, ¶data anyelement ) returns void volatile language sql as $$
-  select _FSM2_.step( ¶act, jb( ¶data ) ); $$;
+create function FA.step( ¶act text, ¶data anyelement ) returns void volatile language sql as $$
+  select FA.step( ¶act, jb( ¶data ) ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.step( ¶act text ) returns void volatile language sql as $$
-  select _FSM2_.step( ¶act, jb( null ) ); $$;
+create function FA.step( ¶act text ) returns void volatile language sql as $$
+  select FA.step( ¶act, jb( null ) ); $$;
 
 
 
@@ -207,69 +253,95 @@ create function _FSM2_.step( ¶act text ) returns void volatile language sql as 
 ███████║██║ ╚═╝ ██║██║  ██║███████╗
 ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝ http://www.patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=SMAL
 
-State Machine Assembly Language
+FA Assembly Language
 
 NOP       # no operation (may also use SQL `null` value)
 LOD T     # load data to register T
 MOV T C   # move contents of register T to register C and set register T to NULL
+PSH C     # push data to register C (will become a list if not already a list)
+PSH T C   # push contents of register T to register C and set register T to NULL
 NUL *     # set all registers to NULL
 NUL Y     # set register Y to NULL
 
 */
 
 -- ---------------------------------------------------------------------------------------------------------
-/* ### TAINT functions that use registers should be compiled once before first use */
-/* ### TAINT inefficient; could be single statement instead of loop */
-/*
-create function _FSM2_._smal_cpy() returns void volatile language plpgsql as $outer$
-  declare
-    ¶aid  integer := _FSM2_.get_current_aid();
-    ¶row  record;
-  -- .......................................................................................................
-  begin
-    if ( select count(*) from _FSM2_.raw_journal limit 2 ) < 2 then return; end if;
-    for ¶row in ( select * from _FSM2_.registers ) loop
-      execute format( $$
-          with prv_row as ( select %I from _FSM2_.raw_journal where aid = $1 - 1 )
-          update _FSM2_.raw_journal
-          set %I = prv_row.%I
-          from prv_row
-          where aid = $2;
-        $$, ¶row.regkey, ¶row.regkey, ¶row.regkey )
-        using ¶aid, ¶aid;
-      end loop;
-    end; $outer$;
-*/
+create type FA._smal_cmd_output as ( count integer, next_cmd text );
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_._smal_lod( ¶cmd_parts text[], ¶data jsonb ) returns text volatile language plpgsql as $$
+create function FA._smal_clr( ¶cmd_parts text[], ¶data jsonb )
+  returns FA._smal_cmd_output volatile language plpgsql as $$
   declare
-    ¶count        integer :=  0;
-    ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
+    R             FA._smal_cmd_output;
   begin
-    -- ¶regkey_1 := ¶cmd_parts[ 2 ];
-    update _FSM2_.registers
+    R := ( 0, null );
+    truncate table FA.raw_journal;
+    return R; end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA._smal_nul( ¶cmd_parts text[], ¶data jsonb )
+  returns FA._smal_cmd_output volatile language plpgsql as $$
+  declare
+    R             FA._smal_cmd_output;
+    ¶regkey_1     text                :=  ¶cmd_parts[ 2 ];
+  begin
+    R         := ( 0, null );
+    ¶regkey_1 := ¶cmd_parts[ 2 ];
+    if ¶regkey_1 = '*' then
+      update FA.registers set data = null;
+      -- perform FA._smal_lod( '*', null );
+    else
+      update FA.registers set data = null where regkey = ¶regkey_1 returning 1 into R.count;
+      end if;
+    return R; end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA._smal_lod( ¶cmd_parts text[], ¶data jsonb )
+  returns FA._smal_cmd_output volatile language plpgsql as $$
+  declare
+    R             FA._smal_cmd_output;
+    ¶regkey_1     text                :=  ¶cmd_parts[ 2 ];
+  begin
+    R := ( 0, null );
+    update FA.registers
       set data = to_jsonb( ¶data )
-      where regkey = ¶regkey_1 returning 1 into ¶count;
-    return null; end; $$;
+      where regkey = ¶regkey_1 returning 1 into R.count;
+    return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function _FSM2_.smal( ¶cmd text, ¶data jsonb ) returns void volatile language plpgsql as $outer$
+create function FA._smal_mov( ¶cmd_parts text[], ¶data jsonb )
+  returns FA._smal_cmd_output volatile language plpgsql as $$
+  declare
+    R             FA._smal_cmd_output;
+    ¶regkey_1     text                :=  ¶cmd_parts[ 2 ];
+    ¶regkey_2     text                :=  ¶cmd_parts[ 3 ];
+  begin
+    R := ( 0, null );
+    update FA.registers
+      set data = r1.data from ( select data from FA.registers where regkey = ¶regkey_1 ) as r1
+      where regkey = ¶regkey_2 returning 1 into R.count;
+    if R.count is null then return R; end if;
+    update FA.registers set data = null where regkey = ¶regkey_1 returning 1 into R.count;
+    return R; end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA.smal( ¶cmd text, ¶data jsonb, ¶transition FA._transition )
+  returns void volatile language plpgsql as $outer$
   declare
     ¶cmd_parts    text[];
     ¶base         text;
     ¶regkey_1     text;
     ¶regkey_2     text;
-    ¶count        integer :=  0;
-    ¶next_cmd     text    :=  null;
+    S             FA._smal_cmd_output;
   -- .......................................................................................................
   begin
+    S := ( 0, null );
     -- .....................................................................................................
     loop
       -- ...................................................................................................
-      if ¶next_cmd is not null then
-        ¶cmd      :=  ¶next_cmd;
-        ¶next_cmd :=  null;
+      if S.next_cmd is not null then
+        ¶cmd        :=  S.next_cmd;
+        S.next_cmd  :=  null;
       elsif ¶cmd is null then
         return;
         end if;
@@ -280,37 +352,21 @@ create function _FSM2_.smal( ¶cmd text, ¶data jsonb ) returns void volatile la
       ¶cmd_parts  :=  regexp_split_to_array( ¶cmd, '\s+' );
       ¶base       :=  ¶cmd_parts[ 1 ];
       -- ...................................................................................................
-      <<on_count_null>> begin case ¶base
-        -- .................................................................................................
-        when 'CLR' then
-          truncate table _FSM2_.raw_journal;
-          ¶next_cmd := 'NUL *';
-        -- .................................................................................................
-        when 'NUL' then
-          ¶regkey_1 := ¶cmd_parts[ 2 ];
-          if ¶regkey_1 = '*' then
-            update _FSM2_.registers set data = null;
-            -- perform _FSM2_._smal_lod( '*', null );
-          else
-            update _FSM2_.registers set data = null where regkey = ¶regkey_1 returning 1 into ¶count;
-            end if;
-        -- .................................................................................................
-        when 'LOD' then ¶next_cmd := _FSM2_._smal_lod( ¶cmd_parts, ¶data );
-        -- .................................................................................................
-        when 'MOV' then
-          ¶regkey_1 :=  ¶cmd_parts[ 2 ];
-          ¶regkey_2 :=  ¶cmd_parts[ 3 ];
-          update _FSM2_.registers
-            set data = r1.data from ( select data from _FSM2_.registers where regkey = ¶regkey_1 ) as r1
-            where regkey = ¶regkey_2 returning 1 into ¶count;
-          exit on_count_null when ¶count is null;
-          update _FSM2_.registers set data = null where regkey = ¶regkey_1 returning 1 into ¶count;
-        -- .................................................................................................
-        else raise exception 'unknown command %', ¶cmd;
-        end case; end;
+      case ¶base
+        when 'CLR' then S := FA._smal_clr( ¶cmd_parts, ¶data );
+        when 'NUL' then S := FA._smal_nul( ¶cmd_parts, ¶data );
+        when 'LOD' then S := FA._smal_lod( ¶cmd_parts, ¶data );
+        when 'MOV' then S := FA._smal_mov( ¶cmd_parts, ¶data );
+        else
+          perform log();
+          perform log( 'FA #19002', 'Journal up to problematic act:' );     perform log();
+          perform log( FA._journal_as_tabular() );                          perform log();
+          perform log( 'FA #19003', 'transition: %', ¶transition::text );   perform log();
+          raise exception 'unknown command %', ¶cmd;
+        end case;
       -- ...................................................................................................
-      if ¶count is null then raise exception 'invalid regkey in %', ¶cmd; end if;
-      exit when ¶next_cmd is null;
+      if S.count is null then raise exception 'invalid regkey in %', ¶cmd; end if;
+      exit when S.next_cmd is null;
       end loop;
     end; $outer$;
 
@@ -319,7 +375,7 @@ create function _FSM2_.smal( ¶cmd text, ¶data jsonb ) returns void volatile la
 /* ====================================================================================================== */
 
 -- ---------------------------------------------------------------------------------------------------------
-insert into _FSM2_.states values
+insert into FA.states values
    ( '*'          ),
    ( 'FIRST'      ),
    ( 's1'         ),
@@ -330,7 +386,7 @@ insert into _FSM2_.states values
    ( 'LAST'       );
 
 -- ---------------------------------------------------------------------------------------------------------
-insert into _FSM2_.acts values
+insert into FA.acts values
   ( 'CLEAR'           ),
   ( 'START'           ),
   ( 'identifier'      ),
@@ -341,16 +397,14 @@ insert into _FSM2_.acts values
   ( 'STOP'            );
 
 -- ---------------------------------------------------------------------------------------------------------
-insert into _FSM2_.transitions
+insert into FA.transitions
   ( tail,                 act,                precmd,       point,          postcmd           ) values
   ( '*',                  'RESET',            'CLR',        'FIRST',        'NOP'             ),
   ( 'LAST',               'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
   ( 'FIRST',              'START',            'NUL *',      's1',           'NOP'             ),
   ( 's1',                 'identifier',       'NOP',        's2',           'LOD T'           ),
   ( 's2',                 'equals',           'NOP',        's3',           'NOP'             ),
-
-  ( 's2',                 'slash',            'MOV T C',      's1',           'NOP'             ),
-
+  ( 's2',                 'slash',            'PSH T C',    's1',           'NOP'             ),
   ( 's3',                 'identifier',       'NOP',        's4',           'LOD V'           ),
   ( 's4',                 'dcolon',           'NOP',        's5',           'NOP'             ),
   ( 's5',                 'identifier',       'NOP',        's5',           'LOD Y'           ),
@@ -360,24 +414,24 @@ insert into _FSM2_.transitions
 
 
 -- ---------------------------------------------------------------------------------------------------------
-insert into _FSM2_.registers ( regkey, name ) values
+insert into FA.registers ( regkey, name ) values
   ( 'C', 'context'   ),
   ( 'T', 'tag'       ),
   ( 'V', 'value'     ),
   ( 'Y', 'type'      );
 
 -- ---------------------------------------------------------------------------------------------------------
-do $$ begin perform _FSM2_.create_journal(); end; $$;
+do $$ begin perform FA.create_journal(); end; $$;
 
 
 /* ###################################################################################################### */
 
--- select array_agg( tail ) as "start" from _FSM2_.transitions where act = 'START';
--- select array_agg( tail ) as "stop"  from _FSM2_.transitions where act = 'STOP';
--- select array_agg( tail ) as "reset" from _FSM2_.transitions where act = 'RESET';
--- select array_agg( tail ) as "clear" from _FSM2_.transitions where act = 'CLEAR';
--- select exists ( select 1 from _FSM2_.transitions where act = 'RESET' and tail = '*' );
--- select exists ( select 1 from _FSM2_.transitions where act = 'CLEAR' and tail = '*' );
+-- select array_agg( tail ) as "start" from FA.transitions where act = 'START';
+-- select array_agg( tail ) as "stop"  from FA.transitions where act = 'STOP';
+-- select array_agg( tail ) as "reset" from FA.transitions where act = 'RESET';
+-- select array_agg( tail ) as "clear" from FA.transitions where act = 'CLEAR';
+-- select exists ( select 1 from FA.transitions where act = 'RESET' and tail = '*' );
+-- select exists ( select 1 from FA.transitions where act = 'CLEAR' and tail = '*' );
 
 -- \quit
 
@@ -386,87 +440,87 @@ do $$ begin perform _FSM2_.create_journal(); end; $$;
 -- ---------------------------------------------------------------------------------------------------------
 /* color=red */
 do $$ begin
-  perform _FSM2_.step( 'RESET'                      );
-  perform _FSM2_.step( 'START'                      );
-  perform _FSM2_.step( 'identifier',  'color'       );
-  perform _FSM2_.step( 'equals',      '='           );
-  -- perform _FSM2_.step( 'equals',      '='          );
-  -- perform _FSM2_.step( 'START',      null           );
-  perform _FSM2_.step( 'identifier',  'red'         );
-  perform _FSM2_.step( 'STOP'                       );
+  perform FA.step( 'RESET'                      );
+  perform FA.step( 'START'                      );
+  perform FA.step( 'identifier',  'color'       );
+  perform FA.step( 'equals',      '='           );
+  -- perform FA.step( 'equals',      '='          );
+  -- perform FA.step( 'START',      null           );
+  perform FA.step( 'identifier',  'red'         );
+  perform FA.step( 'STOP'                       );
   end; $$;
--- perform _FSM2_.step( 'CLEAR'                      );
-select * from _FSM2_.journal;
+-- perform FA.step( 'CLEAR'                      );
+select * from FA.journal;
 
 
 
 /* foo::q */
 do $$ begin
-  perform _FSM2_.step( 'RESET'                      );
-  perform _FSM2_.step( 'START'                      );
-  -- perform _FSM2_.step( 'STOP'                      );
-  perform _FSM2_.step( 'identifier',  'foo'         );
-  perform _FSM2_.step( 'equals',      '::'          );
-  -- perform _FSM2_.step( 'equals',      '='          );
-  perform _FSM2_.step( 'identifier',  'q'           );
-  perform _FSM2_.step( 'STOP'                       );
+  perform FA.step( 'RESET'                      );
+  perform FA.step( 'START'                      );
+  -- perform FA.step( 'STOP'                      );
+  perform FA.step( 'identifier',  'foo'         );
+  perform FA.step( 'equals',      '::'          );
+  -- perform FA.step( 'equals',      '='          );
+  perform FA.step( 'identifier',  'q'           );
+  perform FA.step( 'STOP'                       );
   end; $$;
-select * from _FSM2_.journal;
+select * from FA.journal;
 
 /* author=Faulkner::name */
 do $$ begin
-  perform _FSM2_.step( 'CLEAR'                      );
-  perform _FSM2_.step( 'START'                      );
-  perform _FSM2_.step( 'identifier',  'author'      );
-  perform _FSM2_.step( 'equals',      '='           );
-  perform _FSM2_.step( 'identifier',  'Faulkner'    );
-  perform _FSM2_.step( 'dcolon',      '::'          );
-  perform _FSM2_.step( 'identifier',  'name'        );
-  perform _FSM2_.step( 'STOP'                       );
-  -- perform _FSM2_.step( 'equals',      '='          );
+  perform FA.step( 'CLEAR'                      );
+  perform FA.step( 'START'                      );
+  perform FA.step( 'identifier',  'author'      );
+  perform FA.step( 'equals',      '='           );
+  perform FA.step( 'identifier',  'Faulkner'    );
+  perform FA.step( 'dcolon',      '::'          );
+  perform FA.step( 'identifier',  'name'        );
+  perform FA.step( 'STOP'                       );
+  -- perform FA.step( 'equals',      '='          );
   end; $$;
-select * from _FSM2_.journal;
+select * from FA.journal;
 
 /* IT/programming/language=SQL::name */
 /* '{IT,/,programming,/,language,=,SQL,::,name}' */
 do $$ begin
-  perform _FSM2_.step( 'CLEAR'                        );
-  perform _FSM2_.step( 'START'                        );
-  perform _FSM2_.step( 'identifier',  'IT'            );
-  perform _FSM2_.step( 'slash',       '/'             );
-  perform _FSM2_.step( 'identifier',  'programming'   );
-  perform _FSM2_.step( 'slash',       '/'             );
-  perform _FSM2_.step( 'identifier',  'language'      );
-  perform _FSM2_.step( 'equals',      '='             );
-  perform _FSM2_.step( 'identifier',  'SQL'           );
-  perform _FSM2_.step( 'dcolon',      '::'            );
-  perform _FSM2_.step( 'identifier',  'name'          );
-  perform _FSM2_.step( 'STOP'                         );
+  perform FA.step( 'CLEAR'                        );
+  perform FA.step( 'START'                        );
+  perform FA.step( 'identifier',  'IT'            );
+  perform FA.step( 'slash',       '/'             );
+  perform FA.step( 'identifier',  'programming'   );
+  perform FA.step( 'slash',       '/'             );
+  perform FA.step( 'identifier',  'language'      );
+  perform FA.step( 'equals',      '='             );
+  perform FA.step( 'identifier',  'SQL'           );
+  perform FA.step( 'dcolon',      '::'            );
+  perform FA.step( 'identifier',  'name'          );
+  perform FA.step( 'STOP'                         );
   end; $$;
-select * from _FSM2_.journal;
-select * from _FSM2_.result;
-select * from _FSM2_.raw_result;
+select * from FA.journal;
+select * from FA.result;
+select * from FA.raw_result;
 
 \quit
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo 'journal'
-select * from _FSM2_.journal;
+select * from FA.journal;
 \echo 'journal (completed)'
-select * from _FSM2_.journal where point = 'LAST';
--- select * from _FSM2_.receiver;
+select * from FA.journal where point = 'LAST';
+-- select * from FA.receiver;
 -- \echo 'transitions'
--- select * from _FSM2_.transitions;
+-- select * from FA.transitions;
 -- \echo '_batches_events_and_next_states'
--- select * from _FSM2_._batches_events_and_next_states;
+-- select * from FA._batches_events_and_next_states;
 -- \echo 'job_transitions'
--- select * from _FSM2_.job_transitions;
+-- select * from FA.job_transitions;
 
 \quit
 
-select * from _FSM2_.registers order by regkey;
-do $$ begin perform _FSM2_.LOD( 3, 'C' ); end; $$;
-select * from _FSM2_.registers order by regkey;
+select * from FA.registers order by regkey;
+do $$ begin perform FA.LOD( 3, 'C' ); end; $$;
+select * from FA.registers order by regkey;
 
 
 
@@ -493,30 +547,30 @@ foo::q                              |  ∎                foo         ∎       
 
 
 
-create table _FSM2_.journal (
+create table FA.journal (
   aid serial primary key,
   foo text
   );
-create table _FSM2_.registers (
-  aid integer references _FSM2_.journal ( aid ),
+create table FA.registers (
+  aid integer references FA.journal ( aid ),
   facets jsonb
   );
 
-insert into _FSM2_.journal ( foo ) values ( 42 ), ( 'helo' ), ( array[ 1, '2' ] );
-insert into _FSM2_.registers values ( 1, '{"a":1,"b":2}' );
-insert into _FSM2_.registers values ( 2, '{"a":42,"b":12}' );
-select * from _FSM2_.journal;
-select * from _FSM2_.registers;
+insert into FA.journal ( foo ) values ( 42 ), ( 'helo' ), ( array[ 1, '2' ] );
+insert into FA.registers values ( 1, '{"a":1,"b":2}' );
+insert into FA.registers values ( 2, '{"a":42,"b":12}' );
+select * from FA.journal;
+select * from FA.registers;
 
-select from _FSM2_.journal;
+select from FA.journal;
 
--- select aid, ( select * from jsonb_each( facets ) ) as v1 from _FSM2_.registers;
+-- select aid, ( select * from jsonb_each( facets ) ) as v1 from FA.registers;
 -- select
 --     j.aid,
 --     j.foo,
 
---   from _FSM2_.journal as j
---   left join _FSM2_.registers as r using ( aid );
+--   from FA.journal as j
+--   left join FA.registers as r using ( aid );
 
 \quit
 
@@ -525,20 +579,20 @@ select from _FSM2_.journal;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT probably better to use domains or other means to ensure integrity */
-create function _FSM2_.proceed( ¶tail text, ¶act text ) returns text stable language plpgsql as $$
+create function FA.proceed( ¶tail text, ¶act text ) returns text stable language plpgsql as $$
   declare
     R text;
   begin
     select into R
         point
-      from _FSM2_.transitions
+      from FA.transitions
       where ( tail = ¶tail ) and ( act = ¶act );
     return R;
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create aggregate _FSM2_.proceed_agg( text ) (
-  sfunc     = _FSM2_.proceed,
+create aggregate FA.proceed_agg( text ) (
+  sfunc     = FA.proceed,
   stype     = text,
   initcond  = 'FIRST' );
 
