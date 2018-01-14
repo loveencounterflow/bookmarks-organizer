@@ -16,6 +16,8 @@
   # maximal form: contextual tag with typed value
   tags:   IT/programming/language=SQL::name
 
+*stop*
+
 * url:    https://github.com/kittykatattack/learningPixi
   url:    http://pixijs.download/release/docs
   url:    http://www.pixijs.com/
@@ -28,7 +30,6 @@
           https://github.com/pixijs/pixi.js
   tags:   webgl font-rendering kannwas
 
-# *stop*
 
 * readme: `tag`—simple tag
 * readme: `minortag1 minortag2 #majortag minortag1`—hash indicates primary position of bookmark, 1st tag otherwise

@@ -13,7 +13,7 @@ create function SRC.lex_tags( x text ) returns text[]
   immutable returns null on null input language plpython3u as $$
     plpy.execute( 'select INIT.py_init()' )
     ctx = GD[ 'ctx' ]
-    return ctx.taglexer.lex_tags( x )
+    return ctx.utp_tag_parser.lex_tags( x )
     $$;
 reset role;
 
@@ -131,7 +131,8 @@ select * from U.variables where not key ~ '^[A-Z]' \g :out
 select
     linenr                                                            as linenr,
     key                                                               as key,
-    '∎' || substring( array_to_string( values, '∎' ) for 80 ) || '∎'  as values,
+    -- '∎' || substring( array_to_string( values, '∎' ) for 80 ) || '∎'  as values,
+    values                                                            as values,
     value                                                             as value
   from SRC._bookmarks
   order by linenr;
