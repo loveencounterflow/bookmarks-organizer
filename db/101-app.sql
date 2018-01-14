@@ -10,6 +10,7 @@
 
 \echo :_TITLE'110-prepare.sql':O            \ir './110-prepare.sql'
 \echo :_TITLE'120-utp.sql':O                \ir './120-utp.sql'
+\echo :_TITLE'125-fa.sql':O                 \ir './125-fa.sql'
 \echo :_TITLE'150-src.sql':O                \ir './150-src.sql'
 
 

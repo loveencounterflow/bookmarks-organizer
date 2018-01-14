@@ -99,6 +99,10 @@ create function log( value variadic text[] ) returns void language plpython3u as
     o.write( ' '.join( value_ ).encode( 'utf-8' ) + b'\n' )
   $$;
 reset role;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function log() returns void language sql as $$ select log( '' ); $$;
+
 /* use log like so:
 do $$ begin perform log( ( 42 + 108 )::text ); end; $$;
 */

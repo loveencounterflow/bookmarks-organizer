@@ -222,6 +222,18 @@ do $$ begin
   perform ¶( 'username', current_user );
   end; $$;
 
+-- =========================================================================================================
+-- CONVERSION TO JSONB
+-- ---------------------------------------------------------------------------------------------------------
+create function jb( ¶x text ) returns jsonb immutable strict language sql as $$
+  select to_jsonb( ¶x ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function jb( ¶x anyelement ) returns jsonb immutable strict language sql as $$
+  select to_jsonb( ¶x ); $$;
+
+comment on function jb( text )        is '`jb()` works almost like `to_jsonb()`, except that strings do not have to be quoted.';
+comment on function jb( anyelement )  is '`jb()` works almost like `to_jsonb()`, except that strings do not have to be quoted.';
 
 \quit
 
