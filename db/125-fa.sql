@@ -414,6 +414,7 @@ insert into FA.acts values
   ( 'slash'           ),
   ( 'equals'          ),
   ( 'dcolon'          ),
+  ( 'blank'           ),
   ( 'RESET'           ),
   ( 'STOP'            );
 
@@ -478,16 +479,6 @@ select FA.feed_pairs( array[
     ] );
 
 
-\quit
-
-select FA.feed_pairs( array[
-    array[ 'identifier',  'foo'  ],
-    array[ 'equals',      '::'   ],
-    array[ 'identifier',  'q'    ]
-    ] );
-select * from FA.journal;
-
-\quit
 
 
 
@@ -549,6 +540,8 @@ do $$ begin
   perform FA.push( 'identifier',  'SQL'           );
   perform FA.push( 'dcolon',      '::'            );
   perform FA.push( 'identifier',  'name'          );
+  perform FA.push( 'blank',       ' '             );
+  perform FA.push( 'identifier',  'mytag'         );
   perform FA.push( 'STOP'                         );
   end; $$;
 select * from FA.journal;
