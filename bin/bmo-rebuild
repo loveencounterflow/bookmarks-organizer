@@ -5,7 +5,7 @@ cd "$home"
 
 source bin/_bmo-prepare-environment
 
-sudo -u postgres psql               --set QUIET=on --set ON_ERROR_STOP=1 -f db/teardown.sql
-                 psql -U bmo -d bmo --set QUIET=on --set ON_ERROR_STOP=1 -f db/000-main.sql
+sudo -u postgres psql               -p $bmo_psql_port --set QUIET=on --set ON_ERROR_STOP=1 -f db/teardown.sql
+                 psql -U bmo -d bmo -p $bmo_psql_port --set QUIET=on --set ON_ERROR_STOP=1 -f db/000-main.sql
 
 

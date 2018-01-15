@@ -15,15 +15,40 @@ create schema T;
 
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
-create function T."Python function returning 1d text array"() returns text[] immutable
+create function T."Py 1d text array"() returns text[] immutable
   language plpython3u as $$
   return [ 'helo', 'world', ]
   $$;
+reset role;
 
 -- ---------------------------------------------------------------------------------------------------------
-create table T.probes_and_matchers ( probe text, matcher text[] );
+set role dba;
+create function T."Py 2d text array (plain)"() returns text[] immutable
+  language plpython3u as $$
+  return [ [ 'helo', 'world', ], [ 'fine', 'weather', ], ]
+  $$;
+reset role;
+
+-- ---------------------------------------------------------------------------------------------------------
+set role dba;
+create function T."Py 2d text array (JSONb)"() returns jsonb immutable
+  language plpython3u as $$
+  import json as JSON
+  return JSON.dumps( [ [ 'helo', 'world', ], [ 'fine', 'weather', ], ] )
+  $$;
+reset role;
+
+-- create function T."Py 2d text array (JSONb tunnel; sql)"() returns text[] immutable
+--   language sql as $$
+--   select U.
+--   $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create table T.probes_and_matchers ( probe text, matcher text );
 insert into T.probes_and_matchers values
-  ( 'select T."Python function returning 1d text array"() as d', null );
+  ( 'select T."Py 1d text array"()                as d', $$'{helo,world}'$$                  ),
+  ( 'select T."Py 2d text array (plain)"()        as d', $$'{{helo,world},{fine,weather}}'$$ );
+  -- ( 'select T."Py 2d text array (JSONb)"()        as d', $$'{{helo,world},{fine,weather}}'$$ );
 
 -- ---------------------------------------------------------------------------------------------------------
 create function T.test()
@@ -40,10 +65,11 @@ create function T.test()
     -- .....................................................................................................
     for ¶row in ( select probe, matcher from T.probes_and_matchers ) loop
       execute ¶row.probe                                  into ¶result;
-      perform log( '33391', ¶result::text );
       select  quote_nullable( ¶row.probe )                into probe_q;
       select  quote_nullable( ¶result.d )                 into result_q;
-      select  ¶result.d is not distinct from ¶row.matcher into ok;
+      perform log( '33391-2', 'result_q    ', result_q     );
+      perform log( '33391-3', '¶row.matcher', ¶row.matcher );
+      select  result_q is not distinct from ¶row.matcher into ok;
       -- ...................................................................................................
       if not ok then
         perform log( '10091', probe_q, result_q );
