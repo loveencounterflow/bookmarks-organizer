@@ -30,21 +30,32 @@ rex = re.compile( r"""
 
 
 #-----------------------------------------------------------------------------------------------------------
-def lex_tags( tags_txt ):
+def lex_tags( ctx, tags_txt ):
   R     = []
   parts = rex.findall( tags_txt )
   for part in parts:
+    is_quoted = False
     for idx, group in enumerate( part ):
-      if idx == 1: continue
+      if idx == 1:
+        if group in ( '"', "'", ):
+          is_quoted = True
+        continue
       if len( group ) > 0:
         if group in ( '"', "'", ):
           """### TAINT use interpolation"""
           raise SyntaxError( "lone quote in " + rpr( tags_txt ) )
         # if len( forbidden_pattern.findall( 'name' ) ) > 0:
         #   raise SyntaxError( "illegal tag characters in " + rpr( tags_txt ) )
-        R.append( group )
+        if is_quoted:
+          type = 'identifier'
+        else:
+          if    group == '/':   type = 'slash'
+          elif  group == '=':   type = 'equals'
+          elif  group == '::':  type = 'dcolon'
+          else:                 type = 'identifier'
+        R.append( ( type, group, ) )
         break
-  R = [ r.replace( '\\', '' ) for r in R ]
+  R = [ ( type, group.replace( '\\', '' ), ) for ( type, group ) in R ]
   return R
 
 

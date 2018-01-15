@@ -9,18 +9,33 @@ create schema SRC;
 
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
-create function SRC.lex_tags( x text ) returns text[]
-  immutable returns null on null input language plpython3u as $$
-    plpy.execute( 'select INIT.py_init()' )
-    ctx = GD[ 'ctx' ]
-    return ctx.utp_tag_parser.lex_tags( x )
-    $$;
+/* ### TAINT for backwards compatibility with PostGreSQL 9.6 and below, we have to use JSONb as an
+  intermediate format. */
+create function SRC._lex_tags_py( x text ) returns jsonb
+  immutable strict language plpython3u as $$
+  plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
+  import json as JSON
+  return JSON.dumps( ctx.utp_tag_parser.lex_tags( ctx, x ) )
+  $$;
 reset role;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function SRC.lex_tags( x text ) returns text[]
+  immutable strict language plpgsql as $$
+  declare
+    R       text[];
+    ¶row    jsonb;
+  begin
+    for ¶row in ( select * from jsonb_array_elements_text( SRC._lex_tags_py( x ) ) ) loop
+      R := R || array[ U.text_array_from_json( ¶row ) ] ;
+      end loop;
+    return R;
+    end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
 create function SRC.split_on_whitespace( x text ) returns text[]
-  immutable returns null on null input language sql as $$
+  immutable strict language sql as $$
     select regexp_split_to_array( x, E'\\s+' ); $$;
 reset role;
 
@@ -110,7 +125,7 @@ create view SRC._bookmarks_050_split_values as ( select
     value                                                                       as value,
     case key
       when 'tags' then SRC.lex_tags(            value )
-      when 'url'  then SRC.split_on_whitespace( value )
+      -- when 'url'  then SRC.split_on_whitespace( value )
     else null end                                                               as values
   from SRC._bookmarks_040_split_fields
   );
@@ -132,6 +147,7 @@ select
     linenr                                                            as linenr,
     key                                                               as key,
     -- '∎' || substring( array_to_string( values, '∎' ) for 80 ) || '∎'  as values,
+    FA.feed_pairs( values ),
     values                                                            as values,
     value                                                             as value
   from SRC._bookmarks

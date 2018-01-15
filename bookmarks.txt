@@ -1,11 +1,14 @@
 
 * tags:   tag
-  tags:   tag foo 'bar' "baz" 'gnu x' "moo y"
-  tags:   q=tag q=foo q='bar' q="baz" q='gnu x' q="moo y"
-  tags:   tag::q foo::q 'bar'::q "baz"::q 'gnu x'::q "moo y"::q
   tags:   'tag with spaces'
   tags:   ctx/tag
+  tags:   some/more/context/a-tag='and value'
   tags:   tag=value
+*stop*
+
+* tags:   tag foo 'bar' "baz" 'gnu x' "moo y"
+  tags:   q=tag q=foo q='bar' q="baz" q='gnu x' q="moo y"
+  tags:   tag::q foo::q 'bar'::q "baz"::q 'gnu x'::q "moo y"::q
   tags:   tag='value with spaces 1'
   tags:   tag="value with spaces 2"
   tags:   ctx/tag='value with spaces 1'
@@ -16,7 +19,6 @@
   # maximal form: contextual tag with typed value
   tags:   IT/programming/language=SQL::name
 
-*stop*
 
 * url:    https://github.com/kittykatattack/learningPixi
   url:    http://pixijs.download/release/docs
