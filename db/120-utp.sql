@@ -48,9 +48,8 @@ create function UTP.split_url_phrase( ¶text text ) returns text[] stable strict
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
 create function UTP.lex_tags( text_ text ) returns text[] immutable strict language plpython3u as $$
-  plpy.execute( 'select INIT.py_init()' )
-  ctx = GD[ 'ctx' ]
-  return ctx.utp_tag_parser.lex_tags( text_ )
+  plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
+  return ctx.utp_tag_parser.lex_tags( ctx, text_ )
   $$;
 reset role;
 
