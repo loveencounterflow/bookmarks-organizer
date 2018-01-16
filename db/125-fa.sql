@@ -32,28 +32,6 @@
 drop schema if exists FA cascade;
 create schema FA;
 
-create table FA.d ( id serial, a text, b jsonb );
-
-insert into FA.d ( a, b ) values
-  ( 'helo', '"helo"' ),
-  ( 'helo', '["helo"]' ),
-  ( 'helo', '{"helo":"foo"}' ),
-  ( 'helo', '42' );
-
-
-select
-    a,
-    b,
-    b->'helo'   as "b->'helo'",
-    b->>'helo'  as "b->>'helo'",
-    pg_typeof( b->'helo' ),
-    pg_typeof( b->>'helo' )
-    -- jsonb_typeof( b->>'helo' ),
-    -- jsonb_typeof( b->>'helo' )
-  from FA.d;
--- \quit
-
-
 -- ---------------------------------------------------------------------------------------------------------
 create table FA.states (
   state text unique not null primary key );
@@ -123,6 +101,11 @@ create table FA.registers (
 -- ---------------------------------------------------------------------------------------------------------
 create function FA.registers_as_jsonb_object() returns jsonb stable language sql as $$
   select U.facets_as_jsonb_object( 'select regkey, data from FA.registers' ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA.registers_as_jsonb_object( ¶except_regkey text ) returns jsonb stable language sql as $$
+  select U.facets_as_jsonb_object(
+    format( 'select regkey, data from FA.registers where regkey != %L', ¶except_regkey ) ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FA.proceed( ¶tail text, ¶act text ) returns FA.transitions stable language sql as $$
@@ -256,17 +239,18 @@ create function FA.push( ¶act text ) returns void volatile language sql as $$
 FA Assembly Language
 
 NOP       # no operation (may also use SQL `null` value)
+NUL *     # set all registers to NULL
+NUL Y     # set register Y to NULL
 LOD T     # load data to register T
 MOV T C   # move contents of register T to register C and set register T to NULL
 PSH C     # push data to register C (will become a list if not already a list)
 PSH T C   # push contents of register T to register C and set register T to NULL
-NUL *     # set all registers to NULL
-NUL Y     # set register Y to NULL
+PSH * R   # push (and then clear) all registers as a JSONb object into R
 
 */
 
 -- ---------------------------------------------------------------------------------------------------------
-create type FA._smal_cmd_output as ( count integer, next_cmd text );
+create type FA._smal_cmd_output as ( count integer, next_cmd text, error text );
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FA._smal_clr( ¶cmd_parts text[], ¶data jsonb )
@@ -275,8 +259,12 @@ create function FA._smal_clr( ¶cmd_parts text[], ¶data jsonb )
     R             FA._smal_cmd_output;
   begin
     R := ( 0, null );
-    truncate table FA.raw_journal;
-    R.next_cmd := 'NUL *';
+    if array_length( ¶cmd_parts, 1 ) = 1 then
+      truncate table FA.raw_journal;
+      R.next_cmd := 'NUL *';
+    else
+      R.error := 'CLR does not accept arguments';
+      end if;
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -285,12 +273,21 @@ create function FA._smal_nul( ¶cmd_parts text[], ¶data jsonb )
   declare
     R             FA._smal_cmd_output;
     ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
+    ¶regkey_2     text    :=  ¶cmd_parts[ 3 ];
   begin
     R         := ( 0, null );
     ¶regkey_1 := ¶cmd_parts[ 2 ];
     -- .....................................................................................................
     if ¶regkey_1 = '*' then
-      update FA.registers set data = null;
+      if ¶regkey_2 is null then
+        update FA.registers set data = null;
+      else
+        if ¶regkey_2 = '*' then
+          R.error = 'second argument to PSH can not be star';
+          return R;
+          end if;
+        update FA.registers set data = null where regkey != ¶regkey_2;
+      end if;
     -- .....................................................................................................
     else
       update FA.registers set data = null where regkey = ¶regkey_1 returning 1 into R.count;
@@ -343,27 +340,56 @@ create function FA._smal_psh( ¶cmd_parts text[], ¶data jsonb )
     ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
     ¶regkey_2     text    :=  ¶cmd_parts[ 3 ];
     ¶target_key   text    :=  null;
+  -- .......................................................................................................
+  begin
+    R := ( 0, null );
+    -- .....................................................................................................
+    if ¶regkey_2 is null then
+      ¶target_key :=  ¶regkey_1;
+      if ¶target_key = '*' then
+        R.error = 'PSH * is invalid without target register key';
+        return R;
+        end if;
+    -- .....................................................................................................
+    else
+      ¶target_key :=  ¶regkey_2;
+      if ¶target_key = '*' then
+        R.error = 'unable to push to star register';
+        return R;
+        end if;
+      if ¶regkey_1 = '*' then
+        perform FA._smal_psh_data( ¶target_key, FA.registers_as_jsonb_object( ¶target_key ) );
+        R.next_cmd  := format( 'NUL * %s', ¶target_key );
+      else
+        ¶data       :=  FA._smal_get( ¶regkey_1 );
+        R.next_cmd  := format( 'NUL %s', ¶regkey_1 );
+        end if;
+      end if;
+    -- .....................................................................................................
+    return R; end; $$;
+
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA._smal_psh_data( ¶regkey text, ¶data jsonb )
+  returns void volatile language plpgsql as $$
+  declare
     ¶target       jsonb;
     ¶target_type  text;
   begin
-    R := ( 0, null );
-    if ¶regkey_2 is null then
-      ¶target_key :=  ¶regkey_1;
-    else
-      ¶target_key :=  ¶regkey_2;
-      ¶data       :=  FA._smal_get( ¶regkey_1 );
-      R.next_cmd  := format( 'NUL %s', ¶regkey_1 );
-      end if;
-    ¶target := FA._smal_get( ¶target_key );
-    ¶target_type :=  jsonb_typeof( ¶target );
+    ¶target       := FA._smal_get( ¶regkey );
+    ¶target_type  :=  jsonb_typeof( ¶target );
+    -- .....................................................................................................
     if ( ¶target_type is null ) or ( ¶target_type = 'null' ) then
       ¶target = '[]'::jsonb;
+    -- .....................................................................................................
     elsif ( ¶target_type != 'array' ) then
       ¶target = jsonb_build_array( ¶target );
       end if;
+    -- .....................................................................................................
     ¶target := ¶target || ¶data;
-    perform FA._smal_set( ¶target_key, ¶target );
-    return R; end; $$;
+    perform FA._smal_set( ¶regkey, ¶target );
+    -- .....................................................................................................
+    end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FA.smal( ¶cmd text, ¶data jsonb, ¶transition FA._transition )
@@ -405,7 +431,9 @@ create function FA.smal( ¶cmd text, ¶data jsonb, ¶transition FA._transition )
           raise exception 'unknown command %', ¶cmd;
         end case;
       -- ...................................................................................................
-      if S.count is null then raise exception 'invalid regkey in %', ¶cmd; end if;
+      if    S.error is not  null  then raise exception 'error %  in command %', S.error, ¶cmd;
+      elsif S.count is      null  then raise exception 'invalid regkey in %', ¶cmd; end if;
+      -- ...................................................................................................
       exit when S.next_cmd is null;
       end loop;
     end; $outer$;
@@ -423,6 +451,7 @@ insert into FA.states values
    ( 's3'         ),
    ( 's4'         ),
    ( 's5'         ),
+   ( 's6'         ),
    ( 'LAST'       );
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -440,19 +469,34 @@ insert into FA.acts values
 -- ---------------------------------------------------------------------------------------------------------
 insert into FA.transitions
   ( tail,                 act,                precmd,       point,          postcmd           ) values
+  -- .......................................................................................................
+  /* reset: */
   ( '*',                  'RESET',            'CLR',        'FIRST',        'NOP'             ),
+  -- .......................................................................................................
+  /* inceptive states: */
   ( 'LAST',               'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
   ( 'FIRST',              'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
   ( 'FIRST',              'START',            'NUL *',      's1',           'NOP'             ),
+  -- .......................................................................................................
+  /* intermediate states: */
   ( 's1',                 'identifier',       'LOD T',      's2',           'NOP'             ),
   ( 's2',                 'equals',           'NOP',        's3',           'NOP'             ),
   ( 's2',                 'slash',            'PSH T C',    's1',           'NOP'             ),
   ( 's3',                 'identifier',       'LOD V',      's4',           'NOP'             ),
   ( 's4',                 'dcolon',           'NOP',        's5',           'NOP'             ),
-  ( 's5',                 'identifier',       'LOD Y',      's5',           'NOP'             ),
-  ( 's1',                 'STOP',             'NOP',        'LAST',         'NOP'             ),
-  ( 's5',                 'STOP',             'NOP',        'LAST',         'NOP'             ),
-  ( 's4',                 'STOP',             'NOP',        'LAST',         'NOP'             );
+  ( 's5',                 'identifier',       'LOD Y',      's6',           'NOP'             ),
+  -- .......................................................................................................
+  /* states that indicate completion and lead to next item: */
+  ( 's1',                 'blank',            'PSH * R',    's1',           'NOP'             ),
+  ( 's2',                 'blank',            'PSH * R',    's1',           'NOP'             ),
+  ( 's6',                 'blank',            'PSH * R',    's1',           'NOP'             ),
+  ( 's4',                 'blank',            'PSH * R',    's1',           'NOP'             ),
+  -- .......................................................................................................
+  /* states that indicate completion and lead to STOP: */
+  ( 's1',                 'STOP',             'PSH * R',    'LAST',         'NOP'             ),
+  ( 's2',                 'STOP',             'PSH * R',    'LAST',         'NOP'             ),
+  ( 's6',                 'STOP',             'PSH * R',    'LAST',         'NOP'             ),
+  ( 's4',                 'STOP',             'PSH * R',    'LAST',         'NOP'             );
 
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -460,7 +504,8 @@ insert into FA.registers ( regkey, name, comment ) values
   ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
   ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
   ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
-  ( 'Y', 'type',      'the type of a tag, written with a double coloan, as in `Mickey::name`' );
+  ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' ),
+  ( 'R', 'result',    'list of results' );
 
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -502,6 +547,18 @@ select FA.feed_pairs( array[
 
 
 -- ---------------------------------------------------------------------------------------------------------
+/* spaceships */
+do $$ begin
+  perform FA.push( 'RESET'                      );
+  perform FA.push( 'START'                      );
+  perform FA.push( 'identifier',  'spaceships'       );
+  perform FA.push( 'STOP'                       );
+  end; $$;
+-- perform FA.push( 'CLEAR'                      );
+select * from FA.raw_journal;
+select * from FA.journal;
+
+-- ---------------------------------------------------------------------------------------------------------
 /* color=red */
 do $$ begin
   perform FA.push( 'RESET'                      );
@@ -514,7 +571,6 @@ do $$ begin
   perform FA.push( 'STOP'                       );
   end; $$;
 -- perform FA.push( 'CLEAR'                      );
-select * from FA.registers;
 select * from FA.raw_journal;
 select * from FA.journal;
 
@@ -530,8 +586,8 @@ do $$ begin
   perform FA.push( 'identifier',  'q'           );
   perform FA.push( 'STOP'                       );
   end; $$;
-select * from FA.journal;
 select * from FA.raw_journal;
+select * from FA.journal;
 
 /* author=Faulkner::name */
 do $$ begin
@@ -545,9 +601,9 @@ do $$ begin
   perform FA.push( 'STOP'                       );
   -- perform FA.push( 'equals',      '='          );
   end; $$;
+select * from FA.raw_journal;
 select * from FA.journal;
 select * from FA.registers;
-select * from FA.raw_journal;
 
 /* IT/programming/language=SQL::name */
 /* '{IT,/,programming,/,language,=,SQL,::,name}' */
@@ -567,8 +623,8 @@ do $$ begin
   perform FA.push( 'identifier',  'mytag'         );
   perform FA.push( 'STOP'                         );
   end; $$;
-select * from FA.journal;
 select * from FA.raw_journal;
+select * from FA.journal;
 select * from FA.result;
 select * from FA.raw_result;
 
