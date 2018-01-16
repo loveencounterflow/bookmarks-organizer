@@ -235,6 +235,23 @@ create function jb( ¶x anyelement ) returns jsonb immutable strict language sql
 comment on function jb( text )        is '`jb()` works almost like `to_jsonb()`, except that strings do not have to be quoted.';
 comment on function jb( anyelement )  is '`jb()` works almost like `to_jsonb()`, except that strings do not have to be quoted.';
 
+-- ---------------------------------------------------------------------------------------------------------
+set role dba;
+/* Expects an SQL query as text that delivers two columns, the first being names and the second JSONb
+  values of the object to be built. */
+create function U.facets_as_jsonb_object( sql_ text ) returns jsonb stable language plpython3u as $$
+  plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
+  import json as JSON
+  R             = {}
+  result        = plpy.execute( sql_ )
+  ( k, v, )     = result.colnames()
+  for row in result:
+    if row[ v ] == None:
+      R[ row[ k ] ] = None
+      continue
+    R[ row[ k ] ] = JSON.loads( row[ v ] )
+  return JSON.dumps( R ) $$;
+reset role;
 
 -- =========================================================================================================
 -- ARRAYS

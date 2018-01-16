@@ -2,6 +2,8 @@
 
 
 
+
+
 /* thx to http://felixge.de/2017/07/27/implementing-state-machines-in-postgresql.html */
 
 
@@ -29,6 +31,28 @@
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists FA cascade;
 create schema FA;
+
+create table FA.d ( id serial, a text, b jsonb );
+
+insert into FA.d ( a, b ) values
+  ( 'helo', '"helo"' ),
+  ( 'helo', '["helo"]' ),
+  ( 'helo', '{"helo":"foo"}' ),
+  ( 'helo', '42' );
+
+
+select
+    a,
+    b,
+    b->'helo'   as "b->'helo'",
+    b->>'helo'  as "b->>'helo'",
+    pg_typeof( b->'helo' ),
+    pg_typeof( b->>'helo' )
+    -- jsonb_typeof( b->>'helo' ),
+    -- jsonb_typeof( b->>'helo' )
+  from FA.d;
+-- \quit
+
 
 -- ---------------------------------------------------------------------------------------------------------
 create table FA.states (
@@ -86,24 +110,19 @@ create view FA.raw_result as ( select * from FA.raw_journal where point = 'LAST'
 
 -- ---------------------------------------------------------------------------------------------------------
 create table FA.registers (
-  id      integer check ( id::U.positive_integer = id ),
+  id      serial,
   regkey  text unique not null primary key check ( regkey::U.chr = regkey ),
+  data    jsonb,
   name    text unique not null,
-  data    jsonb );
+  comment text );
 
--- ---------------------------------------------------------------------------------------------------------
-create function FA.registers_as_jsonb_list() returns jsonb stable language sql as $$
-  select jsonb_agg( r.data order by id ) from FA.registers as r; $$;
+-- -- ---------------------------------------------------------------------------------------------------------
+-- create function FA.registers_as_jsonb_list() returns jsonb stable language sql as $$
+--   select jsonb_agg( r.data order by id ) from FA.registers as r; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FA.registers_as_jsonb_object() returns jsonb stable language sql as $$
-  with  keys    as ( select array_agg( name order by id ) as k from FA.registers ),
-        values  as ( select array_agg( data order by id ) as v from FA.registers )
-  select jsonb_object( keys.k, values.v::text[] ) from keys, values; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FA.get_current_aid() returns integer stable language sql as $$
-  select max( aid ) from FA.raw_journal; $$;
+  select U.facets_as_jsonb_object( 'select regkey, data from FA.registers' ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FA.proceed( ¶tail text, ¶act text ) returns FA.transitions stable language sql as $$
@@ -132,7 +151,7 @@ create function FA._get_create_journal_statement() returns text volatile languag
       left join ( select
         aid,
         ';
-    select array_agg( format( 'registers->>%s as %I', id - 1, regkey ) order by id ) from FA.registers into ¶names;
+    select array_agg( format( 'registers->>%L as %I', regkey, regkey ) order by id ) from FA.registers into ¶names;
     R := R || array_to_string( ¶names, ', ' );
     R := R || E'\n        from FA.raw_journal ) as j2 using ( aid ) );';
     return R;
@@ -207,7 +226,7 @@ create function FA.push( ¶act text, ¶data jsonb ) returns void volatile langua
     perform FA.smal( ¶transition.postcmd, ¶data, ¶transition );
     -- .....................................................................................................
     /* Reflect state of registers table into `raw_journal ( registers )`: */
-    update FA.raw_journal set registers = FA.registers_as_jsonb_list() where aid = ¶aid;
+    update FA.raw_journal set registers = FA.registers_as_jsonb_object() where aid = ¶aid;
     -- .....................................................................................................
     end; $$;
 
@@ -437,11 +456,11 @@ insert into FA.transitions
 
 
 -- ---------------------------------------------------------------------------------------------------------
-insert into FA.registers ( id, regkey, name ) values
-  ( 1, 'C', 'context'   ),
-  ( 2, 'T', 'tag'       ),
-  ( 3, 'V', 'value'     ),
-  ( 4, 'Y', 'type'      );
+insert into FA.registers ( regkey, name, comment ) values
+  ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
+  ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
+  ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
+  ( 'Y', 'type',      'the type of a tag, written with a double coloan, as in `Mickey::name`' );
 
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -495,8 +514,9 @@ do $$ begin
   perform FA.push( 'STOP'                       );
   end; $$;
 -- perform FA.push( 'CLEAR'                      );
+select * from FA.registers;
+select * from FA.raw_journal;
 select * from FA.journal;
-
 
 
 /* foo::q */
@@ -511,6 +531,7 @@ do $$ begin
   perform FA.push( 'STOP'                       );
   end; $$;
 select * from FA.journal;
+select * from FA.raw_journal;
 
 /* author=Faulkner::name */
 do $$ begin
@@ -525,6 +546,8 @@ do $$ begin
   -- perform FA.push( 'equals',      '='          );
   end; $$;
 select * from FA.journal;
+select * from FA.registers;
+select * from FA.raw_journal;
 
 /* IT/programming/language=SQL::name */
 /* '{IT,/,programming,/,language,=,SQL,::,name}' */
@@ -545,6 +568,7 @@ do $$ begin
   perform FA.push( 'STOP'                         );
   end; $$;
 select * from FA.journal;
+select * from FA.raw_journal;
 select * from FA.result;
 select * from FA.raw_result;
 
