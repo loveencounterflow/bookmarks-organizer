@@ -64,21 +64,21 @@ create type FM.transition as (
   point         text,
   postcmd       text );
 
--- -- ---------------------------------------------------------------------------------------------------------
--- create table FM.transitions of FM.transition (
---   tail          references FM.states    ( state   ),
---   act           references FM.acts      ( act     ),
---   point         references FM.states    ( state   ),
---   primary key ( tail, act ) );
-
--- -- ---------------------------------------------------------------------------------------------------------
-create table FM.transitions (
-  tail          text                    references FM.states    ( state   ),
-  act           text                    references FM.acts      ( act     ),
-  precmd        text,
-  point         text                    references FM.states    ( state   ),
-  postcmd       text,
+-- ---------------------------------------------------------------------------------------------------------
+create table FM.transitions of FM.transition (
+  tail          references FM.states    ( state   ),
+  act           references FM.acts      ( act     ),
+  point         references FM.states    ( state   ),
   primary key ( tail, act ) );
+
+-- -- -- ---------------------------------------------------------------------------------------------------------
+-- create table FM.transitions (
+--   tail          text                    references FM.states    ( state   ),
+--   act           text                    references FM.acts      ( act     ),
+--   precmd        text,
+--   point         text                    references FM.states    ( state   ),
+--   postcmd       text,
+--   primary key ( tail, act ) );
 
 -- -- ---------------------------------------------------------------------------------------------------------
 create function FM._act_is_starred( ¶act text ) returns boolean stable language sql as $$
