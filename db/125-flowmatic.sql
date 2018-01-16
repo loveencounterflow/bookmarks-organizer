@@ -71,15 +71,6 @@ create table FM.transitions of FM.transition (
   point         references FM.states    ( state   ),
   primary key ( tail, act ) );
 
--- -- -- ---------------------------------------------------------------------------------------------------------
--- create table FM.transitions (
---   tail          text                    references FM.states    ( state   ),
---   act           text                    references FM.acts      ( act     ),
---   precmd        text,
---   point         text                    references FM.states    ( state   ),
---   postcmd       text,
---   primary key ( tail, act ) );
-
 -- -- ---------------------------------------------------------------------------------------------------------
 create function FM._act_is_starred( ¶act text ) returns boolean stable language sql as $$
   select exists ( select 1 from FM.transitions where act = ¶act and tail = '*' ); $$;
@@ -116,27 +107,47 @@ create table FM.registers (
 create table FM.board ( bc serial primary key );
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.bc() returns integer stable language sql as $$
-  select max( bc ) from FM.board; $$;
+create function FM.bc()   returns integer stable language sql as $$ select max(  bc ) from FM.board;    $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.new_boardline() returns void stable language sql as $$
+create function FM.new_boardline() returns void volatile language sql as $$
   /* thx to https://stackoverflow.com/a/12336849/7568091 */
-  insert into fa.board values ( default ); $$;
+  insert into FM.board values ( default ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.registers_as_jsonb_object() returns jsonb stable language sql as $$
-  select U.facets_as_jsonb_object( 'select regkey, data from FM.registers' ); $$;
+create function FM.copy_boardline_to_journal() returns void volatile language sql as $$
+  select null::void; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.registers_as_jsonb_object( ¶except_regkey text ) returns jsonb stable language sql as $$
-  select U.facets_as_jsonb_object(
-    format( 'select regkey, data from FM.registers where regkey != %L', ¶except_regkey ) ); $$;
+create function FM.get_adaptive_statement_for_copy_function() returns text stable language plpgsql as $outer$
+  declare
+    R     text;
+    ¶q1   text[];
+    ¶q2   text;
+  begin
+    -- .....................................................................................................
+    select array_agg( format( '%I', regkey ) order by id ) from FM.registers
+      into ¶q1;
+    -- .....................................................................................................
+    ¶q2 :=  array_to_string( ¶q1, ', ' );
+    R   := format( '
+      create or replace function FM.copy_boardline_to_journal() returns void volatile language sql as $$
+        update FM.journal set
+        ( %s ) = ( select %s from FM.board where bc = FM.bc() )
+        where aid = FM.aid(); $$;',
+      ¶q2, ¶q2 );
+    -- .....................................................................................................
+    return R; end; $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM.adapt_copy_function() returns void volatile language plpgsql as $$
+  begin
+    execute FM.get_adaptive_statement_for_copy_function(); end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT we use `NAMEOF.relation` (a.k.a. `regclass`) to ensure integrity and then go and insert the
   name using `%s` formatting; not clear whether that is Bobby-Tables-proof. */
-create function FM.get_adaptive_statement_for_registers( ¶tablename NAMEOF.relation ) returns text volatile
+create function FM.get_adaptive_statement_for_table( ¶tablename NAMEOF.relation ) returns text volatile
   language plpgsql as $$
   declare
     R         text;
@@ -156,10 +167,9 @@ create function FM.get_adaptive_statement_for_registers( ¶tablename NAMEOF.rela
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.adapt_board() returns void volatile language plpgsql as $outer$
+create function FM.adapt_board() returns void volatile language plpgsql as $$
   begin
-    execute FM.get_adaptive_statement_for_registers( 'FM.board'::NAMEOF.relation );
-    end; $outer$;
+    execute FM.get_adaptive_statement_for_table( 'FM.board'::NAMEOF.relation ); end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* JOURNAL */
@@ -179,10 +189,83 @@ create table FM.journal (
 create view FM.journal_results as ( select * from FM.journal where point = 'LAST' );
 
 -- ---------------------------------------------------------------------------------------------------------
+create function FM.aid()  returns integer stable language sql as $$ select max( aid ) from FM.journal;  $$;
+
+-- ---------------------------------------------------------------------------------------------------------
 create function FM.adapt_journal() returns void volatile language plpgsql as $outer$
   begin
-    execute FM.get_adaptive_statement_for_registers( 'FM.journal'::NAMEOF.relation );
+    execute FM.get_adaptive_statement_for_table( 'FM.journal'::NAMEOF.relation );
     end; $outer$;
+
+/* ################################################################### */
+/* ################################################################### */
+/* ################################################################### */
+-- ---------------------------------------------------------------------------------------------------------
+insert into FM.registers ( regkey, name, comment ) values
+  ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
+  ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
+  ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
+  ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' ),
+  ( 'R', 'result',    'list of results' );
+-- ---------------------------------------------------------------------------------------------------------
+insert into FM.states values
+   ( '*'          ),
+   ( 'FIRST'      ),
+   ( 's1'         ),
+   ( 's2'         ),
+   ( 's3'         ),
+   ( 's4'         ),
+   ( 's5'         ),
+   ( 's6'         ),
+   ( 'LAST'       );
+
+-- ---------------------------------------------------------------------------------------------------------
+insert into FM.acts values
+  ( 'CLEAR'           ),
+  ( 'START'           ),
+  ( 'identifier'      ),
+  ( 'slash'           ),
+  ( 'equals'          ),
+  ( 'dcolon'          ),
+  ( 'blank'           ),
+  ( 'RESET'           ),
+  ( 'STOP'            );
+
+-- ---------------------------------------------------------------------------------------------------------
+do $$ begin
+  perform FM.adapt_journal();
+  perform FM.adapt_board();
+  perform FM.adapt_copy_function();
+  -- perform FM.push( 'RESET' );
+  end; $$;
+
+do $$ begin perform FM.new_boardline(); end; $$;
+update FM.board set "C" = '1' where bc = 1;
+update FM.board set "T" = '2' where bc = 1;
+update FM.board set "V" = '3' where bc = 1;
+update FM.board set "Y" = '4' where bc = 1;
+update FM.board set "R" = '5' where bc = 1;
+insert into FM.journal ( aid, bc, act ) values ( 22, 1, 'START' );
+select FM.copy_boardline_to_journal();
+-- update FM.journal set
+--   ( "C" ) = ( select "C" from FM.board where bc = FM.bc() )
+--   where aid = FM.aid();
+
+\echo FM.registers
+select * from FM.registers;
+\echo FM.transitions
+select * from FM.transitions;
+\echo FM.board
+select * from FM.board;
+\echo FM.journal
+select * from FM.journal;
+select FM.bc();
+select FM.aid();
+xxx;
+
+/* ################################################################### */
+/* ################################################################### */
+/* ################################################################### */
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM._journal_as_tabular() returns text
@@ -197,17 +280,15 @@ create function FM._journal_as_tabular() returns text
 /* ### TAINT should probably use `lock for update` */
 create function FM.push( ¶act text, ¶data jsonb ) returns void volatile language plpgsql as $$
   declare
-    ¶new_state  text;
-    ¶tail       text;
-    ¶aid        integer;
-    ¶transition FM.transition;
+    ¶new_state    text;
+    ¶tail         text;
+    ¶aid          integer;
+    ¶transition   FM.transition;
   -- .......................................................................................................
   begin
-    /* ### TAINT rewrite this as
-      ¶transition :=  FM.proceed( '*', ¶act );
-      if ¶transition is null then ...
-    */
-    if FM._act_is_starred( ¶act ) then
+    -- .....................................................................................................
+    ¶transition :=  FM.proceed( '*', ¶act );
+    if ¶transition is not null then
       /* Starred acts always succeed, even on an empty journal where there is no previous act and, thus, no
       tail; when can therefore always set the tail to '*'. */
       ¶tail := '*';
@@ -247,7 +328,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
     perform FM.smal( ¶transition.postcmd, ¶data, ¶transition );
     -- .....................................................................................................
     /* Reflect state of registers table into `journal ( registers )`: */
-    update FM.journal set registers = FM.registers_as_jsonb_object() where aid = ¶aid;
+    perform FM.copy_boardline_to_journal();
     -- .....................................................................................................
     end; $$;
 
