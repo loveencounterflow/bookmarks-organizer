@@ -33,12 +33,18 @@ drop schema if exists FA cascade;
 create schema FA;
 
 -- ---------------------------------------------------------------------------------------------------------
+/* STATES AND ACTS */
+
+-- ---------------------------------------------------------------------------------------------------------
 create table FA.states (
   state text unique not null primary key );
 
 -- ---------------------------------------------------------------------------------------------------------
 create table FA.acts (
   act text unique not null primary key );
+
+-- ---------------------------------------------------------------------------------------------------------
+/* TRANSITIONS */
 
 -- ---------------------------------------------------------------------------------------------------------
 create type FA._transition as (
@@ -73,8 +79,75 @@ alter table FA.transitions
   check ( FA._star_count_ok( tail, act ) );
 
 -- ---------------------------------------------------------------------------------------------------------
+create function FA.proceed( ¶tail text, ¶act text ) returns FA.transitions stable language sql as $$
+  select * from FA.transitions where ( tail = ¶tail ) and ( act = ¶act ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+/* REGISTERS */
+
+-- ---------------------------------------------------------------------------------------------------------
+/* `FA.registers` is where registers are defined: */
+create table FA.registers (
+  id      serial,
+  regkey  text unique not null primary key check ( regkey::U.chr = regkey ),
+  name    text unique not null,
+  comment text );
+
+-- ---------------------------------------------------------------------------------------------------------
+/* ...and the 'board' is where register data gets collected. 'BC' is the board counter, which identifies
+  rows; referenced by `FA.journal ( bc )`: */
+create table FA.board ( bc serial primary key );
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA.bc() returns integer stable language sql as $$
+  select max( bc ) from FA.board; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA.new_boardline() returns void stable language sql as $$
+  /* thx to https://stackoverflow.com/a/12336849/7568091 */
+  insert into fa.board values ( default ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA.registers_as_jsonb_object() returns jsonb stable language sql as $$
+  select U.facets_as_jsonb_object( 'select regkey, data from FA.registers' ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA.registers_as_jsonb_object( ¶except_regkey text ) returns jsonb stable language sql as $$
+  select U.facets_as_jsonb_object(
+    format( 'select regkey, data from FA.registers where regkey != %L', ¶except_regkey ) ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA._get_adapt_board_statement() returns text volatile language plpgsql as $outer$
+  declare
+    R         text;
+    ¶q        text[];
+    ¶row      record;
+  begin
+    -- .....................................................................................................
+    select
+        array_agg(
+          format( E'alter table FA.board add column %I jsonb default null;\n', regkey )
+          order by id )
+      from FA.registers
+      into ¶q;
+    -- .....................................................................................................
+    R := array_to_string( ¶q, '' );
+    return R;
+    end; $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FA.adapt_board() returns void volatile language plpgsql as $outer$
+  begin
+    execute FA._get_adapt_board_statement();
+    end; $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+/* JOURNAL */
+
+-- ---------------------------------------------------------------------------------------------------------
 create table FA.raw_journal (
   aid           serial    primary key,
+  bc            integer                 references FA.board     ( bc      ),
   tail          text                    references FA.states    ( state   ),
   act           text      not null      references FA.acts      ( act     ),
   point         text                    references FA.states    ( state   ),
@@ -87,37 +160,13 @@ create table FA.raw_journal (
 create view FA.raw_result as ( select * from FA.raw_journal where point = 'LAST' );
 
 -- ---------------------------------------------------------------------------------------------------------
-create table FA.registers (
-  id      serial,
-  regkey  text unique not null primary key check ( regkey::U.chr = regkey ),
-  data    jsonb,
-  name    text unique not null,
-  comment text );
-
--- -- ---------------------------------------------------------------------------------------------------------
--- create function FA.registers_as_jsonb_list() returns jsonb stable language sql as $$
---   select jsonb_agg( r.data order by id ) from FA.registers as r; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FA.registers_as_jsonb_object() returns jsonb stable language sql as $$
-  select U.facets_as_jsonb_object( 'select regkey, data from FA.registers' ); $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FA.registers_as_jsonb_object( ¶except_regkey text ) returns jsonb stable language sql as $$
-  select U.facets_as_jsonb_object(
-    format( 'select regkey, data from FA.registers where regkey != %L', ¶except_regkey ) ); $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FA.proceed( ¶tail text, ¶act text ) returns FA.transitions stable language sql as $$
-  select * from FA.transitions where ( tail = ¶tail ) and ( act = ¶act ); $$;
-
--- ---------------------------------------------------------------------------------------------------------
 create function FA._get_create_journal_statement() returns text volatile language plpgsql as $outer$
   declare
     R         text;
-    ¶names    text[];
+    ¶regkeys  text[];
     ¶row      record;
   begin
+    -- .....................................................................................................
     R := '
       create view FA.journal as ( select
           j1.aid      as aid,
@@ -128,17 +177,27 @@ create function FA._get_create_journal_statement() returns text volatile languag
           j1.postcmd  as postcmd,
           j1.data     as data,
           ';
-    select array_agg( format( 'j2.%I', regkey ) order by id ) from FA.registers into ¶names;
-    R := R || array_to_string( ¶names, ', ' );
+    -- .....................................................................................................
+    select
+        array_agg( format( 'j2.%I', regkey ) order by id )
+      from FA.registers
+      into ¶regkeys;
+    -- .....................................................................................................
+    R := R || array_to_string( ¶regkeys, ', ' );
     R := R || E'\n        from FA.raw_journal as j1
       left join ( select
         aid,
         ';
-    select array_agg( format( 'registers->>%L as %I', regkey, regkey ) order by id ) from FA.registers into ¶names;
-    R := R || array_to_string( ¶names, ', ' );
+    -- .....................................................................................................
+    select
+        array_agg( format( 'registers->>%L as %I', regkey, regkey ) order by id )
+      from FA.registers
+      into ¶regkeys;
+    -- .....................................................................................................
+    R := R || array_to_string( ¶regkeys, ', ' );
     R := R || E'\n        from FA.raw_journal ) as j2 using ( aid ) );';
-    return R;
-    end; $outer$;
+    -- .....................................................................................................
+    return R; end; $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FA.create_journal() returns void volatile language plpgsql as $outer$
@@ -154,6 +213,9 @@ create function FA._journal_as_tabular() returns text
   immutable strict language sql as $outer$
     select U.tabulate_query( $$ select * from FA.journal order by aid; $$ );
     $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+/* PUSH */
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT should probably use `lock for update` */
@@ -443,6 +505,14 @@ create function FA.smal( ¶cmd text, ¶data jsonb, ¶transition FA._transition )
 /* ====================================================================================================== */
 
 -- ---------------------------------------------------------------------------------------------------------
+insert into FA.registers ( regkey, name, comment ) values
+  ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
+  ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
+  ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
+  ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' ),
+  ( 'R', 'result',    'list of results' );
+
+-- ---------------------------------------------------------------------------------------------------------
 insert into FA.states values
    ( '*'          ),
    ( 'FIRST'      ),
@@ -499,18 +569,13 @@ insert into FA.transitions
   ( 's4',                 'STOP',             'PSH * R',    'LAST',         'NOP'             );
 
 
--- ---------------------------------------------------------------------------------------------------------
-insert into FA.registers ( regkey, name, comment ) values
-  ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
-  ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
-  ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
-  ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' ),
-  ( 'R', 'result',    'list of results' );
-
 
 -- ---------------------------------------------------------------------------------------------------------
-do $$ begin perform FA.create_journal(); end; $$;
-do $$ begin perform FA.push( 'RESET' ); end; $$;
+do $$ begin
+  perform FA.create_journal();
+  perform FA.adapt_board();
+  perform FA.push( 'RESET' );
+  end; $$;
 
 
 /* ###################################################################################################### */
