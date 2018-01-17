@@ -153,14 +153,15 @@ insert into FM.transitions
   ( tail,                 act,                precmd,       point,          postcmd           ) values
   -- .......................................................................................................
   /* reset: */
-  ( '*',                  'RESET',            'CLR',        'FIRST',        'NOP'             ),
+  ( '*',                  'RESET',            'RST',        'FIRST',        'NOP'             ),
   -- .......................................................................................................
   /* inceptive states: */
   ( 'LAST',               'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
   ( 'FIRST',              'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
-  ( 'FIRST',              'START',            'NUL *',      's1',           'NOP'             ),
+  ( 'FIRST',              'START',            'ADV',        's1',           'NOP'             ),
   -- .......................................................................................................
   /* intermediate states: */
+  -- ( 's0',                 '->',               'ADV',        's1',           'NOP'             ),
   ( 's1',                 'identifier',       'LOD T',      's2',           'NOP'             ),
   ( 's2',                 'equals',           'NOP',        's3',           'NOP'             ),
   ( 's2',                 'slash',            'PSH T C',    's1',           'NOP'             ),
@@ -169,16 +170,16 @@ insert into FM.transitions
   ( 's5',                 'identifier',       'LOD Y',      's6',           'NOP'             ),
   -- .......................................................................................................
   /* states that indicate completion and lead to next item: */
-  ( 's1',                 'blank',            'PSH * R',    's1',           'NOP'             ),
-  ( 's2',                 'blank',            'PSH * R',    's1',           'NOP'             ),
-  ( 's6',                 'blank',            'PSH * R',    's1',           'NOP'             ),
-  ( 's4',                 'blank',            'PSH * R',    's1',           'NOP'             ),
+  ( 's1',                 'blank',            'ADV',        's1',           'NOP'             ), /* ### TAIN consider to abolish postcmd, multiple cmds in favor of 'walkthrough' actions with '->' */
+  ( 's2',                 'blank',            'ADV',        's1',           'NOP'             ), /* ### TAIN consider to abolish postcmd, multiple cmds in favor of 'walkthrough' actions with '->' */
+  ( 's6',                 'blank',            'ADV',        's1',           'NOP'             ), /* ### TAIN consider to abolish postcmd, multiple cmds in favor of 'walkthrough' actions with '->' */
+  ( 's4',                 'blank',            'ADV',        's1',           'NOP'             ), /* ### TAIN consider to abolish postcmd, multiple cmds in favor of 'walkthrough' actions with '->' */
   -- .......................................................................................................
   /* states that indicate completion and lead to STOP: */
-  ( 's1',                 'STOP',             'PSH * R',    'LAST',         'NOP'             ),
-  ( 's2',                 'STOP',             'PSH * R',    'LAST',         'NOP'             ),
-  ( 's6',                 'STOP',             'PSH * R',    'LAST',         'NOP'             ),
-  ( 's4',                 'STOP',             'PSH * R',    'LAST',         'NOP'             );
+  ( 's1',                 'STOP',             'NOP',        'LAST',         'NOP'             ),
+  ( 's2',                 'STOP',             'NOP',        'LAST',         'NOP'             ),
+  ( 's6',                 'STOP',             'NOP',        'LAST',         'NOP'             ),
+  ( 's4',                 'STOP',             'NOP',        'LAST',         'NOP'             );
 
 
 
@@ -186,6 +187,7 @@ insert into FM.transitions
 do $$ begin
   perform FM.adapt_journal();
   perform FM.adapt_board();
+  perform FM.adapt_copy_function();
   perform FM.create_longboard();
   perform FMAS.create_set();
   perform FMAS.create_get();
@@ -233,11 +235,11 @@ create function FM.feed_pairs( ¶acts_and_data text[] ) returns jsonb volatile s
     return R; end; $$;
 
 
-select FM.feed_pairs( array[
-    array[ 'identifier',  'foo'  ],
-    array[ 'equals',      '::'   ],
-    array[ 'identifier',  'q'    ]
-    ] );
+-- select FM.feed_pairs( array[
+--     array[ 'identifier',  'foo'  ],
+--     array[ 'equals',      '::'   ],
+--     array[ 'identifier',  'q'    ]
+--     ] );
 
 
 
@@ -246,14 +248,16 @@ select FM.feed_pairs( array[
 -- ---------------------------------------------------------------------------------------------------------
 /* spaceships */
 do $$ begin
-  perform FM.push( 'RESET'                      );
+  perform FM.push( 'CLEAR'                      );
   perform FM.push( 'START'                      );
   perform FM.push( 'identifier',  'spaceships'       );
+  perform FM.push( 'blank',       ' '       );
+  perform FM.push( 'identifier',  'planets'       );
   perform FM.push( 'STOP'                       );
   end; $$;
 -- perform FM.push( 'CLEAR'                      );
 select * from FM.journal;
-select * from FM.journal;
+select * from FM.board;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* color=red */
@@ -269,7 +273,8 @@ do $$ begin
   end; $$;
 -- perform FM.push( 'CLEAR'                      );
 select * from FM.journal;
-select * from FM.journal;
+select * from FM.board;
+\quit
 
 
 /* foo::q */
@@ -321,8 +326,8 @@ do $$ begin
   perform FM.push( 'STOP'                         );
   end; $$;
 select * from FM.journal;
-select * from FM.result;
-select * from FM.raw_result;
+-- select * from FM.result;
+-- select * from FM.raw_result;
 
 
 -- ---------------------------------------------------------------------------------------------------------

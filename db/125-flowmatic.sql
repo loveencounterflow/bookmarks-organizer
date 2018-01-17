@@ -112,7 +112,9 @@ create function FM.bc()   returns integer stable language sql as $$ select max( 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.new_boardline() returns void volatile language sql as $$
   /* thx to https://stackoverflow.com/a/12336849/7568091 */
-  insert into FM.board values ( default ); $$;
+  insert into FM.board values ( default );
+  -- update FM.journal set bc = FM.bc();
+  $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.copy_boardline_to_journal() returns void volatile language sql as $$
@@ -205,7 +207,7 @@ create function FM.adapt_board() returns void volatile language plpgsql as $$
 -- ---------------------------------------------------------------------------------------------------------
 create table FM.journal (
   aid           serial    primary key,
-  bc            integer                 references FM.board     ( bc      ),
+  bc            integer                 references FM.board     ( bc      ) default FM.bc(),
   tail          text                    references FM.states    ( state   ),
   act           text      not null      references FM.acts      ( act     ),
   point         text                    references FM.states    ( state   ),
@@ -360,6 +362,32 @@ create function FMAS.set( ¶regkey text, ¶data jsonb ) returns void volatile la
   select null::void; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
+create function FMAS.adv( ¶cmd_parts text[], ¶data jsonb )
+  returns FMAS.cmd_output volatile language plpgsql as $$
+  declare
+    R             FMAS.cmd_output;
+  begin
+    R := ( null, null );
+    perform FM.new_boardline();
+    return R; end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FMAS.rst( ¶cmd_parts text[], ¶data jsonb )
+  returns FMAS.cmd_output volatile language plpgsql as $$
+  declare
+    R             FMAS.cmd_output;
+  begin
+    R := ( null, null );
+    if array_length( ¶cmd_parts, 1 ) = 1 then
+      truncate table FM.journal cascade;
+      truncate table FM.board   cascade;
+      R.next_cmd := 'NUL *';
+    else
+      R.error := 'RST does not accept arguments';
+      end if;
+    return R; end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
 create function FMAS.clr( ¶cmd_parts text[], ¶data jsonb )
   returns FMAS.cmd_output volatile language plpgsql as $$
   declare
@@ -367,7 +395,7 @@ create function FMAS.clr( ¶cmd_parts text[], ¶data jsonb )
   begin
     R := ( null, null );
     if array_length( ¶cmd_parts, 1 ) = 1 then
-      truncate table FM.journal;
+      truncate table FM.journal cascade;
       R.next_cmd := 'NUL *';
     else
       R.error := 'CLR does not accept arguments';
@@ -395,11 +423,10 @@ create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb )
           end if;
         perform FMAS.set_all_except( ¶regkey_2, ¶data );
         return R;
-        -- !!! except  FMAS.set_all_except( ¶regkey_2, data );
       end if;
     -- .....................................................................................................
     else
-      perform FMAS.set( ¶regkey_1, nul );
+      perform FMAS.set( ¶regkey_1, null );
       end if;
     -- .....................................................................................................
     return R; end; $$;
@@ -473,6 +500,8 @@ create function FMAS.psh_data( ¶regkey text, ¶data jsonb )
   begin
     ¶target       := FMAS.get( ¶regkey );
     ¶target_type  :=  jsonb_typeof( ¶target );
+    perform log();
+    perform log( '33401-1', 'psh_data', ¶target::text, ¶target_type, ¶data::text );
     -- .....................................................................................................
     if ( ¶target_type is null ) or ( ¶target_type = 'null' ) then
       ¶target = '[]'::jsonb;
@@ -481,7 +510,10 @@ create function FMAS.psh_data( ¶regkey text, ¶data jsonb )
       ¶target = jsonb_build_array( ¶target );
       end if;
     -- .....................................................................................................
+    perform log( '33401-2', 'psh_data', ¶target::text, ¶data::text );
     ¶target := ¶target || ¶data;
+    perform log( '33401-3', 'psh_data', ¶target::text );
+    perform log();
     perform FMAS.set( ¶regkey, ¶target );
     -- .....................................................................................................
     end; $$;
@@ -511,10 +543,13 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
       ¶cmd        :=  trim( both from ¶cmd );
       ¶cmd_parts  :=  regexp_split_to_array( ¶cmd, '\s+' );
       ¶base       :=  ¶cmd_parts[ 1 ];
+      perform log( '10021', 'do',  ¶cmd, ¶data::text, ¶transition::text );
       -- ...................................................................................................
       case ¶base
+        when 'RST' then S := FMAS.rst( ¶cmd_parts, ¶data );
         when 'CLR' then S := FMAS.clr( ¶cmd_parts, ¶data );
         when 'NUL' then S := FMAS.nul( ¶cmd_parts, ¶data );
+        when 'ADV' then S := FMAS.adv( ¶cmd_parts, ¶data );
         when 'LOD' then S := FMAS.lod( ¶cmd_parts, ¶data );
         when 'MOV' then S := FMAS.mov( ¶cmd_parts, ¶data );
         when 'PSH' then S := FMAS.psh( ¶cmd_parts, ¶data );
@@ -646,7 +681,7 @@ create function FMAS.get_create_statement_for_get() returns text stable language
     -- .....................................................................................................
     ¶q2 :=  array_to_string( ¶q1, E'\n' );
     R   := format( '
-      create or replace function FMAS.get( ¶regkey text, ¶data jsonb )
+      create or replace function FMAS.get( ¶regkey text )
         returns jsonb volatile language plpgsql as $$
         declare
           R jsonb;
