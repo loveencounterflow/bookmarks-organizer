@@ -156,8 +156,10 @@ insert into FM.transitions
   ( '*',                  'RESET',            'RST',        'FIRST',        'NOP'             ),
   -- .......................................................................................................
   /* inceptive states: */
-  ( 'LAST',               'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
-  ( 'FIRST',              'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
+  ( 'LAST',               'CLEAR',            'NOP',        'FIRST',        'NOP'             ),
+  ( 'FIRST',              'CLEAR',            'NOP',        'FIRST',        'NOP'             ),
+  -- ( 'LAST',               'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
+  -- ( 'FIRST',              'CLEAR',            'CLR',        'FIRST',        'NOP'             ),
   ( 'FIRST',              'START',            'ADV',        's1',           'NOP'             ),
   -- .......................................................................................................
   /* intermediate states: */
@@ -262,7 +264,7 @@ select * from FM.board;
 -- ---------------------------------------------------------------------------------------------------------
 /* color=red */
 do $$ begin
-  perform FM.push( 'RESET'                      );
+  perform FM.push( 'CLEAR'                      );
   perform FM.push( 'START'                      );
   perform FM.push( 'identifier',  'color'       );
   perform FM.push( 'equals',      '='           );

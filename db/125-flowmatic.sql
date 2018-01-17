@@ -387,20 +387,20 @@ create function FMAS.rst( ¶cmd_parts text[], ¶data jsonb )
       end if;
     return R; end; $$;
 
--- ---------------------------------------------------------------------------------------------------------
-create function FMAS.clr( ¶cmd_parts text[], ¶data jsonb )
-  returns FMAS.cmd_output volatile language plpgsql as $$
-  declare
-    R             FMAS.cmd_output;
-  begin
-    R := ( null, null );
-    if array_length( ¶cmd_parts, 1 ) = 1 then
-      truncate table FM.journal cascade;
-      R.next_cmd := 'NUL *';
-    else
-      R.error := 'CLR does not accept arguments';
-      end if;
-    return R; end; $$;
+-- -- ---------------------------------------------------------------------------------------------------------
+-- create function FMAS.clr( ¶cmd_parts text[], ¶data jsonb )
+--   returns FMAS.cmd_output volatile language plpgsql as $$
+--   declare
+--     R             FMAS.cmd_output;
+--   begin
+--     R := ( null, null );
+--     if array_length( ¶cmd_parts, 1 ) = 1 then
+--       truncate table FM.journal cascade;
+--       R.next_cmd := 'NUL *';
+--     else
+--       R.error := 'CLR does not accept arguments';
+--       end if;
+--     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb )
@@ -547,7 +547,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
       -- ...................................................................................................
       case ¶base
         when 'RST' then S := FMAS.rst( ¶cmd_parts, ¶data );
-        when 'CLR' then S := FMAS.clr( ¶cmd_parts, ¶data );
+        -- when 'CLR' then S := FMAS.clr( ¶cmd_parts, ¶data );
         when 'NUL' then S := FMAS.nul( ¶cmd_parts, ¶data );
         when 'ADV' then S := FMAS.adv( ¶cmd_parts, ¶data );
         when 'LOD' then S := FMAS.lod( ¶cmd_parts, ¶data );
