@@ -205,11 +205,12 @@ create function FM.adapt_board() returns void volatile language plpgsql as $$
 
 -- ---------------------------------------------------------------------------------------------------------
 create table FM.journal (
-  ac           serial    primary key,
-  bc            integer                 references FM.board     ( bc      ) default FM.bc(),
-  tail          text                    references FM.states    ( state   ),
-  act           text      not null      references FM.acts      ( act     ),
-  point         text                    references FM.states    ( state   ),
+  ac            serial    unique  not null  primary key,
+  bc            integer                     references FM.board     ( bc      ) default FM.bc(),
+  cc            integer           not null                                      default 1,
+  tail          text                        references FM.states    ( state   ),
+  act           text              not null  references FM.acts      ( act     ),
+  point         text                        references FM.states    ( state   ),
   cmd           text,
   data          jsonb );
 
@@ -218,6 +219,7 @@ create view FM.journal_results as ( select * from FM.journal where point = 'LAST
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.ac()  returns integer stable language sql as $$ select max( ac ) from FM.journal;  $$;
+create function FM.cc()  returns integer stable language sql as $$ select max( cc ) from FM.journal;  $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.adapt_journal() returns void volatile language plpgsql as $outer$
@@ -240,8 +242,9 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
   declare
     ¶new_state    text;
     ¶tail         text;
-    ¶ac           integer;
+    ¶cc           integer;
     ¶transition   FM.transition;
+    ¶cmd_output   FMAS.cmd_output;
   -- .......................................................................................................
   begin
     -- .....................................................................................................
@@ -268,18 +271,20 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
           ¶tail, ¶act, ¶data;
       end if;
     -- .....................................................................................................
-    /* Perform associated SMAL pre-update commands: */
-    -- X := json_agg( t )::text from ( select ¶transition ) as t; perform log( '00902', 'transition', X );
-    perform FMAS.do( ¶transition.cmd, ¶data, ¶transition );
+    /* Perform associated FMAS commands: */
+    ¶cmd_output := FMAS.do( ¶transition.cmd, ¶data, ¶transition );
+    -- .....................................................................................................
+    ¶cc         := coalesce( FM.cc(), 1 );
+    if ¶cmd_output.next_cc then ¶cc = ¶cc + 1; end if;
     -- .....................................................................................................
     /* Insert new line into journal and update register copy: */
-    insert into FM.journal ( tail, act, point, cmd, data ) values
-      ( ¶tail,
+    insert into FM.journal ( cc, tail, act, point, cmd, data ) values
+      ( ¶cc,
+        ¶tail,
         ¶act,
         ¶transition.point,
         regexp_replace( ¶transition.cmd, '^NOP$', '' ),
-        ¶data )
-      returning ac into ¶ac;
+        ¶data );
     -- .....................................................................................................
     /* Reflect state of registers table into `journal ( registers )`: */
     perform FM.copy_boardline_to_journal();
@@ -345,7 +350,7 @@ drop schema if exists FMAS cascade;
 create schema FMAS;
 
 -- ---------------------------------------------------------------------------------------------------------
-create type FMAS.cmd_output as ( next_cmd text, error text );
+create type FMAS.cmd_output as ( next_cmd text, next_cc boolean, error text );
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.get( ¶regkey text ) returns jsonb stable language sql as $$
@@ -361,7 +366,7 @@ create function FMAS.adv( ¶cmd_parts text[], ¶data jsonb )
   declare
     R             FMAS.cmd_output;
   begin
-    R := ( null, null );
+    R.next_cc := true;
     perform FM.new_boardline();
     return R; end; $$;
 
@@ -514,7 +519,7 @@ create function FMAS.psh_data( ¶regkey text, ¶data jsonb )
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
-  returns void volatile language plpgsql as $outer$
+  returns FMAS.cmd_output volatile language plpgsql as $outer$
   declare
     ¶cmd_parts    text[];
     ¶base         text;
@@ -533,7 +538,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
         end if;
       -- ...................................................................................................
       /* ### TAINT should check whether there are extraneous arguments with NOP */
-      if ( ¶cmd is null ) or ( ¶cmd = 'NOP' ) or ( ¶cmd = '' ) then return; end if;
+      if ( ¶cmd is null ) or ( ¶cmd = 'NOP' ) or ( ¶cmd = '' ) then return S; end if;
       ¶cmd        :=  trim( both from ¶cmd );
       ¶cmd_parts  :=  regexp_split_to_array( ¶cmd, '\s+' );
       ¶base       :=  ¶cmd_parts[ 1 ];
@@ -541,7 +546,6 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
       -- ...................................................................................................
       case ¶base
         when 'RST' then S := FMAS.rst( ¶cmd_parts, ¶data );
-        -- when 'CLR' then S := FMAS.clr( ¶cmd_parts, ¶data );
         when 'NUL' then S := FMAS.nul( ¶cmd_parts, ¶data );
         when 'ADV' then S := FMAS.adv( ¶cmd_parts, ¶data );
         when 'LOD' then S := FMAS.lod( ¶cmd_parts, ¶data );
@@ -561,7 +565,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
       -- ...................................................................................................
       exit when S.next_cmd is null;
       end loop;
-    end; $outer$;
+    return S; end; $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.get_create_statement_for_set() returns text stable language plpgsql as $outer$
