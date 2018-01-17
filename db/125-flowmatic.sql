@@ -136,7 +136,7 @@ create function FM.get_adaptive_statement_for_copy_function() returns text stabl
       create or replace function FM.copy_boardline_to_journal() returns void volatile language sql as $$
         update FM.journal set
         ( %s ) = ( select %s from FM.board where bc = FM.bc() )
-        where aid = FM.aid(); $$;',
+        where ac = FM.ac(); $$;',
       ¶q2, ¶q2 );
     -- .....................................................................................................
     return R; end; $outer$;
@@ -206,7 +206,7 @@ create function FM.adapt_board() returns void volatile language plpgsql as $$
 
 -- ---------------------------------------------------------------------------------------------------------
 create table FM.journal (
-  aid           serial    primary key,
+  ac           serial    primary key,
   bc            integer                 references FM.board     ( bc      ) default FM.bc(),
   tail          text                    references FM.states    ( state   ),
   act           text      not null      references FM.acts      ( act     ),
@@ -219,7 +219,7 @@ create table FM.journal (
 create view FM.journal_results as ( select * from FM.journal where point = 'LAST' );
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.aid()  returns integer stable language sql as $$ select max( aid ) from FM.journal;  $$;
+create function FM.ac()  returns integer stable language sql as $$ select max( ac ) from FM.journal;  $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.adapt_journal() returns void volatile language plpgsql as $outer$
@@ -230,7 +230,7 @@ create function FM.adapt_journal() returns void volatile language plpgsql as $ou
 -- ---------------------------------------------------------------------------------------------------------
 create function FM._journal_as_tabular() returns text
   immutable strict language sql as $outer$
-    select U.tabulate_query( $$ select * from FM.journal order by aid; $$ );
+    select U.tabulate_query( $$ select * from FM.journal order by ac; $$ );
     $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -242,7 +242,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
   declare
     ¶new_state    text;
     ¶tail         text;
-    ¶aid          integer;
+    ¶ac           integer;
     ¶transition   FM.transition;
   -- .......................................................................................................
   begin
@@ -255,7 +255,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
     -- .....................................................................................................
     else
       /* ### TAINT consider to use lag() instead */
-      select into ¶tail point from FM.journal order by aid desc limit 1;
+      select into ¶tail point from FM.journal order by ac desc limit 1;
       end if;
     -- .....................................................................................................
     /* Obtain transition from tail and act: */
@@ -282,7 +282,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
         regexp_replace( ¶transition.precmd,   '^NOP$', '' ),
         regexp_replace( ¶transition.postcmd,  '^NOP$', '' ),
         ¶data )
-      returning aid into ¶aid;
+      returning ac into ¶ac;
     -- .....................................................................................................
     /* Perform associated SMAL post-update commands: */
     perform FMAS.do( ¶transition.postcmd, ¶data, ¶transition );

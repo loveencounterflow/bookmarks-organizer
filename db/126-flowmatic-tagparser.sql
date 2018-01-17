@@ -62,11 +62,11 @@
 -- update FM.board set "V" = '33' where bc = FM.bc();
 -- update FM.board set "Y" = '34' where bc = FM.bc();
 -- update FM.board set "R" = '35' where bc = FM.bc();
--- insert into FM.journal ( aid, bc, act ) values ( 22, 1, 'START' );
+-- insert into FM.journal ( ac, bc, act ) values ( 22, 1, 'START' );
 -- select FM.copy_boardline_to_journal();
 -- -- update FM.journal set
 -- --   ( "C" ) = ( select "C" from FM.board where bc = FM.bc() )
--- --   where aid = FM.aid();
+-- --   where ac = FM.ac();
 
 -- \echo FM.registers
 -- select * from FM.registers;
@@ -77,7 +77,7 @@
 -- \echo FM.journal
 -- select * from FM.journal;
 -- select FM.bc();
--- select FM.aid();
+-- select FM.ac();
 
 -- -- create view FM.longboard as (
 -- --   select bc, 'C' as regkey, "C" from FM.board union all
@@ -377,11 +377,11 @@ foo::q                              |  ∎                foo         ∎       
 
 
 create table FM.journal (
-  aid serial primary key,
+  ac serial primary key,
   foo text
   );
 create table FM.registers (
-  aid integer references FM.journal ( aid ),
+  ac integer references FM.journal ( ac ),
   facets jsonb
   );
 
@@ -393,13 +393,13 @@ select * from FM.registers;
 
 select from FM.journal;
 
--- select aid, ( select * from jsonb_each( facets ) ) as v1 from FM.registers;
+-- select ac, ( select * from jsonb_each( facets ) ) as v1 from FM.registers;
 -- select
---     j.aid,
+--     j.ac,
 --     j.foo,
 
 --   from FM.journal as j
---   left join FM.registers as r using ( aid );
+--   left join FM.registers as r using ( ac );
 
 \quit
 
