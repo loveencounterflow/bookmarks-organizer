@@ -60,9 +60,8 @@ create table FM.acts (
 create type FM.transition as (
   tail          text,
   act           text,
-  precmd        text,
-  point         text,
-  postcmd       text );
+  cmd           text,
+  point         text );
 
 -- ---------------------------------------------------------------------------------------------------------
 create table FM.transitions of FM.transition (
@@ -211,8 +210,7 @@ create table FM.journal (
   tail          text                    references FM.states    ( state   ),
   act           text      not null      references FM.acts      ( act     ),
   point         text                    references FM.states    ( state   ),
-  precmd        text,
-  postcmd       text,
+  cmd           text,
   data          jsonb );
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -272,20 +270,16 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
     -- .....................................................................................................
     /* Perform associated SMAL pre-update commands: */
     -- X := json_agg( t )::text from ( select ¶transition ) as t; perform log( '00902', 'transition', X );
-    perform FMAS.do( ¶transition.precmd, ¶data, ¶transition );
+    perform FMAS.do( ¶transition.cmd, ¶data, ¶transition );
     -- .....................................................................................................
     /* Insert new line into journal and update register copy: */
-    insert into FM.journal ( tail, act, point, precmd, postcmd, data ) values
+    insert into FM.journal ( tail, act, point, cmd, data ) values
       ( ¶tail,
         ¶act,
         ¶transition.point,
-        regexp_replace( ¶transition.precmd,   '^NOP$', '' ),
-        regexp_replace( ¶transition.postcmd,  '^NOP$', '' ),
+        regexp_replace( ¶transition.cmd, '^NOP$', '' ),
         ¶data )
       returning ac into ¶ac;
-    -- .....................................................................................................
-    /* Perform associated SMAL post-update commands: */
-    perform FMAS.do( ¶transition.postcmd, ¶data, ¶transition );
     -- .....................................................................................................
     /* Reflect state of registers table into `journal ( registers )`: */
     perform FM.copy_boardline_to_journal();
