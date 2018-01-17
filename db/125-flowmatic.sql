@@ -334,6 +334,8 @@ MOV T C   # move contents of register T to register C and set register T to NULL
 PSH C     # push data to register C (will become a list if not already a list)
 PSH T C   # push contents of register T to register C and set register T to NULL
 PSH * R   # push (and then clear) all registers as a JSONb object into R
+NBC       # Next Board Count / New Board Line, i.e. new set of registers for next partial result
+NCC       # Next Case Count, indicates the next batch, line, set of inputs (with 1 or more board lines)
 
 */
 
@@ -361,7 +363,16 @@ create function FMAS.set( ¶regkey text, ¶data jsonb ) returns void volatile la
   select null::void; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.adv( ¶cmd_parts text[], ¶data jsonb )
+create function FMAS.nbc( ¶cmd_parts text[], ¶data jsonb )
+  returns FMAS.cmd_output volatile language plpgsql as $$
+  declare
+    R             FMAS.cmd_output;
+  begin
+    perform FM.new_boardline();
+    return R; end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FMAS.ncc( ¶cmd_parts text[], ¶data jsonb )
   returns FMAS.cmd_output volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
@@ -547,7 +558,8 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
       case ¶base
         when 'RST' then S := FMAS.rst( ¶cmd_parts, ¶data );
         when 'NUL' then S := FMAS.nul( ¶cmd_parts, ¶data );
-        when 'ADV' then S := FMAS.adv( ¶cmd_parts, ¶data );
+        when 'NBC' then S := FMAS.nbc( ¶cmd_parts, ¶data );
+        when 'NCC' then S := FMAS.ncc( ¶cmd_parts, ¶data );
         when 'LOD' then S := FMAS.lod( ¶cmd_parts, ¶data );
         when 'MOV' then S := FMAS.mov( ¶cmd_parts, ¶data );
         when 'PSH' then S := FMAS.psh( ¶cmd_parts, ¶data );

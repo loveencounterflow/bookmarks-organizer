@@ -40,8 +40,8 @@ insert into FM.transitions
   ( '*',                  'RESET',            'RST',        'FIRST'         ),
   -- .......................................................................................................
   /* inceptive states: */
-  ( 'FIRST',              'START',            'ADV',        's1'            ),
-  ( 'LAST',               'START',            'ADV',        's1'            ),
+  ( 'FIRST',              'START',            'NCC',        's1'            ),
+  ( 'LAST',               'START',            'NCC',        's1'            ),
   -- .......................................................................................................
   /* intermediate states: */
   -- ( 's0',                 '->',               'ADV',        's1'             ),
@@ -53,10 +53,10 @@ insert into FM.transitions
   ( 's5',                 'identifier',       'LOD Y',      's6'            ),
   -- .......................................................................................................
   /* states that indicate completion and lead to next item: */
-  ( 's1',                 'blank',            'ADV',        's1'            ),
-  ( 's2',                 'blank',            'ADV',        's1'            ),
-  ( 's6',                 'blank',            'ADV',        's1'            ),
-  ( 's4',                 'blank',            'ADV',        's1'            ),
+  ( 's1',                 'blank',            'NBC',        's1'            ),
+  ( 's2',                 'blank',            'NBC',        's1'            ),
+  ( 's6',                 'blank',            'NBC',        's1'            ),
+  ( 's4',                 'blank',            'NBC',        's1'            ),
   -- .......................................................................................................
   /* states that indicate completion and lead to STOP: */
   ( 's1',                 'STOP',             'NOP',        'LAST'          ),
