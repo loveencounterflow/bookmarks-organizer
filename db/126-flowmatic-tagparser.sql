@@ -22,7 +22,6 @@ insert into FM.states values
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into FM.acts values
-  ( 'CLEAR'           ),
   ( 'START'           ),
   ( 'identifier'      ),
   ( 'slash'           ),
@@ -41,11 +40,8 @@ insert into FM.transitions
   ( '*',                  'RESET',            'RST',        'FIRST'         ),
   -- .......................................................................................................
   /* inceptive states: */
-  ( 'LAST',               'CLEAR',            'NOP',        'FIRST'         ),
-  ( 'FIRST',              'CLEAR',            'NOP',        'FIRST'         ),
-  -- ( 'LAST',               'CLEAR',            'CLR',        'FIRST'         ),
-  -- ( 'FIRST',              'CLEAR',            'CLR',        'FIRST'         ),
   ( 'FIRST',              'START',            'ADV',        's1'            ),
+  ( 'LAST',               'START',            'ADV',        's1'            ),
   -- .......................................................................................................
   /* intermediate states: */
   -- ( 's0',                 '->',               'ADV',        's1'             ),
@@ -83,19 +79,16 @@ do $$ begin
   perform FM.push( 'RESET' );
   end; $$;
 
+\echo FM.registers
 select * from FM.registers;
+\echo FM.transitions
 select * from FM.transitions;
+\echo FM.board
 select * from FM.board;
+\echo FM.journal
 select * from FM.journal;
 
 /* ###################################################################################################### */
-
--- select array_agg( tail ) as "start" from FM.transitions where act = 'START';
--- select array_agg( tail ) as "stop"  from FM.transitions where act = 'STOP';
--- select array_agg( tail ) as "reset" from FM.transitions where act = 'RESET';
--- select array_agg( tail ) as "clear" from FM.transitions where act = 'CLEAR';
--- select exists ( select 1 from FM.transitions where act = 'RESET' and tail = '*' );
--- select exists ( select 1 from FM.transitions where act = 'CLEAR' and tail = '*' );
 
 create function FM.get_registers() returns jsonb stable language plpgsql as $$
   declare
@@ -114,7 +107,6 @@ create function FM.feed_pairs( ¶acts_and_data text[] ) returns jsonb volatile s
   declare
     R jsonb;
   begin
-    perform FM.push( 'CLEAR'  );
     perform FM.push( 'START'  );
     perform FM.push( pair[ 1 ], pair[ 2 ] ) from U.unnest_2d_1d( ¶acts_and_data ) as pair;
     perform FM.push( 'STOP'   );
@@ -135,21 +127,34 @@ create function FM.feed_pairs( ¶acts_and_data text[] ) returns jsonb volatile s
 -- ---------------------------------------------------------------------------------------------------------
 /* spaceships */
 do $$ begin
-  perform FM.push( 'CLEAR'                      );
-  perform FM.push( 'START'                      );
+  perform FM.push( 'RESET'                           );
+  perform FM.push( 'START'                           );
   perform FM.push( 'identifier',  'spaceships'       );
-  perform FM.push( 'blank',       ' '       );
-  perform FM.push( 'identifier',  'planets'       );
-  perform FM.push( 'STOP'                       );
+  perform FM.push( 'blank',       ' '                );
+  perform FM.push( 'identifier',  'planets'          );
+  perform FM.push( 'STOP'                            );
   end; $$;
--- perform FM.push( 'CLEAR'                      );
 select * from FM.journal;
 select * from FM.board;
 
 -- ---------------------------------------------------------------------------------------------------------
+/* spaceships */
+do $$ begin
+  perform FM.push( 'RESET'                           );
+  perform FM.push( 'START'                           );
+  perform FM.push( 'identifier',  'spaceships'       );
+  perform FM.push( 'STOP'                            );
+  perform FM.push( 'START'                           );
+  perform FM.push( 'identifier',  'planets'          );
+  perform FM.push( 'STOP'                            );
+  end; $$;
+select * from FM.journal;
+select * from FM.board;
+\quit
+
+-- ---------------------------------------------------------------------------------------------------------
 /* color=red */
 do $$ begin
-  perform FM.push( 'CLEAR'                      );
   perform FM.push( 'START'                      );
   perform FM.push( 'identifier',  'color'       );
   perform FM.push( 'equals',      '='           );
@@ -158,7 +163,6 @@ do $$ begin
   perform FM.push( 'identifier',  'red'         );
   perform FM.push( 'STOP'                       );
   end; $$;
--- perform FM.push( 'CLEAR'                      );
 select * from FM.journal;
 select * from FM.board;
 \quit
@@ -180,7 +184,6 @@ select * from FM.journal;
 
 /* author=Faulkner::name */
 do $$ begin
-  perform FM.push( 'CLEAR'                      );
   perform FM.push( 'START'                      );
   perform FM.push( 'identifier',  'author'      );
   perform FM.push( 'equals',      '='           );
@@ -197,7 +200,6 @@ select * from FM.registers;
 /* IT/programming/language=SQL::name */
 /* '{IT,/,programming,/,language,=,SQL,::,name}' */
 do $$ begin
-  perform FM.push( 'CLEAR'                        );
   perform FM.push( 'START'                        );
   perform FM.push( 'identifier',  'IT'            );
   perform FM.push( 'slash',       '/'             );
