@@ -521,9 +521,6 @@ create function FMAS.psh( ¶cmd_parts text[], ¶data jsonb )
         perform FMAS.psh_data( ¶target_key, FM.get_registers_except( ¶target_key ) );
         R.next_cmd  := format( 'NUL * %s', ¶target_key );
       else
-        -- perform log( '79787', '¶data', ¶data::text );
-        -- ¶data       :=  FMAS.get( ¶regkey_1 );
-        -- perform log( '79787', '¶data', ¶data::text );
         perform FMAS.psh_data( ¶target_key, FMAS.get( ¶regkey_1 ) );
         R.next_cmd  := format( 'NUL %s', ¶regkey_1 );
         end if;
@@ -540,8 +537,6 @@ create function FMAS.psh_data( ¶regkey text, ¶data jsonb )
   begin
     ¶target       := FMAS.get( ¶regkey );
     ¶target_type  :=  jsonb_typeof( ¶target );
-    perform log();
-    perform log( '33401-1', 'psh_data', ¶target::text, ¶target_type, ¶data::text );
     -- .....................................................................................................
     if ( ¶target_type is null ) or ( ¶target_type = 'null' ) then
       ¶target = '[]'::jsonb;
@@ -550,10 +545,7 @@ create function FMAS.psh_data( ¶regkey text, ¶data jsonb )
       ¶target = jsonb_build_array( ¶target );
       end if;
     -- .....................................................................................................
-    perform log( '33401-2', 'psh_data', ¶target::text, ¶data::text );
     ¶target := ¶target || ¶data;
-    perform log( '33401-3', 'psh_data', ¶target::text );
-    perform log();
     perform FMAS.set( ¶regkey, ¶target );
     -- .....................................................................................................
     end; $$;
