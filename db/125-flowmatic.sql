@@ -271,7 +271,6 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
     ¶transition :=  FM.proceed( ¶tail, ¶act );
     -- .....................................................................................................
     loop
-      perform log( '77782', 'loop' );
       -- ...................................................................................................
       if not ( ¶next_transition is null ) then
         ¶transition       :=  ¶next_transition;
