@@ -247,11 +247,12 @@ create function FM._journal_as_tabular() returns text
 /* ### TAINT should probably use `lock for update` */
 create function FM.push( ¶act text, ¶data jsonb ) returns void volatile language plpgsql as $$
   declare
-    ¶new_state    text;
-    ¶tail         text;
-    ¶cc           integer;
-    ¶transition   FM.transition;
-    ¶cmd_output   FMAS.cmd_output;
+    ¶new_state        text;
+    ¶tail             text;
+    ¶cc               integer;
+    ¶transition       FM.transition;
+    ¶next_transition  FM.transition;
+    ¶cmd_output       FMAS.cmd_output;
   -- .......................................................................................................
   begin
     -- .....................................................................................................
@@ -269,37 +270,52 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
     /* Obtain transition from tail and act: */
     ¶transition :=  FM.proceed( ¶tail, ¶act );
     -- .....................................................................................................
-    /* Error out in case no matching transition was found: */
-    if ¶transition is null then
-      perform log( 'FM #19001', 'Journal up to problematic act:' );
-      perform log( FM._journal_as_tabular() );
-      raise exception
-        'invalid act: { state: %, act: %, data: %, } -> null',
-          ¶tail, ¶act, ¶data;
-      end if;
-    -- .....................................................................................................
-    /* Perform associated FMAS commands: */
-    ¶cmd_output := FMAS.do( ¶transition.cmd, ¶data, ¶transition );
-    -- .....................................................................................................
-    ¶cc         := coalesce( FM.cc(), 1 );
-    if ¶cmd_output.next_cc then ¶cc = ¶cc + 1; end if;
-    -- .....................................................................................................
-    /* Insert new line into journal and update register copy: */
-    insert into FM.journal ( cc, tc, tail, act, cmd, point, data ) values
-      ( ¶cc,
-        ¶transition.tc,
-        ¶tail,
-        ¶act,
-        regexp_replace( ¶transition.cmd, '^NOP$', '' ),
-        ¶transition.point,
-        ¶data );
-    -- .....................................................................................................
-    /* Reflect state of registers table into `journal ( registers )`: */
-    perform FM.copy_boardline_to_journal();
-    -- .....................................................................................................
-    if ¶transition.point = '...' then
-      perform log( '99474', 'continuation' );
-      end if;
+    loop
+      -- ...................................................................................................
+      if ¶next_transition is not null then
+        ¶transition       :=  ¶next_transition;
+        ¶next_transition :=  null;
+        end if;
+      -- .....................................................................................................
+      /* Error out in case no matching transition was found: */
+      if ¶transition is null then
+        perform log( 'FM #19001', 'Journal up to problematic act:' );
+        perform log( FM._journal_as_tabular() );
+        raise exception
+          'invalid act: { state: %, act: %, data: %, } -> null',
+            ¶tail, ¶act, ¶data;
+        end if;
+      -- .....................................................................................................
+      /* Perform associated FMAS commands: */
+      ¶cmd_output := FMAS.do( ¶transition.cmd, ¶data, ¶transition );
+      -- .....................................................................................................
+      ¶cc         := coalesce( FM.cc(), 1 );
+      if ¶cmd_output.next_cc then ¶cc = ¶cc + 1; end if;
+      -- .....................................................................................................
+      /* Insert new line into journal and update register copy: */
+      insert into FM.journal ( cc, tc, tail, act, cmd, point, data ) values
+        ( ¶cc,
+          ¶transition.tc,
+          ¶tail,
+          ¶act,
+          regexp_replace( ¶transition.cmd, '^NOP$', '' ),
+          ¶transition.point,
+          ¶data );
+      -- .....................................................................................................
+      /* Reflect state of registers table into `journal ( registers )`: */
+      perform FM.copy_boardline_to_journal();
+      -- .....................................................................................................
+      if ¶transition.point = '...' then
+        perform log( '99474', 'continuation' );
+        perform log( '99474', ¶transition.tc::text );
+        select * from FM.transitions
+          where tc = ¶transition.tc + 1
+          into ¶next_transition;
+        perform log( '99474', ¶next_transition::text );
+        end if;
+      -- ...................................................................................................
+      exit when ¶next_transition is null;
+      end loop;
     -- .....................................................................................................
     end; $$;
 
