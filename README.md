@@ -45,23 +45,24 @@ py.test --tap-files
   match any point, even a non-existing one when the journal is empty after after
   initialization and can thus be used to bootstrap the FA.
 
-* `...`—a.k.a. 'ellipsis', 'anonymous' or 'continue'; may occur as point (where
-  it signifies 'continue with next transition' in order of inseetion to
-  transitions table) or as tail (where it means 'continued from previous
-  transition')
+* `...`—a.k.a. 'ellipsis', 'anonymous', 'continuation' or 'continue'; may occur
+  as point (where it signifies 'continue with next transition' in order of
+  inseetion to transitions table) or as tail (where it means 'continued from
+  previous transition').
 
 ## Symbolic and Built-In Acts
 
 
-* `RESET`—to be called as the first act after setup; initializes journal (but not the board)
+* `RESET`—to be called as the first act after setup; initializes journal (but
+  not the board).
 
-* `START`—to be called as the first act of a new case
+* `START`—to be called as the first act of a new case.
 
-* `STOP`-to be called as the last act of a case
+* `STOP`-to be called as the last act of a case.
 
 * `->`—a.k.a. 'walkthrough', 'then' or 'auto-act'; indicates that the
-  assciatiated command is to be executed without waiting for the next act. This allows to write
-  sequences of commands.
+  assciatiated command is to be executed without waiting for the next act. This
+  allows to write sequences of commands.
 
 ## Constraints on Transitions Table
 
@@ -74,5 +75,10 @@ py.test --tap-files
   a starred act can have only this single entry in the transitions table.
   **Note** It is possible that we re-define the star to mean 'default'
   transition for a given act in the future and lift this restriction.
+
+* A transition that *ends* in `...` (continuation) must be followed by a
+  transiton that *starts* with a `...` (continuation); the inverse also holds.
+  IOW, continuation points and tails must always occur in immediately adjacent
+  lines of the transitions table.
 
 

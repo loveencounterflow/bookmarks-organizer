@@ -59,6 +59,7 @@ insert into FM.transitions
   ( '...',                '->',               'NBC',        's1'            ),
   ( 's6',                 'blank',            'NBC',        's1'            ),
   ( 's4',                 'blank',            'NBC',        's1'            ),
+  -- ( 's2',                 'blank',            'YES',        's9'            ),
   -- ( 's9',                 '->',               'FOO',        '...'           ),
   -- ( '...',                '->',               'BAR',        '...'           ),
   -- ( '...',                '->',               'BAZ',        's1'            ),

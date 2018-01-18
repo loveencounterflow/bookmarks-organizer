@@ -297,6 +297,10 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
     /* Reflect state of registers table into `journal ( registers )`: */
     perform FM.copy_boardline_to_journal();
     -- .....................................................................................................
+    if ¶transition.point = '...' then
+      perform log( '99474', 'continuation' );
+      end if;
+    -- .....................................................................................................
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
