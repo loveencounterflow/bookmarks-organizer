@@ -81,4 +81,8 @@ py.test --tap-files
   IOW, continuation points and tails must always occur in immediately adjacent
   lines of the transitions table.
 
+* For the time being, a transition with a continuation tail must have a
+  walkthrough act. That is, a series of commands that are connected by `...`
+  (continuations) can not wait for a specific action anywhere; such series must
+  always run to completion until a properly named point is reached.
 
