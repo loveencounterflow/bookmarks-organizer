@@ -216,8 +216,8 @@ create table FM.journal (
   tc            integer           not null  references FM.transitions ( tc      ),
   tail          text                        references FM.states      ( state   ),
   act           text              not null  references FM.acts        ( act     ),
-  point         text                        references FM.states      ( state   ),
   cmd           text,
+  point         text                        references FM.states      ( state   ),
   data          jsonb,
   ok            boolean                                                           default false );
 
@@ -285,13 +285,13 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
     if ¶cmd_output.next_cc then ¶cc = ¶cc + 1; end if;
     -- .....................................................................................................
     /* Insert new line into journal and update register copy: */
-    insert into FM.journal ( cc, tc, tail, act, point, cmd, data ) values
+    insert into FM.journal ( cc, tc, tail, act, cmd, point, data ) values
       ( ¶cc,
         ¶transition.tc,
         ¶tail,
         ¶act,
-        ¶transition.point,
         regexp_replace( ¶transition.cmd, '^NOP$', '' ),
+        ¶transition.point,
         ¶data );
     -- .....................................................................................................
     /* Reflect state of registers table into `journal ( registers )`: */
