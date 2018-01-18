@@ -212,7 +212,7 @@ create function FM.adapt_board() returns void volatile language plpgsql as $$
 create table FM.journal (
   ac            serial    unique  not null  primary key,
   bc            integer                     references FM.board       ( bc      ) default FM.bc(),
-  cc            integer           not null                                        default 1,
+  cc            integer           not null,
   tc            integer           not null  references FM.transitions ( tc      ),
   tail          text                        references FM.states      ( state   ),
   act           text              not null  references FM.acts        ( act     ),
@@ -222,7 +222,8 @@ create table FM.journal (
   ok            boolean                                                           default false );
 
 -- ---------------------------------------------------------------------------------------------------------
-create view FM.results as ( select * from FM.journal where point = 'LAST' );
+create sequence FM.cc_seq minvalue 0 start 0;
+do $$ begin perform nextval( 'FM.cc_seq' ); end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.ac()  returns integer stable language sql as $$ select max( ac ) from FM.journal;  $$;
@@ -274,6 +275,9 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
       -- ...................................................................................................
       if not ( ¶next_transition is null ) then
         ¶transition       :=  ¶next_transition;
+        ¶act              :=  ¶next_transition.act;
+        ¶tail             :=  ¶next_transition.tail;
+        ¶data             :=  null;
         ¶next_transition  :=  null;
         end if;
       -- ...................................................................................................
@@ -290,9 +294,9 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
       ¶cmd_output := FMAS.do( ¶transition.cmd, ¶data, ¶transition );
       -- ...................................................................................................
       /* Start new case in journal when FMAS command says so: */
-      ¶cc         := coalesce( FM.cc(), 1 );
-      if ¶cmd_output.next_cc then ¶cc = ¶cc + 1; end if;
-      -- .....................................................................................................
+      ¶cc := currval( 'FM.cc_seq' );
+      if ¶cmd_output.next_cc then ¶cc = nextval( 'FM.cc_seq' ); end if;
+      -- ...................................................................................................
       /* Insert new line into journal and update register copy: */
       insert into FM.journal ( cc, tc, tail, act, cmd, point, data ) values
         ( ¶cc,
@@ -309,6 +313,12 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
       if ¶transition.point = '...' then
         select * from FM.transitions
           where tc = ¶transition.tc + 1
+          into ¶next_transition;
+      else
+        select * from FM.transitions
+          where true
+            and tail  = ¶transition.point
+            and act   = '->'
           into ¶next_transition;
         end if;
       -- ...................................................................................................
@@ -423,13 +433,14 @@ create function FMAS.rst( ¶cmd_parts text[], ¶data jsonb )
   declare
     R             FMAS.cmd_output;
   begin
-    if array_length( ¶cmd_parts, 1 ) = 1 then
-      truncate table FM.journal cascade;
-      truncate table FM.board   cascade;
-      R.next_cmd := 'NUL *';
-    else
+    if array_length( ¶cmd_parts, 1 ) != 1 then
       R.error := 'RST does not accept arguments';
+      return R;
       end if;
+    truncate table FM.journal cascade;
+    truncate table FM.board   cascade;
+    perform nextval( 'FM.cc_seq' );
+    R.next_cmd := 'NUL *';
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
