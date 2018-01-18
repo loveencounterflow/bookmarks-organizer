@@ -64,8 +64,6 @@ insert into FM.transitions
   ( 's6',                 'STOP',             'NOP',        'LAST'          ),
   ( 's4',                 'STOP',             'NOP',        'LAST'          );
 
-
-
 -- ---------------------------------------------------------------------------------------------------------
 do $$ begin
   perform FM.adapt_journal();
@@ -136,6 +134,19 @@ do $$ begin
   end; $$;
 select * from FM.journal;
 select * from FM.board;
+-- select * from FM.results;
+-- drop view if exists FM.board_with_ccs;
+-- create view FM.board_with_ccs as (
+--   select
+--     max( ac ) over w, bc, cc, tail, act, point, cmd, data, "C", "T", "V", "Y", "R"
+--   from FM.journal
+--   window w as ( partition by ( bc ) order by ac )
+--   );
+--   -- select *
+--   --     distinct on ( ) from FM.journal where point = 'LAST' );
+-- select * from FM.board_with_ccs;
+
+\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 /* spaceships */
@@ -150,7 +161,6 @@ do $$ begin
   end; $$;
 select * from FM.journal;
 select * from FM.board;
-\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 /* color=red */
@@ -164,8 +174,7 @@ do $$ begin
   perform FM.push( 'STOP'                       );
   end; $$;
 select * from FM.journal;
-select * from FM.board;
-\quit
+-- select * from FM.board;
 
 
 /* foo::q */
@@ -180,7 +189,6 @@ do $$ begin
   perform FM.push( 'STOP'                       );
   end; $$;
 select * from FM.journal;
-select * from FM.journal;
 
 /* author=Faulkner::name */
 do $$ begin
@@ -194,8 +202,6 @@ do $$ begin
   -- perform FM.push( 'equals',      '='          );
   end; $$;
 select * from FM.journal;
-select * from FM.journal;
-select * from FM.registers;
 
 /* IT/programming/language=SQL::name */
 /* '{IT,/,programming,/,language,=,SQL,::,name}' */
@@ -215,7 +221,7 @@ do $$ begin
   perform FM.push( 'STOP'                         );
   end; $$;
 select * from FM.journal;
--- select * from FM.result;
+select * from FM.results;
 -- select * from FM.raw_result;
 
 

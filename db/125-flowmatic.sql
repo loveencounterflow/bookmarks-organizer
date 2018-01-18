@@ -142,8 +142,7 @@ create function FM.get_adaptive_statement_for_copy_function() returns text stabl
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.adapt_copy_function() returns void volatile language plpgsql as $$
-  begin
-    execute FM.get_adaptive_statement_for_copy_function(); end; $$;
+  begin execute FM.get_adaptive_statement_for_copy_function(); end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.get_create_statement_for_longboard() returns text stable language plpgsql as $outer$
@@ -170,8 +169,7 @@ create function FM.get_create_statement_for_longboard() returns text stable lang
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.create_longboard() returns void volatile language plpgsql as $$
-  begin
-    execute FM.get_create_statement_for_longboard(); end; $$;
+  begin execute FM.get_create_statement_for_longboard(); end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT we use `NAMEOF.relation` (a.k.a. `regclass`) to ensure integrity and then go and insert the
@@ -197,8 +195,7 @@ create function FM.get_adaptive_statement_for_table( ¶tablename NAMEOF.relation
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.adapt_board() returns void volatile language plpgsql as $$
-  begin
-    execute FM.get_adaptive_statement_for_table( 'FM.board'::NAMEOF.relation ); end; $$;
+  begin execute FM.get_adaptive_statement_for_table( 'FM.board'::NAMEOF.relation ); end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* JOURNAL */
@@ -387,7 +384,6 @@ create function FMAS.rst( ¶cmd_parts text[], ¶data jsonb )
   declare
     R             FMAS.cmd_output;
   begin
-    R := ( null, null );
     if array_length( ¶cmd_parts, 1 ) = 1 then
       truncate table FM.journal cascade;
       truncate table FM.board   cascade;
@@ -397,21 +393,6 @@ create function FMAS.rst( ¶cmd_parts text[], ¶data jsonb )
       end if;
     return R; end; $$;
 
--- -- ---------------------------------------------------------------------------------------------------------
--- create function FMAS.clr( ¶cmd_parts text[], ¶data jsonb )
---   returns FMAS.cmd_output volatile language plpgsql as $$
---   declare
---     R             FMAS.cmd_output;
---   begin
---     R := ( null, null );
---     if array_length( ¶cmd_parts, 1 ) = 1 then
---       truncate table FM.journal cascade;
---       R.next_cmd := 'NUL *';
---     else
---       R.error := 'CLR does not accept arguments';
---       end if;
---     return R; end; $$;
-
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb )
   returns FMAS.cmd_output volatile language plpgsql as $$
@@ -420,7 +401,6 @@ create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb )
     ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
     ¶regkey_2     text    :=  ¶cmd_parts[ 3 ];
   begin
-    R         := ( null, null );
     ¶regkey_1 := ¶cmd_parts[ 2 ];
     -- .....................................................................................................
     if ¶regkey_1 = '*' then
@@ -448,7 +428,6 @@ create function FMAS.lod( ¶cmd_parts text[], ¶data jsonb )
     R             FMAS.cmd_output;
     ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
   begin
-    R := ( null, null );
     perform FMAS.set( ¶regkey_1, ¶data );
     return R; end; $$;
 
@@ -460,7 +439,6 @@ create function FMAS.mov( ¶cmd_parts text[], ¶data jsonb )
     ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
     ¶regkey_2     text    :=  ¶cmd_parts[ 3 ];
   begin
-    R := ( null, null );
     perform FMAS.set( ¶regkey_2, FMAS.get( ¶regkey_1 ) );
     perform FMAS.set( ¶regkey_1, null );
     return R; end; $$;
@@ -475,7 +453,6 @@ create function FMAS.psh( ¶cmd_parts text[], ¶data jsonb )
     ¶target_key   text    :=  null;
   -- .......................................................................................................
   begin
-    R := ( null, null );
     -- .....................................................................................................
     if ¶regkey_2 is null then
       ¶target_key :=  ¶regkey_1;
@@ -539,7 +516,6 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
     S             FMAS.cmd_output;
   -- .......................................................................................................
   begin
-    S := ( null, null );
     -- .....................................................................................................
     loop
       -- ...................................................................................................
