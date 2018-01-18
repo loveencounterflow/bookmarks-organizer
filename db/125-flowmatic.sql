@@ -274,7 +274,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
       -- ...................................................................................................
       if ¶next_transition is not null then
         ¶transition       :=  ¶next_transition;
-        ¶next_transition :=  null;
+        ¶next_transition  :=  null;
         end if;
       -- .....................................................................................................
       /* Error out in case no matching transition was found: */
@@ -286,9 +286,10 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
             ¶tail, ¶act, ¶data;
         end if;
       -- .....................................................................................................
-      /* Perform associated FMAS commands: */
+      /* Perform associated FMAS command: */
       ¶cmd_output := FMAS.do( ¶transition.cmd, ¶data, ¶transition );
       -- .....................................................................................................
+      /* Start new case in journal when FMAS command says so: */
       ¶cc         := coalesce( FM.cc(), 1 );
       if ¶cmd_output.next_cc then ¶cc = ¶cc + 1; end if;
       -- .....................................................................................................
@@ -306,12 +307,9 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
       perform FM.copy_boardline_to_journal();
       -- .....................................................................................................
       if ¶transition.point = '...' then
-        perform log( '99474', 'continuation' );
-        perform log( '99474', ¶transition.tc::text );
         select * from FM.transitions
           where tc = ¶transition.tc + 1
           into ¶next_transition;
-        perform log( '99474', ¶next_transition::text );
         end if;
       -- ...................................................................................................
       exit when ¶next_transition is null;
@@ -396,7 +394,6 @@ create function FMAS.yes( ¶cmd_parts text[], ¶data jsonb )
   declare
     R             FMAS.cmd_output;
   begin
-    perform log( '10011', '>>>>>>>>>>', FM.ac()::text );
     update FM.journal set ok = true where ac = FM.ac();
     return R; end; $$;
 
@@ -549,7 +546,7 @@ create function FMAS.psh_data( ¶regkey text, ¶data jsonb )
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
-  returns FMAS.cmd_output volatile language plpgsql as $outer$
+  returns FMAS.cmd_output volatile language plpgsql as $$
   declare
     ¶cmd_parts    text[];
     ¶base         text;
@@ -571,7 +568,6 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
       ¶cmd        :=  trim( both from ¶cmd );
       ¶cmd_parts  :=  regexp_split_to_array( ¶cmd, '\s+' );
       ¶base       :=  ¶cmd_parts[ 1 ];
-      perform log( '10021', 'do',  ¶cmd, ¶data::text, ¶transition::text );
       -- ...................................................................................................
       case ¶base
         when 'RST' then S := FMAS.rst( ¶cmd_parts, ¶data );
@@ -595,8 +591,11 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
         end if;
       -- ...................................................................................................
       exit when S.next_cmd is null;
+      ¶cmd        :=  null;
+      ¶data       :=  null;
+      ¶transition :=  null;
       end loop;
-    return S; end; $outer$;
+    return S; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.get_create_statement_for_set() returns text stable language plpgsql as $outer$

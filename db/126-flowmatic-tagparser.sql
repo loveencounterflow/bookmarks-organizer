@@ -56,7 +56,7 @@ insert into FM.transitions
   /* states that indicate completion and lead to next item: */
   ( 's1',                 'blank',            'NBC',        's1'            ),
   ( 's2',                 'blank',            'YES',        '...'           ),
-  ( '...',                '->',               'NBC',        's1'            ),
+  ( '...',                '->',               null,        's1'            ),
   ( 's6',                 'blank',            'NBC',        's1'            ),
   ( 's4',                 'blank',            'NBC',        's1'            ),
   -- ( 's2',                 'blank',            'YES',        's9'            ),
