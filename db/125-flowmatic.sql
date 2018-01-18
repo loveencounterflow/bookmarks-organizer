@@ -58,17 +58,27 @@ create table FM.acts (
 
 -- ---------------------------------------------------------------------------------------------------------
 create type FM.transition as (
+  tc            integer,
   tail          text,
   act           text,
   cmd           text,
   point         text );
 
 -- ---------------------------------------------------------------------------------------------------------
+/* thx to https://stackoverflow.com/a/16474780/7568091 for detailing how to set up a sequence in a
+  typed table that behaves like `serial` */
+create sequence FM.tc_seq;
+
+-- ---------------------------------------------------------------------------------------------------------
 create table FM.transitions of FM.transition (
+  tc            unique not null default nextval( 'FM.tc_seq' ),
   tail          references FM.states    ( state   ),
   act           references FM.acts      ( act     ),
   point         references FM.states    ( state   ),
   primary key ( tail, act ) );
+
+-- ---------------------------------------------------------------------------------------------------------
+alter sequence FM.tc_seq owned by FM.transitions.tc;
 
 -- -- ---------------------------------------------------------------------------------------------------------
 create function FM._act_is_starred( ¶act text ) returns boolean stable language sql as $$
@@ -111,9 +121,7 @@ create function FM.bc()   returns integer stable language sql as $$ select max( 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.new_boardline() returns void volatile language sql as $$
   /* thx to https://stackoverflow.com/a/12336849/7568091 */
-  insert into FM.board values ( default );
-  -- update FM.journal set bc = FM.bc();
-  $$;
+  insert into FM.board values ( default ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.copy_boardline_to_journal() returns void volatile language sql as $$
@@ -203,16 +211,18 @@ create function FM.adapt_board() returns void volatile language plpgsql as $$
 -- ---------------------------------------------------------------------------------------------------------
 create table FM.journal (
   ac            serial    unique  not null  primary key,
-  bc            integer                     references FM.board     ( bc      ) default FM.bc(),
-  cc            integer           not null                                      default 1,
-  tail          text                        references FM.states    ( state   ),
-  act           text              not null  references FM.acts      ( act     ),
-  point         text                        references FM.states    ( state   ),
+  bc            integer                     references FM.board       ( bc      ) default FM.bc(),
+  cc            integer           not null                                        default 1,
+  tc            integer           not null  references FM.transitions ( tc      ),
+  tail          text                        references FM.states      ( state   ),
+  act           text              not null  references FM.acts        ( act     ),
+  point         text                        references FM.states      ( state   ),
   cmd           text,
-  data          jsonb );
+  data          jsonb,
+  ok            boolean                                                           default false );
 
 -- ---------------------------------------------------------------------------------------------------------
-create view FM.journal_results as ( select * from FM.journal where point = 'LAST' );
+create view FM.results as ( select * from FM.journal where point = 'LAST' );
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.ac()  returns integer stable language sql as $$ select max( ac ) from FM.journal;  $$;
@@ -275,8 +285,9 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
     if ¶cmd_output.next_cc then ¶cc = ¶cc + 1; end if;
     -- .....................................................................................................
     /* Insert new line into journal and update register copy: */
-    insert into FM.journal ( cc, tail, act, point, cmd, data ) values
+    insert into FM.journal ( cc, tc, tail, act, point, cmd, data ) values
       ( ¶cc,
+        ¶transition.tc,
         ¶tail,
         ¶act,
         ¶transition.point,
@@ -360,6 +371,16 @@ create function FMAS.set( ¶regkey text, ¶data jsonb ) returns void volatile la
   select null::void; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
+create function FMAS.yes( ¶cmd_parts text[], ¶data jsonb )
+  returns FMAS.cmd_output volatile language plpgsql as $$
+  declare
+    R             FMAS.cmd_output;
+  begin
+    perform log( '10011', '>>>>>>>>>>', FM.ac()::text );
+    update FM.journal set ok = true where ac = FM.ac();
+    return R; end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
 create function FMAS.nbc( ¶cmd_parts text[], ¶data jsonb )
   returns FMAS.cmd_output volatile language plpgsql as $$
   declare
@@ -374,8 +395,9 @@ create function FMAS.ncc( ¶cmd_parts text[], ¶data jsonb )
   declare
     R             FMAS.cmd_output;
   begin
+    R := FMAS.nbc( ¶cmd_parts, ¶data );
+    if R.error is not null then return R; end if;
     R.next_cc := true;
-    perform FM.new_boardline();
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -539,6 +561,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
         when 'LOD' then S := FMAS.lod( ¶cmd_parts, ¶data );
         when 'MOV' then S := FMAS.mov( ¶cmd_parts, ¶data );
         when 'PSH' then S := FMAS.psh( ¶cmd_parts, ¶data );
+        when 'YES' then S := FMAS.yes( ¶cmd_parts, ¶data );
         else
           perform log();
           perform log( 'FM #19002', 'Journal up to problematic act:' );     perform log();

@@ -11,8 +11,10 @@ insert into FM.registers ( regkey, name, comment ) values
 -- ---------------------------------------------------------------------------------------------------------
 insert into FM.states values
    ( '*'          ),
+   ( '...'        ),
    ( 'FIRST'      ),
    ( 's1'         ),
+   ( 's1nbc'      ),
    ( 's2'         ),
    ( 's3'         ),
    ( 's4'         ),
@@ -23,6 +25,7 @@ insert into FM.states values
 -- ---------------------------------------------------------------------------------------------------------
 insert into FM.acts values
   ( 'START'           ),
+  ( '->'              ),
   ( 'identifier'      ),
   ( 'slash'           ),
   ( 'equals'          ),
@@ -44,7 +47,6 @@ insert into FM.transitions
   ( 'LAST',               'START',            'NCC',        's1'            ),
   -- .......................................................................................................
   /* intermediate states: */
-  -- ( 's0',                 '->',               'ADV',        's1'             ),
   ( 's1',                 'identifier',       'LOD T',      's2'            ),
   ( 's2',                 'equals',           'NOP',        's3'            ),
   ( 's2',                 'slash',            'PSH T C',    's1'            ),
@@ -54,9 +56,13 @@ insert into FM.transitions
   -- .......................................................................................................
   /* states that indicate completion and lead to next item: */
   ( 's1',                 'blank',            'NBC',        's1'            ),
-  ( 's2',                 'blank',            'NBC',        's1'            ),
+  ( 's2',                 'blank',            'YES',        '...'           ),
+  ( '...',                '->',               'NBC',        's1'            ),
   ( 's6',                 'blank',            'NBC',        's1'            ),
   ( 's4',                 'blank',            'NBC',        's1'            ),
+  -- ( 's9',                 '->',               'FOO',        '...'           ),
+  -- ( '...',                '->',               'BAR',        '...'           ),
+  -- ( '...',                '->',               'BAZ',        's1'            ),
   -- .......................................................................................................
   /* states that indicate completion and lead to STOP: */
   ( 's1',                 'STOP',             'NOP',        'LAST'          ),
