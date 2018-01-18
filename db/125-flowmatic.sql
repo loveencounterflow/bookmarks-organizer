@@ -458,7 +458,7 @@ create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb )
         perform FMAS.set_all( null );
       else
         if ¶regkey_2 = '*' then
-          R.error = 'second argument to PSH can not be star';
+          R.error = 'second argument to NUL can not be star';
           return R;
           end if;
         perform FMAS.set_all_except( ¶regkey_2, ¶data );
@@ -505,7 +505,7 @@ create function FMAS.psh( ¶cmd_parts text[], ¶data jsonb )
   begin
     -- .....................................................................................................
     if ¶regkey_2 is null then
-      ¶target_key :=  ¶regkey_1;
+      ¶target_key := ¶regkey_1;
       if ¶target_key = '*' then
         R.error = 'PSH * is invalid without target register key';
         return R;
@@ -521,7 +521,10 @@ create function FMAS.psh( ¶cmd_parts text[], ¶data jsonb )
         perform FMAS.psh_data( ¶target_key, FM.get_registers_except( ¶target_key ) );
         R.next_cmd  := format( 'NUL * %s', ¶target_key );
       else
-        ¶data       :=  FMAS.get( ¶regkey_1 );
+        -- perform log( '79787', '¶data', ¶data::text );
+        -- ¶data       :=  FMAS.get( ¶regkey_1 );
+        -- perform log( '79787', '¶data', ¶data::text );
+        perform FMAS.psh_data( ¶target_key, FMAS.get( ¶regkey_1 ) );
         R.next_cmd  := format( 'NUL %s', ¶regkey_1 );
         end if;
       end if;

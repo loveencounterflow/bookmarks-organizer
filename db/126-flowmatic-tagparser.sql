@@ -5,8 +5,7 @@ insert into FM.registers ( regkey, name, comment ) values
   ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
   ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
   ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
-  ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' ),
-  ( 'R', 'result',    'list of results' );
+  ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into FM.states values
@@ -48,6 +47,7 @@ insert into FM.transitions
   -- .......................................................................................................
   /* intermediate states: */
   ( 's1',                 'identifier',       'LOD T',      's2'            ),
+  ( 's2',                 'dcolon',           'NOP',        's5'            ),
   ( 's2',                 'equals',           'NOP',        's3'            ),
   ( 's2',                 'slash',            'PSH T C',    's1'            ),
   ( 's3',                 'identifier',       'LOD V',      's4'            ),
@@ -57,8 +57,8 @@ insert into FM.transitions
   /* states that indicate completion and lead to next item: */
   ( 's1',                 'blank',            'NBC',        'next-tag'      ),
   ( 's2',                 'blank',            'YES',        'next-tag'      ),
-  ( 's6',                 'blank',            'NBC',        'next-tag'      ),
-  ( 's4',                 'blank',            'NBC',        'next-tag'      ),
+  ( 's6',                 'blank',            'YES',        'next-tag'      ),
+  ( 's4',                 'blank',            'YES',        'next-tag'      ),
   -- ( 's2',                 'blank',            'YES',        's9'            ),
   -- ( 's9',                 '->',               'FOO',        '...'           ),
   -- ( '...',                '->',               'BAR',        '...'           ),
@@ -69,8 +69,8 @@ insert into FM.transitions
   /* states that indicate completion and lead to STOP: */
   ( 's1',                 'STOP',             'NOP',        'LAST'          ),
   ( 's2',                 'STOP',             'YES',        'LAST'          ),
-  ( 's6',                 'STOP',             'NOP',        'LAST'          ),
-  ( 's4',                 'STOP',             'NOP',        'LAST'          );
+  ( 's6',                 'STOP',             'YES',        'LAST'          ),
+  ( 's4',                 'STOP',             'YES',        'LAST'          );
 
 -- ---------------------------------------------------------------------------------------------------------
 do $$ begin
@@ -101,7 +101,7 @@ create function FM.get_registers() returns jsonb stable language plpgsql as $$
     R jsonb;
   begin
     select jsonb_build_object(
-        'C', "C", 'T', "T", 'V', "V", 'Y', "Y", 'R', "R" ) from FM.board
+        'C', "C", 'T', "T", 'V', "V", 'Y', "Y" ) from FM.board
       where bc = FM.bc()
       into R;
       return R; end; $$;
@@ -122,13 +122,46 @@ create function FM.feed_pairs( ¶acts_and_data text[] ) returns jsonb volatile s
 
 -- select FM.feed_pairs( array[
 --     array[ 'identifier',  'foo'  ],
---     array[ 'equals',      '::'   ],
+--     array[ 'dcolon',      '::'   ],
 --     array[ 'identifier',  'q'    ]
 --     ] );
 
+/*   —————————————————————————————=============######|######=============—————————————————————————————    */
 
+/* IT/programming/language=SQL::name */
+/* '{IT,/,programming,/,language,=,SQL,::,name}' */
+do $$ begin
+  perform FM.push( 'RESET'                           );
+  perform FM.push( 'START'                        );
+  perform FM.push( 'identifier',  'IT'            );
+  perform FM.push( 'slash',       '/'             );
+  perform FM.push( 'identifier',  'programming'   );
+  perform FM.push( 'slash',       '/'             );
+  perform FM.push( 'identifier',  'language'      );
+  perform FM.push( 'equals',      '='             );
+  perform FM.push( 'identifier',  'SQL'           );
+  perform FM.push( 'dcolon',      '::'            );
+  perform FM.push( 'identifier',  'name'          );
+  perform FM.push( 'blank',       ' '             );
+  perform FM.push( 'identifier',  'mytag'         );
+  perform FM.push( 'STOP'                         );
+  end; $$;
+select * from FM.journal;
+select * from FM.journal where ok;
+select * from FM.board;
+\quit
 
-
+/* foo::q */
+do $$ begin
+  perform FM.push( 'START'                      );
+  perform FM.push( 'identifier',  'foo'         );
+  perform FM.push( 'dcolon',      '::'          );
+  perform FM.push( 'identifier',  'q'           );
+  perform FM.push( 'STOP'                       );
+  end; $$;
+select * from FM.journal;
+select * from FM.journal where ok;
+select * from FM.board;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* spaceships */
@@ -160,24 +193,9 @@ select * from FM.journal where ok;
 select * from FM.board;
 
 -- ---------------------------------------------------------------------------------------------------------
-/* spaceships */
-do $$ begin
-  perform FM.push( 'RESET'                           );
-  perform FM.push( 'START'                           );
-  perform FM.push( 'identifier',  'spaceships'       );
-  perform FM.push( 'STOP'                            );
-  perform FM.push( 'START'                           );
-  perform FM.push( 'identifier',  'planets'          );
-  perform FM.push( 'STOP'                            );
-  end; $$;
-select * from FM.journal;
-select * from FM.journal where ok;
-select * from FM.board;
-\quit
-
--- ---------------------------------------------------------------------------------------------------------
 /* color=red */
 do $$ begin
+  perform FM.push( 'RESET'                           );
   perform FM.push( 'START'                      );
   perform FM.push( 'identifier',  'color'       );
   perform FM.push( 'equals',      '='           );
@@ -191,23 +209,9 @@ select * from FM.journal where ok;
 select * from FM.board;
 
 
-/* foo::q */
-do $$ begin
-  perform FM.push( 'RESET'                      );
-  perform FM.push( 'START'                      );
-  -- perform FM.push( 'STOP'                      );
-  perform FM.push( 'identifier',  'foo'         );
-  perform FM.push( 'equals',      '::'          );
-  -- perform FM.push( 'equals',      '='          );
-  perform FM.push( 'identifier',  'q'           );
-  perform FM.push( 'STOP'                       );
-  end; $$;
-select * from FM.journal;
-select * from FM.journal where ok;
-select * from FM.board;
-
 /* author=Faulkner::name */
 do $$ begin
+  perform FM.push( 'RESET'                           );
   perform FM.push( 'START'                      );
   perform FM.push( 'identifier',  'author'      );
   perform FM.push( 'equals',      '='           );
@@ -221,27 +225,6 @@ select * from FM.journal;
 select * from FM.journal where ok;
 select * from FM.board;
 
-/* IT/programming/language=SQL::name */
-/* '{IT,/,programming,/,language,=,SQL,::,name}' */
-do $$ begin
-  perform FM.push( 'START'                        );
-  perform FM.push( 'identifier',  'IT'            );
-  perform FM.push( 'slash',       '/'             );
-  perform FM.push( 'identifier',  'programming'   );
-  perform FM.push( 'slash',       '/'             );
-  perform FM.push( 'identifier',  'language'      );
-  perform FM.push( 'equals',      '='             );
-  perform FM.push( 'identifier',  'SQL'           );
-  perform FM.push( 'dcolon',      '::'            );
-  perform FM.push( 'identifier',  'name'          );
-  perform FM.push( 'blank',       ' '             );
-  perform FM.push( 'identifier',  'mytag'         );
-  perform FM.push( 'STOP'                         );
-  end; $$;
-select * from FM.journal;
-select * from FM.journal where ok;
-select * from FM.board;
--- select * from FM.raw_result;
 
 
 
