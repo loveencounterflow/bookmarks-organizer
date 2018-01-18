@@ -14,7 +14,6 @@ insert into FM.states values
    ( '...'        ),
    ( 'FIRST'      ),
    ( 's1'         ),
-   ( 's1nbc'      ),
    ( 's2'         ),
    ( 's3'         ),
    ( 's4'         ),
