@@ -257,7 +257,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
   begin
     -- .....................................................................................................
     ¶transition :=  FM.proceed( '*', ¶act );
-    if ¶transition is not null then
+    if not ( ¶transition is null ) then
       /* Starred acts always succeed, even on an empty journal where there is no previous act and, thus, no
       tail; when can therefore always set the tail to '*'. */
       ¶tail := '*';
@@ -271,8 +271,9 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
     ¶transition :=  FM.proceed( ¶tail, ¶act );
     -- .....................................................................................................
     loop
+      perform log( '77782', 'loop' );
       -- ...................................................................................................
-      if ¶next_transition is not null then
+      if not ( ¶next_transition is null ) then
         ¶transition       :=  ¶next_transition;
         ¶next_transition  :=  null;
         end if;
@@ -413,7 +414,7 @@ create function FMAS.ncc( ¶cmd_parts text[], ¶data jsonb )
     R             FMAS.cmd_output;
   begin
     R := FMAS.nbc( ¶cmd_parts, ¶data );
-    if R.error is not null then return R; end if;
+    if not ( R.error is null ) then return R; end if;
     R.next_cc := true;
     return R; end; $$;
 
@@ -558,7 +559,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
     -- .....................................................................................................
     loop
       -- ...................................................................................................
-      if S.next_cmd is not null then
+      if not ( S.next_cmd is null ) then
         ¶cmd        :=  S.next_cmd;
         S.next_cmd  :=  null;
         end if;
@@ -586,7 +587,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
           raise exception 'unknown command %', ¶cmd;
         end case;
       -- ...................................................................................................
-      if S.error is not null then
+      if not ( S.error is null ) then
         raise exception 'error %  in command %', S.error, ¶cmd;
         end if;
       -- ...................................................................................................
