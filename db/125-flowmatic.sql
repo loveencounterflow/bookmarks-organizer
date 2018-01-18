@@ -96,7 +96,7 @@ alter table FM.transitions
   check ( FM._star_count_ok( tail, act ) );
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.proceed( ¶tail text, ¶act text ) returns FM.transitions stable language sql as $$
+create function FM.proceed( ¶tail text, ¶act text ) returns FM.transition stable language sql as $$
   select * from FM.transitions where ( tail = ¶tail ) and ( act = ¶act ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
