@@ -85,14 +85,14 @@ do $$ begin
   perform FM.push( 'RESET' );
   end; $$;
 
-\echo FM.registers
-select * from FM.registers;
-\echo FM.transitions
-select * from FM.transitions;
-\echo FM.board
-select * from FM.board;
-\echo FM.journal
-select * from FM.journal;
+-- \echo FM.registers
+-- select * from FM.registers;
+-- \echo FM.transitions
+-- select * from FM.transitions;
+-- \echo FM.board
+-- select * from FM.board;
+-- \echo FM.journal
+-- select * from FM.journal;
 
 /* ###################################################################################################### */
 
@@ -128,6 +128,65 @@ create function FM.feed_pairs( ¶acts_and_data text[] ) returns jsonb volatile s
 
 /*   —————————————————————————————=============######|######=============—————————————————————————————    */
 
+create table FM.input (
+  ic    serial,
+  act   text not null references FM.acts ( act ),
+  data  text,
+  ac    integer
+  );
+
+do $$ begin perform FM.push( 'RESET' ); end; $$;
+insert into FM.input ( act, data ) values ( 'START',        null          );
+insert into FM.input ( act, data ) values ( 'identifier',   'author'      );
+insert into FM.input ( act, data ) values ( 'equals',       '='           );
+insert into FM.input ( act, data ) values ( 'identifier',   'Faulkner'    );
+insert into FM.input ( act, data ) values ( 'dcolon',       '::'          );
+insert into FM.input ( act, data ) values ( 'identifier',   'name'        );
+insert into FM.input ( act, data ) values ( 'STOP',         null          );
+
+
+
+update FM.input as i1
+  set ac = i2.ac
+  from ( select
+      ic                    as ic,
+      FM.push( act, data )  as ac
+    from FM.input
+    order by ic ) as i2
+  where i1.ic = i2.ic;
+
+select * from FM.input;
+select * from FM.journal;
+
+select
+    i.ic,                          -- as ic_,
+    i.act,                         -- as act_,
+    i.data,                        -- as data_,
+    i.ac,                          -- as ac_
+    j.ac as j_ac,
+    j.bc,
+    j.cc,
+    j.tc,
+    j.tail,
+    j.cmd,
+    j.point,
+    j.ok,
+    j."C",
+    j."T",
+    j."V",
+    j."Y"
+  from FM.input    as i
+  right join FM.journal  as j on ( i.ac = j.ac )
+  order by j.ac
+  ;
+
+-- select pg_typeof( ac ) from FM.input;
+-- select pg_typeof( ac ) from FM.journal;
+
+\quit
+
+/*   —————————————————————————————=============######|######=============—————————————————————————————    */
+
 /* IT/programming/language=SQL::name */
 /* '{IT,/,programming,/,language,=,SQL,::,name}' */
 do $$ begin
@@ -145,19 +204,6 @@ do $$ begin
   perform FM.push( 'blank',       ' '             );
   perform FM.push( 'identifier',  'mytag'         );
   perform FM.push( 'STOP'                         );
-  end; $$;
-select * from FM.journal;
-select * from FM.journal where ok;
-select * from FM.board;
-\quit
-
-/* foo::q */
-do $$ begin
-  perform FM.push( 'START'                      );
-  perform FM.push( 'identifier',  'foo'         );
-  perform FM.push( 'dcolon',      '::'          );
-  perform FM.push( 'identifier',  'q'           );
-  perform FM.push( 'STOP'                       );
   end; $$;
 select * from FM.journal;
 select * from FM.journal where ok;

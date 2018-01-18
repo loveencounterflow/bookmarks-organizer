@@ -246,8 +246,9 @@ create function FM._journal_as_tabular() returns text
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT should probably use `lock for update` */
-create function FM.push( ¶act text, ¶data jsonb ) returns void volatile language plpgsql as $$
+create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile language plpgsql as $$
   declare
+    -- R                 integer;
     ¶new_state        text;
     ¶tail             text;
     ¶cc               integer;
@@ -325,18 +326,19 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
       exit when ¶next_transition is null;
       end loop;
     -- .....................................................................................................
+    return FM.ac();
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.push( ¶act text, ¶data text ) returns void volatile language sql as $$
+create function FM.push( ¶act text, ¶data text ) returns integer volatile language sql as $$
   select FM.push( ¶act, jb( ¶data ) ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.push( ¶act text, ¶data anyelement ) returns void volatile language sql as $$
+create function FM.push( ¶act text, ¶data anyelement ) returns integer volatile language sql as $$
   select FM.push( ¶act, jb( ¶data ) ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.push( ¶act text ) returns void volatile language sql as $$
+create function FM.push( ¶act text ) returns integer volatile language sql as $$
   select FM.push( ¶act, jb( null ) ); $$;
 
 
