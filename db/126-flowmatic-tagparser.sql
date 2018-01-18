@@ -166,7 +166,6 @@ select * from FM.board;
 -- ---------------------------------------------------------------------------------------------------------
 /* spaceships */
 do $$ begin
-  perform FM.push( 'RESET'                           );
   perform FM.push( 'START'                           );
   perform FM.push( 'identifier',  'spaceships'       );
   perform FM.push( 'blank',       ' '                );
@@ -178,24 +177,8 @@ select * from FM.journal where ok;
 select * from FM.board;
 
 -- ---------------------------------------------------------------------------------------------------------
-/* spaceships */
-do $$ begin
-  perform FM.push( 'RESET'                           );
-  perform FM.push( 'START'                           );
-  perform FM.push( 'identifier',  'spaceships'       );
-  perform FM.push( 'STOP'                            );
-  perform FM.push( 'START'                           );
-  perform FM.push( 'identifier',  'planets'          );
-  perform FM.push( 'STOP'                            );
-  end; $$;
-select * from FM.journal;
-select * from FM.journal where ok;
-select * from FM.board;
-
--- ---------------------------------------------------------------------------------------------------------
 /* color=red */
 do $$ begin
-  perform FM.push( 'RESET'                           );
   perform FM.push( 'START'                      );
   perform FM.push( 'identifier',  'color'       );
   perform FM.push( 'equals',      '='           );
@@ -211,7 +194,6 @@ select * from FM.board;
 
 /* author=Faulkner::name */
 do $$ begin
-  perform FM.push( 'RESET'                           );
   perform FM.push( 'START'                      );
   perform FM.push( 'identifier',  'author'      );
   perform FM.push( 'equals',      '='           );
