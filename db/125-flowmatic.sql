@@ -276,7 +276,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
         ¶transition       :=  ¶next_transition;
         ¶next_transition  :=  null;
         end if;
-      -- .....................................................................................................
+      -- ...................................................................................................
       /* Error out in case no matching transition was found: */
       if ¶transition is null then
         perform log( 'FM #19001', 'Journal up to problematic act:' );
@@ -285,10 +285,10 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
           'invalid act: { state: %, act: %, data: %, } -> null',
             ¶tail, ¶act, ¶data;
         end if;
-      -- .....................................................................................................
+      -- ...................................................................................................
       /* Perform associated FMAS command: */
       ¶cmd_output := FMAS.do( ¶transition.cmd, ¶data, ¶transition );
-      -- .....................................................................................................
+      -- ...................................................................................................
       /* Start new case in journal when FMAS command says so: */
       ¶cc         := coalesce( FM.cc(), 1 );
       if ¶cmd_output.next_cc then ¶cc = ¶cc + 1; end if;
@@ -302,10 +302,10 @@ create function FM.push( ¶act text, ¶data jsonb ) returns void volatile langua
           regexp_replace( ¶transition.cmd, '^NOP$', '' ),
           ¶transition.point,
           ¶data );
-      -- .....................................................................................................
+      -- ...................................................................................................
       /* Reflect state of registers table into `journal ( registers )`: */
       perform FM.copy_boardline_to_journal();
-      -- .....................................................................................................
+      -- ...................................................................................................
       if ¶transition.point = '...' then
         select * from FM.transitions
           where tc = ¶transition.tc + 1

@@ -68,7 +68,7 @@ py.test --tap-files
 
 * All tuples `( tail, act )` must be unique; there can only be at most one
   transition to follow when the current state is paired with the upcoming act.
-  An exception is the tuple `( '...', '->' )`, which may occur any number of
+  The exception is the tuple `( '...', '->' )`, which may occur any number of
   times.
 
 * A '*' (star) in the tail of a transition makes the associated act unique; IOW,

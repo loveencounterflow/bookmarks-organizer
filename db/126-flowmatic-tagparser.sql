@@ -19,6 +19,7 @@ insert into FM.states values
    ( 's4'         ),
    ( 's5'         ),
    ( 's6'         ),
+   ( 'next-tag'   ),
    ( 'LAST'       );
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -54,19 +55,20 @@ insert into FM.transitions
   ( 's5',                 'identifier',       'LOD Y',      's6'            ),
   -- .......................................................................................................
   /* states that indicate completion and lead to next item: */
-  ( 's1',                 'blank',            'NBC',        's1'            ),
-  ( 's2',                 'blank',            'YES',        '...'           ),
-  ( '...',                '->',               null,        's1'            ),
-  ( 's6',                 'blank',            'NBC',        's1'            ),
-  ( 's4',                 'blank',            'NBC',        's1'            ),
+  ( 's1',                 'blank',            'NBC',        'next-tag'      ),
+  ( 's2',                 'blank',            'YES',        'next-tag'      ),
+  ( 's6',                 'blank',            'NBC',        'next-tag'      ),
+  ( 's4',                 'blank',            'NBC',        'next-tag'      ),
   -- ( 's2',                 'blank',            'YES',        's9'            ),
   -- ( 's9',                 '->',               'FOO',        '...'           ),
   -- ( '...',                '->',               'BAR',        '...'           ),
   -- ( '...',                '->',               'BAZ',        's1'            ),
   -- .......................................................................................................
+  ( 'next-tag',           '->',               'NBC',        's1'            ),
+  -- .......................................................................................................
   /* states that indicate completion and lead to STOP: */
   ( 's1',                 'STOP',             'NOP',        'LAST'          ),
-  ( 's2',                 'STOP',             'NOP',        'LAST'          ),
+  ( 's2',                 'STOP',             'YES',        'LAST'          ),
   ( 's6',                 'STOP',             'NOP',        'LAST'          ),
   ( 's4',                 'STOP',             'NOP',        'LAST'          );
 
@@ -139,20 +141,8 @@ do $$ begin
   perform FM.push( 'STOP'                            );
   end; $$;
 select * from FM.journal;
+select * from FM.journal where ok;
 select * from FM.board;
--- select * from FM.results;
--- drop view if exists FM.board_with_ccs;
--- create view FM.board_with_ccs as (
---   select
---     max( ac ) over w, bc, cc, tail, act, point, cmd, data, "C", "T", "V", "Y", "R"
---   from FM.journal
---   window w as ( partition by ( bc ) order by ac )
---   );
---   -- select *
---   --     distinct on ( ) from FM.journal where point = 'LAST' );
--- select * from FM.board_with_ccs;
-
-\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 /* spaceships */
@@ -166,7 +156,24 @@ do $$ begin
   perform FM.push( 'STOP'                            );
   end; $$;
 select * from FM.journal;
+select * from FM.journal where ok;
 select * from FM.board;
+
+-- ---------------------------------------------------------------------------------------------------------
+/* spaceships */
+do $$ begin
+  perform FM.push( 'RESET'                           );
+  perform FM.push( 'START'                           );
+  perform FM.push( 'identifier',  'spaceships'       );
+  perform FM.push( 'STOP'                            );
+  perform FM.push( 'START'                           );
+  perform FM.push( 'identifier',  'planets'          );
+  perform FM.push( 'STOP'                            );
+  end; $$;
+select * from FM.journal;
+select * from FM.journal where ok;
+select * from FM.board;
+\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 /* color=red */
@@ -180,7 +187,8 @@ do $$ begin
   perform FM.push( 'STOP'                       );
   end; $$;
 select * from FM.journal;
--- select * from FM.board;
+select * from FM.journal where ok;
+select * from FM.board;
 
 
 /* foo::q */
@@ -195,6 +203,8 @@ do $$ begin
   perform FM.push( 'STOP'                       );
   end; $$;
 select * from FM.journal;
+select * from FM.journal where ok;
+select * from FM.board;
 
 /* author=Faulkner::name */
 do $$ begin
@@ -208,6 +218,8 @@ do $$ begin
   -- perform FM.push( 'equals',      '='          );
   end; $$;
 select * from FM.journal;
+select * from FM.journal where ok;
+select * from FM.board;
 
 /* IT/programming/language=SQL::name */
 /* '{IT,/,programming,/,language,=,SQL,::,name}' */
@@ -227,28 +239,9 @@ do $$ begin
   perform FM.push( 'STOP'                         );
   end; $$;
 select * from FM.journal;
-select * from FM.results;
+select * from FM.journal where ok;
+select * from FM.board;
 -- select * from FM.raw_result;
-
-
--- ---------------------------------------------------------------------------------------------------------
--- \echo 'journal'
--- select * from FM.journal;
--- \echo 'journal (completed)'
--- select * from FM.journal where point = 'LAST';
--- select * from FM.receiver;
--- \echo 'transitions'
--- select * from FM.transitions;
--- \echo '_batches_events_and_next_states'
--- select * from FM._batches_events_and_next_states;
--- \echo 'job_transitions'
--- select * from FM.job_transitions;
-
-\quit
-
-select * from FM.registers order by regkey;
-do $$ begin perform FM.LOD( 3, 'C' ); end; $$;
-select * from FM.registers order by regkey;
 
 
 
@@ -270,57 +263,4 @@ foo::q                              |  ∎                foo         ∎       
 
 
 
-
-\quit
-
-
-
-create table FM.journal (
-  ac serial primary key,
-  foo text
-  );
-create table FM.registers (
-  ac integer references FM.journal ( ac ),
-  facets jsonb
-  );
-
-insert into FM.journal ( foo ) values ( 42 ), ( 'helo' ), ( array[ 1, '2' ] );
-insert into FM.registers values ( 1, '{"a":1,"b":2}' );
-insert into FM.registers values ( 2, '{"a":42,"b":12}' );
-select * from FM.journal;
-select * from FM.registers;
-
-select from FM.journal;
-
--- select ac, ( select * from jsonb_each( facets ) ) as v1 from FM.registers;
--- select
---     j.ac,
---     j.foo,
-
---   from FM.journal as j
---   left join FM.registers as r using ( ac );
-
-\quit
-
-
-/* aggregate function */
-
--- ---------------------------------------------------------------------------------------------------------
-/* ### TAINT probably better to use domains or other means to ensure integrity */
-create function FM.proceed( ¶tail text, ¶act text ) returns text stable language plpgsql as $$
-  declare
-    R text;
-  begin
-    select into R
-        point
-      from FM.transitions
-      where ( tail = ¶tail ) and ( act = ¶act );
-    return R;
-    end; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create aggregate FM.proceed_agg( text ) (
-  sfunc     = FM.proceed,
-  stype     = text,
-  initcond  = 'FIRST' );
 
