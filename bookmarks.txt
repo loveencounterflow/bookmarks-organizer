@@ -2,6 +2,7 @@
 * tags:   tag
   tags:   'tag with spaces'
   tags:   ctx/tag
+  tags:   foo bar baz
 *stop*
   tags:   some/more/context/a-tag='and value'
   tags:   tag=value
