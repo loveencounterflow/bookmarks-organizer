@@ -96,37 +96,10 @@ do $$ begin
 
 /* ###################################################################################################### */
 
-create function FM.get_registers() returns jsonb stable language plpgsql as $$
-  declare
-    R jsonb;
-  begin
-    select jsonb_build_object(
-        'C', "C", 'T', "T", 'V', "V", 'Y', "Y" ) from FM.board
-      where bc = FM.bc()
-      into R;
-      return R; end; $$;
 
-create function FM.get_registers_except( ¶regkey text ) returns jsonb stable language sql as $$
-  select FM.get_registers() - ¶regkey; $$;
-
-create function FM.feed_pairs( ¶acts_and_data text[] ) returns jsonb volatile strict language plpgsql as $$
-  declare
-    R jsonb;
-  begin
-    perform FM.push( 'START'  );
-    perform FM.push( pair[ 1 ], pair[ 2 ] ) from U.unnest_2d_1d( ¶acts_and_data ) as pair;
-    perform FM.push( 'STOP'   );
-    R := FM.get_registers();
-    return R; end; $$;
-
-
--- select FM.feed_pairs( array[
---     array[ 'identifier',  'foo'  ],
---     array[ 'dcolon',      '::'   ],
---     array[ 'identifier',  'q'    ]
---     ] );
 
 /*   —————————————————————————————=============######|######=============—————————————————————————————    */
+
 
 create table FM.input (
   ic    serial,
@@ -145,7 +118,8 @@ insert into FM.input ( act, data ) values ( 'identifier',   'name'        );
 insert into FM.input ( act, data ) values ( 'STOP',         null          );
 
 
-
+/* thx to https://stackoverflow.com/a/29747770/7568091
+  for the 'ordered update implemented by way of sub-subselect' */
 update FM.input as i1
   set ac = i2.ac
   from ( select
@@ -157,6 +131,52 @@ update FM.input as i1
 
 select * from FM.input;
 select * from FM.journal;
+
+/*   —————————————————————————————=============######|######=============—————————————————————————————    */
+/* Function to turn `select` statement into JSONb object */
+
+-- select distinct on ( typelem ) typname, typelem from pg_type;
+-- select typelem, array_agg( typname ) from pg_type group by typelem;
+-- \quit
+
+\quit
+
+-- ---------------------------------------------------------------------------------------------------------
+set role dba;
+drop function if exists FM.row_of_facets_as_jsonb_object cascade;
+/* Expects an SQL query as text that delivers two columns, the first being names and the second JSONb
+  values of the object to be built. */
+create function FM.row_of_facets_as_jsonb_object( sql_ text ) returns jsonb stable language plpython3u as $$
+  plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
+  import json as JSON
+  R             = {}
+  result        = plpy.execute( sql_ )
+  keys          = result.colnames()
+  types         = result.coltypes()
+  ctx.log( '70012', dir( result ) )
+  ctx.log( '70012', result.coltypmods() )
+  ctx.log( '70012', types )
+  if len( result ) != 1:
+    raise ValueError( "expected 1 result row, got " + len( result ) )
+  for row in result:
+    for key in keys:
+      ctx.log( '77612', key, type( row[ key ] ) )
+      # R[ key ] = JSON.loads( row[ key ] )
+    #  if row[ v ] == None:
+    #    R[ row[ k ] ] = None
+    #    continue
+    #  R[ row[ k ] ] = JSON.loads( row[ v ] )
+  return JSON.dumps( R ) $$;
+reset role;
+
+
+\echo FM.board
+select * from FM.board where bc = FM.bc();
+select FM.row_of_facets_as_jsonb_object( $$ select * from FM.board where bc = FM.bc(); $$ );
+\quit
+/*   —————————————————————————————=============######|######=============—————————————————————————————    */
+
+
 
 select
     i.ic,                          -- as ic_,

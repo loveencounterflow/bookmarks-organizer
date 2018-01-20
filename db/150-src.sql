@@ -1,36 +1,36 @@
 
 \ir './010-trm.sql'
-\pset tuples_only off
-\timing on
+-- \pset tuples_only off
+-- \timing on
 
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists SRC cascade;
 create schema SRC;
 
--- ---------------------------------------------------------------------------------------------------------
-set role dba;
-/* ### TAINT for backwards compatibility with PostGreSQL 9.6 and below, we have to use JSONb as an
-  intermediate format. */
-create function SRC._lex_tags_py( x text ) returns jsonb
-  immutable strict language plpython3u as $$
-  plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
-  import json as JSON
-  return JSON.dumps( ctx.utp_tag_parser.lex_tags( ctx, x ) )
-  $$;
-reset role;
+-- -- ---------------------------------------------------------------------------------------------------------
+-- set role dba;
+-- /* ### TAINT for backwards compatibility with PostGreSQL 9.6 and below, we have to use JSONb as an
+--   intermediate format. */
+-- create function SRC._lex_tags_py( x text ) returns jsonb
+--   immutable strict language plpython3u as $$
+--   plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
+--   import json as JSON
+--   return JSON.dumps( ctx.utp_tag_parser.lex_tags( ctx, x ) )
+--   $$;
+-- reset role;
 
--- ---------------------------------------------------------------------------------------------------------
-create function SRC.lex_tags( x text ) returns text[]
-  immutable strict language plpgsql as $$
-  declare
-    R       text[];
-    ¶row    jsonb;
-  begin
-    for ¶row in ( select * from jsonb_array_elements_text( SRC._lex_tags_py( x ) ) ) loop
-      R := R || array[ U.text_array_from_json( ¶row ) ] ;
-      end loop;
-    return R;
-    end; $$;
+-- -- ---------------------------------------------------------------------------------------------------------
+-- create function SRC.lex_tags( x text ) returns text[]
+--   immutable strict language plpgsql as $$
+--   declare
+--     R       text[];
+--     ¶row    jsonb;
+--   begin
+--     for ¶row in ( select * from jsonb_array_elements_text( SRC._lex_tags_py( x ) ) ) loop
+--       R := R || array[ U.text_array_from_json( ¶row ) ] ;
+--       end loop;
+--     return R;
+--     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
@@ -124,7 +124,7 @@ create view SRC._bookmarks_050_split_values as ( select
     key                                                                         as key,
     value                                                                       as value,
     case key
-      when 'tags' then SRC.lex_tags(            value )
+      when 'tags' then UTP.lex_tags(            value )
       -- when 'url'  then SRC.split_on_whitespace( value )
     else null end                                                               as values
   from SRC._bookmarks_040_split_fields
@@ -132,25 +132,48 @@ create view SRC._bookmarks_050_split_values as ( select
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(7)=--':O
-create view SRC._bookmarks as ( select * from SRC._bookmarks_050_split_values order by linenr );
+create view SRC.bookmarks as ( select * from SRC._bookmarks_050_split_values order by linenr );
 
 /* ###################################################################################################### */
 
 
-select * from U.variables where not key ~ '^[A-Z]' \g :out
 
--- select * from SRC._bookmarks_000_raw limit 10;
--- select * from SRC._bookmarks_010_skip_comments_and_empty;
--- select * from SRC._bookmarks_020_split_asterisk order by linenr;
--- select * from SRC._bookmarks_030_add_levels order by linenr;
+select * from SRC.bookmarks;
+
+create view SRC._bookmarks_and_taglexes as ( select
+  linenr, UTP.taglex_as_table( values ) as act_and_data from SRC.bookmarks order by linenr );
+
+select * from SRC._bookmarks_and_taglexes;
+
+create table SRC.bookmarks_and_acts as (
+  select
+      b1.linenr                                   as linenr,
+      row_number() over ( partition by linenr )   as partnr,
+      -- b1.star                                    as star,
+      -- b1.level                                   as level,
+      -- b1.key                                     as key,
+      b1.value                                    as value,
+      v1.act_and_data                             as act_and_data,
+      FM.push( act_and_data )                     as ac
+    from SRC.bookmarks as b1
+    left join SRC._bookmarks_and_taglexes as v1 using ( linenr )
+    order by linenr
+    )
+    ;
+select * from SRC.bookmarks_and_acts;
+\quit
+
+select
+  linenr, UTP.lex_tags from SRC.bookmarks;
+
 select
     linenr                                                            as linenr,
     key                                                               as key,
     -- '∎' || substring( array_to_string( values, '∎' ) for 80 ) || '∎'  as values,
-    FA.feed_pairs( values ),
+    FM.feed_pairs( values ),
     values                                                            as values,
     value                                                             as value
-  from SRC._bookmarks
+  from SRC.bookmarks
   order by linenr;
 \quit
 
