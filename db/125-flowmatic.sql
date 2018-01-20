@@ -363,10 +363,16 @@ create function FM.push( ¶act text ) returns integer volatile language sql as $
   select FM.push( ¶act, jb( null ) ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.push( ¶act_and_data text[] ) returns integer volatile language sql as $$
-  select  FM.push(  'START'                                 ) union all
-  select  FM.push(  ¶act_and_data[ 1 ], ¶act_and_data[ 2 ]  ) union all
-  select  FM.push(  'STOP'                                  ); $$;
+create function FM.push_dacts( ¶dacts text[] ) returns integer[] volatile language plpgsql as $$
+  declare
+    R       integer[] = '{}';
+    -- ¶dact   text[];
+  begin
+    R :=  R || FM.push( 'START' );
+    select R || FM.push( d[ 1 ], d[ 2 ]  ) from U.unnest_2d_1d( ¶dacts ) as d into R;
+    R :=  R || FM.push( 'STOP' );
+    R :=  U.filter_array( R, null );
+    return R; end; $$;
 
 
 
