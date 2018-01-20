@@ -140,34 +140,11 @@ select * from FM.journal;
 -- \quit
 
 
--- ---------------------------------------------------------------------------------------------------------
-set role dba;
-drop function if exists FM.row_of_facets_as_jsonb_object cascade;
-/* Expects an SQL query as text that delivers two columns, the first being names and the second JSONb
-  values of the object to be built. */
-create function FM.row_of_facets_as_jsonb_object( sql_ text ) returns jsonb stable language plpython3u as $$
-  plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
-  import json as JSON
-  R                   = {}
-  result              = plpy.execute( sql_ )
-  keys_and_typenames  = ctx.keys_and_typenames_from_result( ctx, result )
-  #.........................................................................................................
-  if len( result ) != 1:
-    raise ValueError( "expected 1 result row, got " + len( result ) )
-  #.........................................................................................................
-  for row in result:
-    for key, typename in keys_and_typenames:
-      R[ key ] = value = row[ key ]
-      if value is not None and typename in ( 'json', 'jsonb', ):
-        R[ key ] = JSON.loads( value )
-  #.........................................................................................................
-  return JSON.dumps( R ) $$;
-reset role;
 
 
 \echo FM.board
 select * from FM.board where bc = FM.bc();
-select FM.row_of_facets_as_jsonb_object( $$ select * from FM.board where bc = FM.bc(); $$ );
+select U.row_of_facets_as_jsonb_object( $$ select * from FM.board where bc = FM.bc(); $$ );
 \quit
 /*   —————————————————————————————=============######|######=============—————————————————————————————    */
 

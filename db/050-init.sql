@@ -116,7 +116,7 @@ create function INIT._test() returns void language plpython3u as $$
   import sys
   for idx, path in enumerate( sys.path ):
     ctx.log( idx + 1, path )
-  ctx.log( ctx )
+  # ctx.log( ctx )
   ctx.log( "INIT.py_init OK" )
   import signals
   ctx.log( 'signals', signals )
