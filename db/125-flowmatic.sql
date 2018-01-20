@@ -47,7 +47,11 @@ drop schema if exists FMAS cascade;
 create schema FMAS;
 
 -- ---------------------------------------------------------------------------------------------------------
-create type FMAS.cmd_output as ( next_cmd text, next_cc boolean, error text );
+create type FMAS.cmd_output as (
+  next_cmd    text,
+  next_cc     boolean,
+  ok_ac       integer,
+  error       text );
 
 -- ---------------------------------------------------------------------------------------------------------
 /* STATES AND ACTS */
@@ -336,7 +340,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
       exit when ¶next_transition is null;
       end loop;
     -- .....................................................................................................
-    return FM.ac();
+    return ¶cmd_output.ok_ac;
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -414,9 +418,12 @@ create function FMAS.set( ¶regkey text, ¶data jsonb ) returns void volatile la
 create function FMAS.yes( ¶cmd_parts text[], ¶data jsonb )
   returns FMAS.cmd_output volatile language plpgsql as $$
   declare
+    ¶ac           integer;
     R             FMAS.cmd_output;
   begin
-    update FM.journal set ok = true where ac = FM.ac();
+    ¶ac     :=  FM.ac();
+    update FM.journal set ok = true where ac = ¶ac;
+    R.ok_ac :=  ¶ac;
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
