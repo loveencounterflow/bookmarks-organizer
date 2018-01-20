@@ -19,7 +19,7 @@ do $$ begin perform log( 'is dev:', U.truth( OS.is_dev() ) ); end; $$;
 -- ---------------------------------------------------------------------------------------------------------
 -- select 'U.variables' \g :out
 \echo
-\pset title 'U.variables'
+\echo 'U.variables'
 select * from U.variables where key ~ '^OS/machine/' order by key \g :out
 
 
