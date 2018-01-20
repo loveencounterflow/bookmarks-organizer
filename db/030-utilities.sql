@@ -304,6 +304,12 @@ create or replace function U.unnest_2d_1d( anyarray, out a anyarray )
       end loop;
     end $$;
 
+-- ---------------------------------------------------------------------------------------------------------
+/* thx to  */
+create or replace function U.filter_array( ¶array anyarray, ¶value anyelement )
+  returns anyarray immutable language sql as $$
+  select array_agg( x ) from unnest( ¶array ) as x where x is distinct from ¶value; $$;
+
 
 
 \quit
