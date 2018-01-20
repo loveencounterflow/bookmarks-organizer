@@ -144,7 +144,7 @@ select * from FM.journal;
 
 \echo FM.board
 select * from FM.board where bc = FM.bc();
-select U.row_of_facets_as_jsonb_object( $$ select * from FM.board where bc = FM.bc(); $$ );
+select U.row_as_jsonb_object( $$ select * from FM.board where bc = FM.bc(); $$ );
 \quit
 /*   —————————————————————————————=============######|######=============—————————————————————————————    */
 
