@@ -139,7 +139,6 @@ select * from FM.journal;
 -- select typelem, array_agg( typname ) from pg_type group by typelem;
 -- \quit
 
-\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
@@ -149,23 +148,19 @@ drop function if exists FM.row_of_facets_as_jsonb_object cascade;
 create function FM.row_of_facets_as_jsonb_object( sql_ text ) returns jsonb stable language plpython3u as $$
   plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
   import json as JSON
-  R             = {}
-  result        = plpy.execute( sql_ )
-  keys          = result.colnames()
-  types         = result.coltypes()
-  ctx.log( '70012', dir( result ) )
-  ctx.log( '70012', result.coltypmods() )
-  ctx.log( '70012', types )
+  R                   = {}
+  result              = plpy.execute( sql_ )
+  keys_and_typenames  = ctx.keys_and_typenames_from_result( ctx, result )
+  #.........................................................................................................
   if len( result ) != 1:
     raise ValueError( "expected 1 result row, got " + len( result ) )
+  #.........................................................................................................
   for row in result:
-    for key in keys:
-      ctx.log( '77612', key, type( row[ key ] ) )
-      # R[ key ] = JSON.loads( row[ key ] )
-    #  if row[ v ] == None:
-    #    R[ row[ k ] ] = None
-    #    continue
-    #  R[ row[ k ] ] = JSON.loads( row[ v ] )
+    for key, typename in keys_and_typenames:
+      R[ key ] = value = row[ key ]
+      if value is not None and typename in ( 'json', 'jsonb', ):
+        R[ key ] = JSON.loads( value )
+  #.........................................................................................................
   return JSON.dumps( R ) $$;
 reset role;
 
