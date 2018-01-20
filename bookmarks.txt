@@ -2,9 +2,9 @@
 * tags:   tag
   tags:   'tag with spaces'
   tags:   ctx/tag
+*stop*
   tags:   some/more/context/a-tag='and value'
   tags:   tag=value
-*stop*
 
 * tags:   tag foo 'bar' "baz" 'gnu x' "moo y"
   tags:   q=tag q=foo q='bar' q="baz" q='gnu x' q="moo y"
