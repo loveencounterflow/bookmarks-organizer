@@ -313,10 +313,10 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
       ¶cmd_output := FMAS.do( ¶transition.cmd, ¶data, ¶transition );
       -- ...................................................................................................
       /* Start new case in journal when FMAS command says so: */
-      perform log( '29921-1', ¶cc::text );
+      -- perform log( '29921-1', ¶cc::text );
       -- ¶cc := currval( 'FM.cc_seq' );
       ¶cc := FM.cc();
-      perform log( '29921-2', ¶cc::text );
+      -- perform log( '29921-2', ¶cc::text );
       if ¶cmd_output.next_cc then ¶cc = nextval( 'FM.cc_seq' ); end if;
       -- ...................................................................................................
       /* Insert new line into journal and update register copy: */

@@ -126,7 +126,7 @@ create view SRC._bookmarks_050_split_values as ( select
     case key
       when 'tags' then UTP.lex_tags(            value )
       -- when 'url'  then SRC.split_on_whitespace( value )
-    else null end                                                               as values
+    else null end                                                               as dacts
   from SRC._bookmarks_040_split_fields
   );
 
@@ -140,28 +140,36 @@ create view SRC.bookmarks as ( select * from SRC._bookmarks_050_split_values ord
 
 select * from SRC.bookmarks;
 
-create view SRC._bookmarks_and_taglexes as ( select
+/*
+create view SRC._bookmarks_and_acts_and_data as ( select
   linenr, UTP.taglex_as_table( values ) as act_and_data from SRC.bookmarks order by linenr );
+select * from SRC._bookmarks_and_acts_and_data;
+*/
 
-select * from SRC._bookmarks_and_taglexes;
-
+select * from FM.journal order by ac;
 create table SRC.bookmarks_and_acts as (
   select
       b1.linenr                                   as linenr,
-      row_number() over ( partition by linenr )   as partnr,
+      -- row_number() over ( partition by linenr )   as partnr,
       -- b1.star                                    as star,
       -- b1.level                                   as level,
       -- b1.key                                     as key,
       b1.value                                    as value,
-      v1.act_and_data                             as act_and_data,
-      FM.push( act_and_data )                     as ac
+      b1.dacts                                    as dacts,
+      FM.push_dacts( dacts )                      as acs
     from SRC.bookmarks as b1
-    left join SRC._bookmarks_and_taglexes as v1 using ( linenr )
+    -- left join SRC._bookmarks_and_acts_and_data as v1 using ( linenr )
     order by linenr
     )
     ;
+
+select * from FM.journal order by ac;
 select * from SRC.bookmarks_and_acts;
+
 \quit
+
+
+
 
 select
   linenr, UTP.lex_tags from SRC.bookmarks;

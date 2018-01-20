@@ -109,13 +109,18 @@ create table FM.input (
   );
 
 do $$ begin perform FM.push( 'RESET' ); end; $$;
-insert into FM.input ( act, data ) values ( 'START',        null          );
-insert into FM.input ( act, data ) values ( 'identifier',   'author'      );
-insert into FM.input ( act, data ) values ( 'equals',       '='           );
-insert into FM.input ( act, data ) values ( 'identifier',   'Faulkner'    );
-insert into FM.input ( act, data ) values ( 'dcolon',       '::'          );
-insert into FM.input ( act, data ) values ( 'identifier',   'name'        );
-insert into FM.input ( act, data ) values ( 'STOP',         null          );
+insert into FM.input ( act, data ) values ( 'START',        null              );
+insert into FM.input ( act, data ) values ( 'identifier',   'author'          );
+insert into FM.input ( act, data ) values ( 'equals',       '='               );
+insert into FM.input ( act, data ) values ( 'identifier',   'Faulkner'        );
+insert into FM.input ( act, data ) values ( 'dcolon',       '::'              );
+insert into FM.input ( act, data ) values ( 'identifier',   'name'            );
+insert into FM.input ( act, data ) values ( 'STOP',         null              );
+insert into FM.input ( act, data ) values ( 'START',        null              );
+insert into FM.input ( act, data ) values ( 'identifier',   'spaceships'      );
+insert into FM.input ( act, data ) values ( 'blank',        ' '               );
+insert into FM.input ( act, data ) values ( 'identifier',   'planets'         );
+insert into FM.input ( act, data ) values ( 'STOP',         null              );
 
 
 /* thx to https://stackoverflow.com/a/29747770/7568091
@@ -144,7 +149,10 @@ select * from FM.journal;
 
 \echo FM.board
 select * from FM.board where bc = FM.bc();
-select U.row_as_jsonb_object( $$ select * from FM.board where bc = FM.bc(); $$ );
+select
+    bc,
+    U.row_as_jsonb_object( format( 'select * from FM.board where bc = %L;', bc ) ) as dacts
+  from FM.board;
 \quit
 /*   —————————————————————————————=============######|######=============—————————————————————————————    */
 
