@@ -55,6 +55,7 @@ create function INIT.py_init() returns void language plpython3u as $$
     target        = AttributeDict()
     GD[ 'ctx' ]   = ctx
     ctx.plpy      = plpy
+    ctx.execute   = plpy.execute
     ctx.notice    = plpy.notice
     #.......................................................................................................
     def get_os_env_value( key ):

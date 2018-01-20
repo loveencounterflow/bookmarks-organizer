@@ -1,6 +1,7 @@
 
 #-----------------------------------------------------------------------------------------------------------
 def setup( ctx ):
+  add_type_mappings( ctx )
   find_modules( ctx )
 
 #-----------------------------------------------------------------------------------------------------------
@@ -24,5 +25,16 @@ def find_modules( ctx ):
     module_name         = splitext( filename )[ 0 ]
     ctx[ module_name ]  = import_module( module_name )
 
+#-----------------------------------------------------------------------------------------------------------
+def add_type_mappings( ctx ):
+  """Retrieve all type name <-> OID mappings from `SQL.oids_and_types` and publish them as a two-way
+  dictionary in `ctx.oids_and_types`."""
+  #.........................................................................................................
+  rows    = ctx.execute( 'select name, oid from SQL.oids_and_types' );
+  target  = ctx.oids_and_types = {}
+  for row in rows:
+    target[ row[ 'name' ] ] = row[ 'oid'  ]
+    target[ row[ 'oid'  ] ] = row[ 'name' ]
+  ctx.log( '10091', ctx.oids_and_types )
 
 
