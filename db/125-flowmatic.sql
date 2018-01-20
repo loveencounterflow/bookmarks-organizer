@@ -127,6 +127,7 @@ create table FM.registers (
 create table FM.board ( bc serial primary key );
 
 -- ---------------------------------------------------------------------------------------------------------
+/* ### TAINT max( sequence ) is not concurrency-proof */
 create function FM.bc()   returns integer stable language sql as $$ select max(  bc ) from FM.board;    $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -237,8 +238,12 @@ create sequence FM.cc_seq minvalue 0 start 0;
 do $$ begin perform nextval( 'FM.cc_seq' ); end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
+/* ### TAINT max( sequence ) is not concurrency-proof */
 create function FM.ac()  returns integer stable language sql as $$ select max( ac ) from FM.journal;  $$;
+/* ### TAINT max( sequence ) is not concurrency-proof */
 create function FM.cc()  returns integer stable language sql as $$ select coalesce( max( cc ), 0 ) from FM.journal;  $$;
+-- create function FM.cc()  returns bigint stable language sql as $$
+--   select coalesce( ( select last_value from FM.cc_seq ), 0 ) from FM.journal;  $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.adapt_journal() returns void volatile language plpgsql as $outer$
@@ -257,6 +262,8 @@ create function FM._journal_as_tabular() returns text
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT should probably use `lock for update` */
+/* ### TAINT we assume that a single `push()` can only return up to one 'good' `ac`; in general that might
+  not necessarily apply. */
 create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile language plpgsql as $$
   declare
     -- R                 integer;
