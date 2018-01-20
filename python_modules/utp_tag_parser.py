@@ -55,7 +55,7 @@ def lex_tags( ctx, tags_txt ):
           else:                 type = 'identifier'
         R.append( ( type, group, ) )
         break
-  R = [ ( type, group.replace( '\\', '' ), ) for ( type, group ) in R ]
+  R = [ [ type, group.replace( '\\', '' ), ] for ( type, group ) in R ]
   return R
 
 
