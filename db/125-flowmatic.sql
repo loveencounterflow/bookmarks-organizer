@@ -43,6 +43,13 @@ drop schema if exists FM cascade;
 create schema FM;
 
 -- ---------------------------------------------------------------------------------------------------------
+drop schema if exists FMAS cascade;
+create schema FMAS;
+
+-- ---------------------------------------------------------------------------------------------------------
+create type FMAS.cmd_output as ( next_cmd text, next_cc boolean, error text );
+
+-- ---------------------------------------------------------------------------------------------------------
 /* STATES AND ACTS */
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -295,7 +302,9 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
       ¶cmd_output := FMAS.do( ¶transition.cmd, ¶data, ¶transition );
       -- ...................................................................................................
       /* Start new case in journal when FMAS command says so: */
+      -- perform log( '29921-1', ¶cc::text );
       ¶cc := currval( 'FM.cc_seq' );
+      -- perform log( '29921-2', ¶cc::text );
       if ¶cmd_output.next_cc then ¶cc = nextval( 'FM.cc_seq' ); end if;
       -- ...................................................................................................
       /* Insert new line into journal and update register copy: */
@@ -341,6 +350,12 @@ create function FM.push( ¶act text, ¶data anyelement ) returns integer volatil
 create function FM.push( ¶act text ) returns integer volatile language sql as $$
   select FM.push( ¶act, jb( null ) ); $$;
 
+-- ---------------------------------------------------------------------------------------------------------
+create function FM.push( ¶act_and_data text[] ) returns integer volatile language sql as $$
+  select  FM.push(  'START'                                 ) union all
+  select  FM.push(  ¶act_and_data[ 1 ], ¶act_and_data[ 2 ]  ) union all
+  select  FM.push(  'STOP'                                  ); $$;
+
 
 
 
@@ -385,12 +400,6 @@ NCC       # Next Case Count, indicates the next batch, line, set of inputs (with
 /* #    .    #    .    #    .    #    .    #    .    #    .    #    .    #    .    #    .    #    .    #  */
 /* ====================================================================================================== */
 
--- ---------------------------------------------------------------------------------------------------------
-drop schema if exists FMAS cascade;
-create schema FMAS;
-
--- ---------------------------------------------------------------------------------------------------------
-create type FMAS.cmd_output as ( next_cmd text, next_cc boolean, error text );
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.get( ¶regkey text ) returns jsonb stable language sql as $$
