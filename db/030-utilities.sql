@@ -23,6 +23,10 @@ create domain U.nonnegative_integer   as integer  check ( value >= 0            
 create domain U.positive_integer      as integer  check ( value >= 1                    );
 create domain U.nonempty_text         as text     check ( value != ''                   );
 create domain U.chr                   as text     check ( character_length( value ) = 1 );
+-- .........................................................................................................
+create type U.text_facet              as ( key text, value text       );
+create type U.integer_facet           as ( key text, value integer    );
+create type U.float_facet             as ( key text, value float      );
 
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists NAMEOF cascade;
@@ -190,9 +194,7 @@ returns text immutable language plpgsql as $$
 -- =========================================================================================================
 -- VARIABLES
 -- ---------------------------------------------------------------------------------------------------------
-create table U.variables (
-  key   text unique not null primary key,
-  value text );
+create table U.variables of U.text_facet ( key unique not null primary key );
 
 /*
 -- ---------------------------------------------------------------------------------------------------------
@@ -256,15 +258,28 @@ reset role;
 -- =========================================================================================================
 -- ARRAYS
 -- ---------------------------------------------------------------------------------------------------------
-/* thx to https://stackoverflow.com/a/8142998/7568091 */
-create function U.unnest_2d_1d( anyarray ) returns setof anyarray immutable strict language sql as $$
-  select
-      array_agg( $1[ d1 ][ d2 ] )
-  from
-    generate_subscripts( $1, 1 ) as d1,
-    generate_subscripts( $1, 2 ) as d2
-  group by d1
-  order by d1; $$;
+-- /* thx to https://stackoverflow.com/a/8142998/7568091 */
+-- create function U.unnest_2d_1d( anyarray ) returns setof anyarray immutable strict language sql as $$
+--   select
+--       array_agg( $1[ d1 ][ d2 ] )
+--   from
+--     generate_subscripts( $1, 1 ) as d1,
+--     generate_subscripts( $1, 2 ) as d2
+--   group by d1
+--   order by d1; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+/* thx to https://stackoverflow.com/a/8142998/7568091
+  https://stackoverflow.com/a/41405177/7568091 */
+create or replace function U.unnest_2d_1d( anyarray, out a anyarray )
+  returns setof anyarray immutable strict language plpgsql as $$
+  begin
+    foreach a slice 1 in array $1 loop
+      return next;
+      end loop;
+    end $$;
+
+
 
 \quit
 
