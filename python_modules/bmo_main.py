@@ -35,6 +35,11 @@ def add_type_mappings( ctx ):
   for row in rows:
     target[ row[ 'name' ] ] = row[ 'oid'  ]
     target[ row[ 'oid'  ] ] = row[ 'name' ]
-  ctx.log( '10091', ctx.oids_and_types )
-
+  #.........................................................................................................
+  def keys_and_typenames_from_result( ctx, result ):
+    keys    = result.colnames()
+    types   = [ ctx.oids_and_types[ oid ] for oid in result.coltypes() ]
+    return list( zip( keys, types ) )
+  #.........................................................................................................
+  ctx.keys_and_typenames_from_result = keys_and_typenames_from_result
 
