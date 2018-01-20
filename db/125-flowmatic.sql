@@ -234,7 +234,7 @@ do $$ begin perform nextval( 'FM.cc_seq' ); end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.ac()  returns integer stable language sql as $$ select max( ac ) from FM.journal;  $$;
-create function FM.cc()  returns integer stable language sql as $$ select max( cc ) from FM.journal;  $$;
+create function FM.cc()  returns integer stable language sql as $$ select coalesce( max( cc ), 0 ) from FM.journal;  $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.adapt_journal() returns void volatile language plpgsql as $outer$
@@ -302,9 +302,10 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
       ¶cmd_output := FMAS.do( ¶transition.cmd, ¶data, ¶transition );
       -- ...................................................................................................
       /* Start new case in journal when FMAS command says so: */
-      -- perform log( '29921-1', ¶cc::text );
-      ¶cc := currval( 'FM.cc_seq' );
-      -- perform log( '29921-2', ¶cc::text );
+      perform log( '29921-1', ¶cc::text );
+      -- ¶cc := currval( 'FM.cc_seq' );
+      ¶cc := FM.cc();
+      perform log( '29921-2', ¶cc::text );
       if ¶cmd_output.next_cc then ¶cc = nextval( 'FM.cc_seq' ); end if;
       -- ...................................................................................................
       /* Insert new line into journal and update register copy: */
