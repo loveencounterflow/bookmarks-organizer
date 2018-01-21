@@ -349,6 +349,15 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
       end loop;
     -- .....................................................................................................
     return ¶ac;
+    -- .....................................................................................................
+    exception
+      when others then
+        raise notice 'something went wrong';
+        raise notice 'this: % %', SQLERRM, SQLSTATE;
+        raise notice 'sqlstate: %', sqlstate;
+        -- raise exception;
+      -- when invalid_recursion then -- 38000
+      -- raise exception using message = 'Recursion not allowed for schema "meta"', errcode = '42P19';
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -382,7 +391,18 @@ create function FM.push_dacts( ¶dacts text[] ) returns integer[] volatile langu
       end loop;
     ¶ac := FM.push( 'STOP' );
     if ¶ac is distinct from null then R := R || ¶ac; end if;
-    return R; end; $$;
+    return R;
+    -- .....................................................................................................
+    exception
+      when others then
+        perform log( 'FM#11211', 'something went wrong' );
+        perform log( 'FM#11211', 'sqlerrm:',  sqlerrm );
+        perform log( 'FM#11211', 'sqlstate:', sqlstate );
+        perform log( 'FM#11211', '¶dacts:', ¶dacts::text );
+        -- raise exception;
+      -- when invalid_recursion then -- 38000
+      -- raise exception using message = 'Recursion not allowed for schema "meta"', errcode = '42P19';
+    end; $$;
 
 
 

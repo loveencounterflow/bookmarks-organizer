@@ -1,7 +1,6 @@
 
 * tags:   foo bar baz
   tags:   ctx/tag spaceships/orville
-*stop*
 
 * tags:   tag
   tags:   'tag with spaces'
@@ -21,6 +20,7 @@
   # maximal form: contextual tag with typed value
   tags:   IT/programming/language=SQL::name
 
+*stop*
 
 * url:    https://github.com/kittykatattack/learningPixi
   url:    http://pixijs.download/release/docs

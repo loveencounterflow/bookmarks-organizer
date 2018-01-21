@@ -116,7 +116,7 @@ create view SRC._bookmarks_040_split_fields as ( select
   );
 
 -- ---------------------------------------------------------------------------------------------------------
-\echo :X'--=(6)=--':O
+\echo :X'--=(7)=--':O
 create view SRC._bookmarks_050_split_values as ( select
     linenr                                                                      as linenr,
     star                                                                        as star,
@@ -131,100 +131,43 @@ create view SRC._bookmarks_050_split_values as ( select
   );
 
 -- ---------------------------------------------------------------------------------------------------------
-\echo :X'--=(7)=--':O
-create view SRC.bookmarks as ( select * from SRC._bookmarks_050_split_values order by linenr );
+\echo :X'--=(8)=--':O
+create table SRC._bookmarks_060 as ( select
+    linenr                            as linenr,
+    value                             as value,
+    unnest( FM.push_dacts( dacts ) )  as ac
+  from SRC._bookmarks_050_split_values
+  order by linenr);
+
+-- ---------------------------------------------------------------------------------------------------------
+\echo :X'--=(9)=--':O
+create table SRC._bookmarks_070 as ( select
+    v1.linenr                                           as linenr,
+    b.star                                              as star,
+    b.level                                             as level,
+    b.key                                               as key,
+    v1.value                                            as value,
+    j.ac                                                as ac,
+    j.bc                                                as bc,
+    U.row_as_jsonb_object( format(
+      'select * from FM.board where bc = %L;', j.bc ) ) as registers
+  from SRC._bookmarks_060 as v1
+  left join FM.journal                      as j on ( v1.ac       = j.ac      )
+  left join SRC._bookmarks_050_split_values as b on ( v1.linenr   = b.linenr  )
+  order by linenr );
+
+-- ---------------------------------------------------------------------------------------------------------
+\echo :X'--=(10)=--':O
+create view SRC.bookmarks as ( select * from SRC._bookmarks_070 order by linenr );
+
 
 /* ###################################################################################################### */
 
+\echo 'select * from FM.journal;'
+select * from FM.journal;
 
-\echo 33421 SRC.bookmarks
-select linenr, value, dacts from SRC.bookmarks;
-select FM.push( 'RESET' );
-
-/*
-create view SRC._bookmarks_and_acts_and_data as ( select
-  linenr, UTP.taglex_as_table( values ) as act_and_data from SRC.bookmarks order by linenr );
-select * from SRC._bookmarks_and_acts_and_data;
-*/
-
-create table SRC._1 as ( select
-    linenr                            as linenr,
-    value                            as value,
-    unnest( FM.push_dacts( dacts ) )  as ac
-  from SRC.bookmarks );
-
-\echo 'select * from SRC._1;'
-select * from SRC._1;
-
--- \echo 'select * from FM.journal;'
--- select * from FM.journal;
-
-create table SRC._2 as ( select
-    v1.linenr,
-    v1.value,
-    j.ac,
-    j.bc,
-    U.row_as_jsonb_object( format( 'select * from FM.board where bc = %L;', j.bc ) ) as registers
-  from SRC._1 as v1
-  left join FM.journal  as j on ( v1.ac  = j.ac )
-  -- left join FM.board    as b on ( j.bc  = b.bc )
-  );
-
-\echo 'select * from SRC._2;'
-select * from SRC._2;
-\quit
-
-create table SRC._2 as ( select
-    v1.ac,
-    b.bc,
-    U.row_as_jsonb_object( format( 'select * from FM.board where bc = %L;', b.bc ) ) as registers
-  from v1
-  left join FM.journal  as j on ( v1.ac  = j.ac )
-  left join FM.board    as b on ( j.bc  = b.bc )
-  );
-
-
-
-select * from FM.journal order by ac;
-create table SRC._bookmarks_and_acs as ( with v1 ,
-  select * from v2 );
-\quit
-
-  v2 as (
-    select
-      from v1
-      from FM.board
-
-    )
-      v1.linenr,
-      FM.
-    -- left join SRC._bookmarks_and_acts_and_data as v1 using ( linenr )
-    order by linenr
-    )
-    ;
-
-create table SRC.bookmarks_and_parsed_tags as (
-  select
-      b1.linenr                                   as linenr,
-      -- row_number() over ( partition by linenr )   as partnr,
-      -- b1.star                                    as star,
-      -- b1.level                                   as level,
-      -- b1.key                                     as key,
-      b1.value                                    as value,
-      -- b1.dacts                                    as dacts,
-      unnest( acs )                      as ac
-    from SRC._bookmarks_and_acs as b1
-    -- left join SRC._bookmarks_and_acts_and_data as v1 using ( linenr )
-    order by linenr
-    )
-    ;
-
-\echo 'select * from FM.journal order by ac;'
-select * from FM.journal order by ac;
-\echo 'select * from SRC._bookmarks_and_acs;'
-select * from SRC._bookmarks_and_acs;
-\echo 'select * from SRC.bookmarks_and_parsed_tags;'
-select * from SRC.bookmarks_and_parsed_tags;
+\echo 'select * from SRC.bookmarks;'
+select * from SRC.bookmarks;
 
 \quit
 
