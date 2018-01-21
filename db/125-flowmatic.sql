@@ -252,10 +252,36 @@ create function FM.adapt_journal() returns void volatile language plpgsql as $ou
     end; $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM._journal_as_tabular() returns text
-  immutable strict language sql as $outer$
+create function FM._journal_as_tabular() returns text stable language sql as $outer$
     select U.tabulate_query( $$ select * from FM.journal order by ac; $$ );
     $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM._journal_as_tabular( n integer ) returns text stable language sql as $outer$
+    select case when n > 0 then
+        U.tabulate_query( format( $$ select * from FM.journal order by ac limit %L; $$, n ) )
+      else
+        U.tabulate_query( format( $$
+          with v1 as ( select * from FM.journal order by ac desc limit 0 - %L )
+          select * from v1 order by ac asc $$, n ) )
+        end;
+    $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM._log_journal_context() returns void stable language plpgsql as $$
+  begin
+    perform log();
+    perform log( 'FM #19002', 'Journal up to problematic act:' );     perform log();
+    perform log( FM._journal_as_tabular() );                          perform log();
+    end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM._log_journal_context( n integer ) returns void stable language plpgsql as $$
+  begin
+    perform log();
+    perform log( 'FM #19002', 'Journal up to problematic act:' );     perform log();
+    perform log( FM._journal_as_tabular( n ) );                       perform log();
+    end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 /* PUSH */
@@ -355,9 +381,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
         raise notice 'something went wrong';
         raise notice 'this: % %', SQLERRM, SQLSTATE;
         raise notice 'sqlstate: %', sqlstate;
-        -- raise exception;
-      -- when invalid_recursion then -- 38000
-      -- raise exception using message = 'Recursion not allowed for schema "meta"', errcode = '42P19';
+        raise;
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -377,7 +401,7 @@ create function FM.push( ¶dact text[] ) returns integer volatile language sql a
   select FM.push( ¶dact[ 1 ], ¶dact[ 2 ] ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.push_dacts( ¶dacts text[] ) returns integer[] volatile language plpgsql as $$
+create function FM.push_dacts( ¶dacts text[] ) returns integer[] volatile strict language plpgsql as $$
   declare
     ¶ac     integer;
     R       integer[] = '{}';
@@ -395,11 +419,15 @@ create function FM.push_dacts( ¶dacts text[] ) returns integer[] volatile langu
     -- .....................................................................................................
     exception
       when others then
-        perform log( 'FM#11211', 'something went wrong' );
-        perform log( 'FM#11211', 'sqlerrm:',  sqlerrm );
-        perform log( 'FM#11211', 'sqlstate:', sqlstate );
-        perform log( 'FM#11211', '¶dacts:', ¶dacts::text );
-        -- raise exception;
+        perform log( 'FM #11211', 'something went wrong' );
+        perform log( 'FM #11211', 'sqlerrm:',  sqlerrm );
+        perform log( 'FM #11211', 'sqlstate:', sqlstate );
+        perform log( 'FM #11211', '¶dacts:', ¶dacts::text );
+        perform FM._log_journal_context( -10 );
+        raise;
+        -- return null;
+        -- raise exception 'foobar % %', sqlstate, sqlerrm;
+        -- raise exception '%', sqlerrm using errcode = sqlstate;
       -- when invalid_recursion then -- 38000
       -- raise exception using message = 'Recursion not allowed for schema "meta"', errcode = '42P19';
     end; $$;
@@ -647,9 +675,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
         when 'PSH' then S := FMAS.psh( ¶cmd_parts, ¶data );
         when 'YES' then S := FMAS.yes( ¶cmd_parts, ¶data );
         else
-          perform log();
-          perform log( 'FM #19002', 'Journal up to problematic act:' );     perform log();
-          perform log( FM._journal_as_tabular() );                          perform log();
+          perform FM._log_journal_context( -10 );
           perform log( 'FM #19003', 'transition: %', ¶transition::text );   perform log();
           raise exception 'unknown command %', ¶cmd;
         end case;
