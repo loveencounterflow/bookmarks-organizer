@@ -269,6 +269,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
     -- R                 integer;
     ¶new_state        text;
     ¶tail             text;
+    ¶ac               integer;
     ¶cc               integer;
     ¶transition       FM.transition;
     ¶next_transition  FM.transition;
@@ -316,8 +317,8 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
       -- perform log( '29921-1', ¶cc::text );
       -- ¶cc := currval( 'FM.cc_seq' );
       ¶cc := FM.cc();
-      -- perform log( '29921-2', ¶cc::text );
       if ¶cmd_output.next_cc then ¶cc = nextval( 'FM.cc_seq' ); end if;
+      if ¶cmd_output.ok_ac is distinct from null then ¶ac := ¶cmd_output.ok_ac; end if;
       -- ...................................................................................................
       /* Insert new line into journal and update register copy: */
       insert into FM.journal ( cc, tc, tail, act, cmd, point, data ) values
@@ -347,7 +348,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
       exit when ¶next_transition is null;
       end loop;
     -- .....................................................................................................
-    return ¶cmd_output.ok_ac;
+    return ¶ac;
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -363,15 +364,24 @@ create function FM.push( ¶act text ) returns integer volatile language sql as $
   select FM.push( ¶act, jb( null ) ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
+create function FM.push( ¶dact text[] ) returns integer volatile language sql as $$
+  select FM.push( ¶dact[ 1 ], ¶dact[ 2 ] ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
 create function FM.push_dacts( ¶dacts text[] ) returns integer[] volatile language plpgsql as $$
   declare
+    ¶ac     integer;
     R       integer[] = '{}';
-    -- ¶dact   text[];
+    ¶dact   text[];
   begin
-    R :=  R || FM.push( 'START' );
-    select R || FM.push( d[ 1 ], d[ 2 ]  ) from U.unnest_2d_1d( ¶dacts ) as d into R;
-    R :=  R || FM.push( 'STOP' );
-    R :=  U.filter_array( R, null );
+    ¶ac := FM.push( 'START' );
+    if ¶ac is distinct from null then R := R || ¶ac; end if;
+    foreach ¶dact slice 1 in array ¶dacts loop
+      ¶ac := FM.push( ¶dact );
+      if ¶ac is distinct from null then R := R || ¶ac; end if;
+      end loop;
+    ¶ac := FM.push( 'STOP' );
+    if ¶ac is distinct from null then R := R || ¶ac; end if;
     return R; end; $$;
 
 

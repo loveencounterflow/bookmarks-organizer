@@ -49,7 +49,6 @@ insert into T.probes_and_matchers values
   ( 'UTP.lex_tags', null,                                                         null          ),
   ( 'UTP.lex_tags', $$tag$$,                                                        '{tag}'               ),
   ( 'UTP.lex_tags', $$name=tag$$,                                                   '{name,=,tag}'        ),
-  ( 'UTP.lex_tags', 'tag'                                                       , '{tag}'                                                                               ),
   ( 'UTP.lex_tags', 'tag foo ''bar'' "baz" ''gnu x'' "moo y"'                   , '{tag," ",foo," ",bar," ",baz," ","gnu x"," ","moo y"}'                               ),
   ( 'UTP.lex_tags', 'tag=''value with spaces 1'''                               , '{tag,=,"value with spaces 1"}'                                                       ),
   ( 'UTP.lex_tags', 'tag="value with spaces 2"'                                 , '{tag,=,"value with spaces 2"}'                                                       ),
@@ -70,7 +69,33 @@ insert into T.probes_and_matchers values
   ( 'UTP.lex_tags', 'tag foo "bar baz"'                                         , '{tag," ",foo," ","bar baz"}'                                                         ),
   ( 'UTP.lex_tags', 'IT/programming/language=SQL::name'                         , '{IT,/,programming,/,language,=,SQL,::,name}'                                                         ),
   ( 'UTP.lex_tags', 'IT/programming/language'                                   , '{IT,/,programming,/,language}'                                                         ),
-  ( 'UTP.lex_tags', 'tag ''foo "bar baz" gnu'''                                 , E'{tag," ","foo \\"bar baz\\" gnu"}'                                                  );
+  ( 'UTP.lex_tags', 'tag ''foo "bar baz" gnu'''                                 , E'{tag," ","foo \\"bar baz\\" gnu"}'                                                  ),
+  ( 'UTP.lex_tags', 'tag'                                                       , '{tag}'                                                                               );
+
+  -- ( 'tag' '{{identifier,tag}}' ),
+  -- ( 'name=tag' '{{identifier,name},{equals,=},{identifier,tag}}' ),
+  -- ( 'tag foo ''bar'' "baz" ''gnu x'' "moo y"' '{{identifier,tag},{blank," "},{identifier,foo},{blank," "},{identifier,bar},{blank," "},{identifier,baz},{blank," "},{identifier,"gnu x"},{blank," "},{identifier,"moo y"}}' ),
+  -- ( 'tag=''value with spaces 1''' '{{identifier,tag},{equals,=},{identifier,"value with spaces 1"}}' ),
+  -- ( 'tag="value with spaces 2"' '{{identifier,tag},{equals,=},{identifier,"value with spaces 2"}}' ),
+  -- ( E'tag="value with spaces and \\"quotes\\" 2"' E'{{identifier,tag},{equals,=},{identifier,"value with spaces and \\"quotes\\" 2"}}' ),
+  -- ( 'q=tag q=foo q=''bar'' q="baz" q=''gnu x'' q="moo y"' '{{identifier,q},{equals,=},{identifier,tag},{blank," "},{identifier,q},{equals,=},{identifier,foo},{blank," "},{identifier,q},{equals,=},{identifier,bar},{blank," "},{identifier,q},{equals,=},{identifier,baz},{blank," "},{identifier,q},{equals,=},{identifier,"gnu x"},{blank," "},{identifier,q},{equals,=},{identifier,"moo y"}}' ),
+  -- ( 'tag::q foo::q ''bar''::q "baz"::q ''gnu x''::q "moo y"::q' '{{identifier,tag},{dcolon,::},{identifier,q},{blank," "},{identifier,foo},{dcolon,::},{identifier,q},{blank," "},{identifier,bar},{dcolon,::},{identifier,q},{blank," "},{identifier,baz},{dcolon,::},{identifier,q},{blank," "},{identifier,"gnu x"},{dcolon,::},{identifier,q},{blank," "},{identifier,"moo y"},{dcolon,::},{identifier,q}}' ),
+  -- ( 'programming/languages/sql' '{{identifier,programming},{slash,/},{identifier,languages},{slash,/},{identifier,sql}}' ),
+  -- ( 'ctx/tag' '{{identifier,ctx},{slash,/},{identifier,tag}}' ),
+  -- ( 'tag=value' '{{identifier,tag},{equals,=},{identifier,value}}' ),
+  -- ( 'ctx/tag=''value with spaces 1''' '{{identifier,ctx},{slash,/},{identifier,tag},{equals,=},{identifier,"value with spaces 1"}}' ),
+  -- ( 'ctx/tag="value with spaces 2"' '{{identifier,ctx},{slash,/},{identifier,tag},{equals,=},{identifier,"value with spaces 2"}}' ),
+  -- ( '"Gun, Son of A." ::name' '{{identifier,"Gun, Son of A."},{blank," "},{dcolon,::},{identifier,name}}' ),
+  -- ( '"Gun, Son of A."::name' '{{identifier,"Gun, Son of A."},{dcolon,::},{identifier,name}}' ),
+  -- ( '"Gun, Son of A.::name"' '{{identifier,"Gun, Son of A.::name"}}' ),
+  -- ( 'name="Gun, Son of A." ''another tag''' '{{identifier,name},{equals,=},{identifier,"Gun, Son of A."},{blank," "},{identifier,"another tag"}}' ),
+  -- ( '''tag with spaces''' '{{identifier,"tag with spaces"}}' ),
+  -- ( 'tag foo ''bar baz''' '{{identifier,tag},{blank," "},{identifier,foo},{blank," "},{identifier,"bar baz"}}' ),
+  -- ( 'tag foo "bar baz"' '{{identifier,tag},{blank," "},{identifier,foo},{blank," "},{identifier,"bar baz"}}' ),
+  -- ( 'IT/programming/language=SQL::name' '{{identifier,IT},{slash,/},{identifier,programming},{slash,/},{identifier,language},{equals,=},{identifier,SQL},{dcolon,::},{identifier,name}}' ),
+  -- ( 'IT/programming/language' '{{identifier,IT},{slash,/},{identifier,programming},{slash,/},{identifier,language}}' ),
+  -- ( 'tag ''foo "bar baz" gnu''' E'{{identifier,tag},{blank," "},{identifier,"foo \\"bar baz\\" gnu"}}' ),
+  -- ( 'tag' '{{identifier,tag}}' ),
 
 -- ---------------------------------------------------------------------------------------------------------
 /* thx to https://stackoverflow.com/a/10711349/7568091 for using `regclass` and `format( '...%s...' )` */

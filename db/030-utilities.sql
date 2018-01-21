@@ -268,7 +268,7 @@ create function U.row_as_jsonb_object( sql_ text ) returns jsonb stable language
   keys_and_typenames  = ctx.keys_and_typenames_from_result( ctx, result )
   #.........................................................................................................
   if len( result ) != 1:
-    raise ValueError( "expected 1 result row, got " + len( result ) )
+    raise ValueError( "expected 1 result row, got " + str( len( result ) ) + " from query " + repr( sql_ ) )
   #.........................................................................................................
   for row in result:
     for key, typename in keys_and_typenames:
@@ -304,11 +304,10 @@ create or replace function U.unnest_2d_1d( anyarray, out a anyarray )
       end loop;
     end $$;
 
--- ---------------------------------------------------------------------------------------------------------
-/* thx to  */
-create or replace function U.filter_array( ¶array anyarray, ¶value anyelement )
-  returns anyarray immutable language sql as $$
-  select array_agg( x ) from unnest( ¶array ) as x where x is distinct from ¶value; $$;
+-- -- ---------------------------------------------------------------------------------------------------------
+-- create or replace function U.filter_array( ¶array anyarray, ¶value anyelement )
+--   returns anyarray immutable language sql as $$
+--   select array_agg( x ) from unnest( ¶array ) as x where x is distinct from ¶value; $$;
 
 
 

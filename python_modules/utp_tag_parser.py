@@ -25,9 +25,8 @@ rex = re.compile( r"""
   ( ['"]* )         # lone quotes
   """, re.DOTALL | re.VERBOSE )
 
-# #-----------------------------------------------------------------------------------------------------------
-# forbidden_pattern = re.compile( r'^[:=]|[:=]$' )
-
+#-----------------------------------------------------------------------------------------------------------
+whitespace_re = re.compile( r'^\s+$' )
 
 #-----------------------------------------------------------------------------------------------------------
 def lex_tags( ctx, tags_txt ):
@@ -49,10 +48,11 @@ def lex_tags( ctx, tags_txt ):
         if is_quoted:
           type = 'identifier'
         else:
-          if    group == '/':   type = 'slash'
-          elif  group == '=':   type = 'equals'
-          elif  group == '::':  type = 'dcolon'
-          else:                 type = 'identifier'
+          if    whitespace_re.match( group ) is not None: type = 'blank'
+          elif  group == '/':                             type = 'slash'
+          elif  group == '=':                             type = 'equals'
+          elif  group == '::':                            type = 'dcolon'
+          else:                                           type = 'identifier'
         R.append( ( type, group, ) )
         break
   R = [ [ type, group.replace( '\\', '' ), ] for ( type, group ) in R ]
