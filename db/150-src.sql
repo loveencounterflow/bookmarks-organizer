@@ -2,35 +2,32 @@
 \ir './010-trm.sql'
 -- \pset tuples_only off
 -- \timing on
+-- vacuum;
+
+
+-- select linenr, value, 'C', U.text_array_from_json( parts->'C' ) from SRC.bookmarks;
+-- select * from SRC.bookmarks;
+-- select parts->'C' from SRC.bookmarks;
+-- select parts->'C' from SRC.bookmarks where ( parts->'C' ) != 'null'::jsonb;
+-- -- select pg_typeof( parts->'C' ) from SRC.bookmarks;
+-- select U.text_array_from_json( parts->'C' ) from SRC.bookmarks where ( parts->'C' ) != 'null'::jsonb;
+-- \quit
+
+
+-- \echo 'select * from SRC._bookmarks_050_split_values;'
+-- select * from SRC._bookmarks_050_split_values;
+
+-- \echo 'select * from SRC._bookmarks_060;'
+-- select * from SRC._bookmarks_060;
+
+-- \echo 'select * from SRC._bookmarks_070;'
+-- select * from SRC._bookmarks_070;
+
+-- \quit
 
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists SRC cascade;
 create schema SRC;
-
--- -- ---------------------------------------------------------------------------------------------------------
--- set role dba;
--- /* ### TAINT for backwards compatibility with PostGreSQL 9.6 and below, we have to use JSONb as an
---   intermediate format. */
--- create function SRC._lex_tags_py( x text ) returns jsonb
---   immutable strict language plpython3u as $$
---   plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
---   import json as JSON
---   return JSON.dumps( ctx.utp_tag_parser.lex_tags( ctx, x ) )
---   $$;
--- reset role;
-
--- -- ---------------------------------------------------------------------------------------------------------
--- create function SRC.lex_tags( x text ) returns text[]
---   immutable strict language plpgsql as $$
---   declare
---     R       text[];
---     ¶row    jsonb;
---   begin
---     for ¶row in ( select * from jsonb_array_elements_text( SRC._lex_tags_py( x ) ) ) loop
---       R := R || array[ U.text_array_from_json( ¶row ) ] ;
---       end loop;
---     return R;
---     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
