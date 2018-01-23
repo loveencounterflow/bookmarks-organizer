@@ -40,6 +40,10 @@
           https://github.com/pixijs/pixi.js
   tags:   webgl font-rendering kannwas
 
+* url:    https://www.npmjs.com/package/threejs-term
+  title:  Terminal Renderer for Three.js
+  tags:   webgl font-rendering kannwas threejs::name
+
 
 * readme: `tag`—simple tag
 * readme: `minortag1 minortag2 #majortag minortag1`—hash indicates primary position of bookmark, 1st tag otherwise
@@ -284,5 +288,19 @@
 * url:    https://medium.com/@chrishantha/linux-performance-observability-tools-19ae2328f87f
   title:  Linux Performance Observability Tools
   tags:   programming/diagnostics linux programming/monitoring
+
+* url:    http://extraterm.org/
+  tags:   terminal terminal-emulator
+  about:  Supports Linux, macOS and Cygwin on Windows; xterm compatible;
+          Multiple tabs and panes, split and tiled any way you like; Keyboard
+          based selection; Show images in the terminal; Shell integration; can
+          isolate and ‘frame’ command output. (bash, zsh and fish supported);
+          Previous command output can be used as input for new commands; Command
+          output is editable in place. Multi-cursor editing; Keyboard friendly
+          “command palette” for searching menus; Text zoom; Unicode support
+
+* url:    https://github.com/rse/stmux
+  tags:   tmux::name terminal nodejs::name
+  title:  Simple Terminal Multiplexer for Node.js Environments
 
 
