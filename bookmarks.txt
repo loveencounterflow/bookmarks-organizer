@@ -303,4 +303,7 @@
   tags:   tmux::name terminal nodejs::name
   title:  Simple Terminal Multiplexer for Node.js Environments
 
-
+* url:    https://www.copypastecharacter.com/arrows
+  url:    http://www.eki.ee/letter/
+  url:    https://unicode-table.com/
+  tags:   unicode selection tool characters
