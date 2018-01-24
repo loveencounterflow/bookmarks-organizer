@@ -13,8 +13,10 @@
 */
 
 -- ---------------------------------------------------------------------------------------------------------
-drop schema if exists FDW cascade;
-create schema FDW;
+drop schema if exists FLR cascade;
+create schema FLR;
+
+/* ### TAINT apparently decodes escaped characters such as `\n`, `\"`; this may break JSON literals */
 
 -- ---------------------------------------------------------------------------------------------------------
 drop function if exists _create_file_fdw( text ) cascade;
@@ -36,7 +38,7 @@ create function _create_file_fdw( text ) returns void language plpgsql as $outer
 do $$ begin perform _create_file_fdw( current_user ); end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FDW._create_file_lines_table( ¶table_name text, ¶path text ) returns void
+create function FLR._create_file_lines_table( ¶table_name text, ¶path text ) returns void
   volatile language plpgsql as $outer$
   declare
     ¶q text;
@@ -55,7 +57,7 @@ create function FDW._create_file_lines_table( ¶table_name text, ¶path text ) r
     end; $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FDW.create_file_lines_view( ¶view_name text, ¶path text ) returns void
+create function FLR.create_file_lines_view( ¶view_name text, ¶path text ) returns void
   volatile language plpgsql as $outer$
   declare
     ¶q              text;
@@ -72,7 +74,7 @@ create function FDW.create_file_lines_view( ¶view_name text, ¶path text ) retu
         ¶table_name_q = quote_ident( ¶name_parts[ 1 ] ) || '.' || quote_ident( '_' || ¶name_parts[ 2 ] );
         ¶view_name_q  = quote_ident( ¶name_parts[ 1 ] ) || '.' || quote_ident(        ¶name_parts[ 2 ] );
       end case;
-    perform FDW._create_file_lines_table( ¶table_name_q, ¶path );
+    perform FLR._create_file_lines_table( ¶table_name_q, ¶path );
     ¶q := $$
       create view $$||¶view_name_q||$$ as ( select
           row_number() over ()  as linenr,
