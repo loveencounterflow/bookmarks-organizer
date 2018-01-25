@@ -14,7 +14,6 @@ sudo apt install postgresql-plpython3-10
 sudo apt install postgresql-contrib-10
 sudo apt install postgresql-10-pgtap
 sudo apt install postgresql-10-plsh
-sudo apt install postgresql-10-python-multicorn
 # sudo apt install postgresql-9.6-python3-multicorn
 # sudo apt install postgresql-9.6-plv8
 # sudo apt install postgresql-plperl-9.6
@@ -86,4 +85,8 @@ py.test --tap-files
   walkthrough act. That is, a series of commands that are connected by `...`
   (continuations) can not wait for a specific action anywhere; such series must
   always run to completion until a properly named point is reached.
+
+# No More FDWs FTW
+
+see [documentation/no-more-fdws-ftw.md](documentation/no-more-fdws-ftw.md)
 
