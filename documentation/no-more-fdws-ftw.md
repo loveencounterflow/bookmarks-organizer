@@ -161,11 +161,11 @@ give FDWs a second thought. I now think it's a wrong solution because the entire
 mechanism has become so unwieldy people have come up with unwieldy wrappers to
 keep that unwieldiness from wielding unwieldiness upon your code, except they
 don't succeed in that. It's a *much* better idea to give people a decent
-programming language / VM and let them formulate their solutions than to
-introduce yet another highly complex, yet ultimately also highly specific
-framework-ish interface-y whatchamaycallit. Nothing keeps you from drawing from
-a wide range of existing Python solutions to connect to other databases, web
-pages, local services, whatever, and then just `yield` that data into the DB.
-No more FDWs.
+programming language / VM (including a decent generic VM/DB interface to be
+sure) and let them formulate their solutions than to introduce yet another
+highly complex, yet ultimately also highly specific framework-ish interface-y
+whatchamaycallit. Nothing keeps you from drawing from a wide range of existing
+Python solutions to connect to other databases, web pages, local services,
+whatever, and then just `yield` that data into the DB. No more FDWs.
 
 
