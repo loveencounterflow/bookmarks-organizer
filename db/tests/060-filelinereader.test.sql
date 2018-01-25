@@ -24,14 +24,23 @@
 drop schema if exists _FLR_test_ cascade;
 create schema _FLR_test_;
 
+-- create view _FLR_test_.a as ( select '{"key":"valuewith \n\u000b𠀀\\u{20000} \"special\"characters\n"}' as d );
+-- -- create view _FLR_test_.a as ( select '{"key":"valuewith \n\u000b𠀀 \"special\"characters\n"}' as d );
+-- -- create view _FLR_test_.a as ( select '"foo\n\x0a \"bar\"' as d );
+-- create view _FLR_test_.b as ( select d::jsonb as d from _FLR_test_.a );
+-- create view _FLR_test_.c as ( select d->>'key' as d from _FLR_test_.b );
+-- select * from _FLR_test_.a;
+-- select * from _FLR_test_.b;
+-- select * from _FLR_test_.c;
+-- \quit
+
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(1)=--':O
-select FLR.create_file_lines_view(
-  '_FLR_test_._sample_000_raw',
-  /* ### TAINT use proper PATH.join */
-  ¶( 'paths/home') || '/db/experiments/' || 'line-json-test.json' ) \g :devnull
-  ;
+create view _FLR_test_._sample_000_raw as (
+  select linenr, line from FLR.read_file_lines(
+    ¶( 'paths/home' ) || '/db/experiments/' || 'line-json-test.json'
+    ) );
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(2)=--':O
@@ -59,7 +68,6 @@ create view _FLR_test_._sample_020_as_jsonb as ( select
 select * from _FLR_test_._sample_000_raw;
 select * from _FLR_test_._sample_010_skip_comments_and_empty;
 select * from _FLR_test_._sample_020_as_jsonb;
-
 
 
 

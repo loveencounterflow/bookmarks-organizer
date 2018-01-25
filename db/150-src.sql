@@ -51,11 +51,10 @@ reset role;
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(1)=--':O
-select FLR.create_file_lines_view(
-  'src._bookmarks_000_raw',
-  /* ### TAINT use proper PATH.join */
-  ¶( 'paths/home') || '/' || 'bookmarks.txt' ) \g :devnull
-  ;
+create view SRC._bookmarks_000_raw as (
+  select linenr, line from FLR.read_file_lines(
+    ¶( 'paths/home' ) || '/' || 'bookmarks.txt'
+    ) );
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(2)=--':O

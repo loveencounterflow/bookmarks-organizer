@@ -1,7 +1,8 @@
 "helo"
 "world"
-{"key":"value \x0a with \"special\"characters\n"}
-
+{"key":"valuewith \n\u000b𠀀\\u{20000} \"special\"characters\n"}
+# NULL
+null
 
 
 
