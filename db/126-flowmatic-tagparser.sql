@@ -1,11 +1,9 @@
 
 
--- ---------------------------------------------------------------------------------------------------------
-insert into FM.registers ( regkey, name, comment ) values
-  ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
-  ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
-  ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
-  ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' );
+  -- ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
+  -- ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
+  -- ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
+  -- ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into FM.states values
@@ -74,14 +72,6 @@ insert into FM.transitions
 
 -- ---------------------------------------------------------------------------------------------------------
 do $$ begin
-  perform FM.adapt_journal();
-  perform FM.adapt_board();
-  perform FM.adapt_copy_function();
-  perform FM.create_longboard();
-  perform FMAS.create_set();
-  perform FMAS.create_get();
-  perform FMAS.create_set_all();
-  perform FMAS.create_set_all_except();
   perform FM.push( 'RESET' );
   end; $$;
 
