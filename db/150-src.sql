@@ -14,8 +14,7 @@ Y88b  d88P 888  T88b  Y88b  d88P
 
 \ir './010-trm.sql'
 -- \pset tuples_only off
--- \timing on
--- vacuum;
+\timing on
 
 
 -- select linenr, value, 'C', U.text_array_from_json( parts->'C' ) from SRC.bookmarks;
@@ -41,6 +40,7 @@ Y88b  d88P 888  T88b  Y88b  d88P
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists SRC cascade;
 create schema SRC;
+vacuum;
 
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
@@ -140,10 +140,11 @@ create materialized view SRC._bookmarks_050_split_values as ( select
   from SRC._bookmarks_040_split_fields
   );
 
+\echo :X'--=(8)=--':O
 create index on SRC._bookmarks_050_split_values ( linenr );
 
 -- ---------------------------------------------------------------------------------------------------------
-\echo :X'--=(8)=--':O
+\echo :X'--=(9)=--':O
 -- explain analyze
 create table SRC._bookmarks_060 as ( select
     linenr                            as linenr,
@@ -152,8 +153,18 @@ create table SRC._bookmarks_060 as ( select
   from SRC._bookmarks_050_split_values
   order by linenr);
 
+create table SRC._bookmarks_060_A as ( select
+    linenr                            as linenr,
+    value                             as value,
+    ac
+  from
+    SRC._bookmarks_050_split_values     as t,
+    unnest( FM.push_dacts( t.dacts ) )  as ac
+  order by linenr);
+\quit
+
 -- ---------------------------------------------------------------------------------------------------------
-\echo :X'--=(9)=--':O
+\echo :X'--=(10)=--':O
 create table SRC._bookmarks_070 as ( select
     v1.linenr                                           as linenr,
     b.star                                              as star,
@@ -170,7 +181,7 @@ create table SRC._bookmarks_070 as ( select
   order by linenr );
 
 -- ---------------------------------------------------------------------------------------------------------
-\echo :X'--=(10)=--':O
+\echo :X'--=(11)=--':O
 create table SRC._bookmarks_080_complement_missing as ( with v1 as ( select
     linenr,
     star,
@@ -198,7 +209,7 @@ union select
 );
 
 -- ---------------------------------------------------------------------------------------------------------
-\echo :X'--=(11)=--':O
+\echo :X'--=(12)=--':O
 create view SRC.bookmarks as ( select * from SRC._bookmarks_080_complement_missing order by linenr );
 
 
