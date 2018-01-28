@@ -52,7 +52,7 @@ reset role;
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(1)=--':O
 create view SRC._bookmarks_000_raw as (
-  select linenr, line from FLR.read_file_lines(
+  select linenr, line from FLR.read_lines(
     ¶( 'paths/home' ) || '/' || 'bookmarks.txt'
     ) );
 

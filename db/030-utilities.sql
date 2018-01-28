@@ -24,9 +24,11 @@ create domain U.positive_integer      as integer  check ( value >= 1            
 create domain U.nonempty_text         as text     check ( value != ''                   );
 create domain U.chr                   as text     check ( character_length( value ) = 1 );
 -- .........................................................................................................
-create type U.text_facet              as ( key text, value text       );
-create type U.integer_facet           as ( key text, value integer    );
-create type U.float_facet             as ( key text, value float      );
+create type U.text_facet              as ( key    text,     value text      );
+create type U.line_facet              as ( linenr integer,  line  text      );
+create type U.jsonbl_facet            as ( linenr integer,  value jsonb     );
+create type U.integer_facet           as ( key    text,     value integer   );
+create type U.float_facet             as ( key    text,     value float     );
 
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists NAMEOF cascade;
