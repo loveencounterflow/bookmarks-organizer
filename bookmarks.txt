@@ -57,25 +57,26 @@
 
 
 * tag-relations:
-    xelatex                         < latex
-    latex                           < tex
-    tex                             < typesetting
-    mingkwai-typesetter             < typesetting nodejs streams xelatex markdown
-    postgresql                      < sql rdbms
-    rdbms                           < db
-    cjk                             < writing-systems chinese japanese korean unicode
-    flowchart                       < programming
     analysis-of-chinese-characters  < writing-systems cjk
     async nodejs events             < programming
+    cjk                             < writing-systems chinese japanese korean unicode
+    flowchart                       < programming
     jizura                          < cjk analysis-of-chinese-characters character-components
-    text-rendering-on-gpu           < webgl opengl
-    sql                             = SQL
-    sql                             < programming/language programming/database
-    postgres                        = postgresql PostgreSQL
-    jizura                          = jzr
     jizura                          = analysis-of-chinese-characters
+    jizura                          = jzr
     jzr/components                  < character-components
     jzr/factors                     < jzr/components
+    kannwas                         < dashboard
+    latex                           < tex
+    mingkwai-typesetter             < typesetting nodejs streams xelatex markdown
+    postgres                        = postgresql PostgreSQL
+    postgresql                      < sql rdbms
+    rdbms                           < db
+    sql                             < programming/language programming/database
+    sql                             = SQL
+    tex                             < typesetting
+    text-rendering-on-gpu           < webgl opengl
+    xelatex                         < latex
     ~ xelatex unicode
     ~ sql rdbms
     ~ text-processing typesetting markdown editor text-editor
@@ -161,12 +162,6 @@
   title:  Dear PostgreSQL: Where are my logs?
   tags:   postgresql fs logging
 
-* url:    https://linuxconfig.org/using-openssl-to-encrypt-messages-and-files-on-linux
-  url:    https://github.com/quorrajs/Encrypter
-  url:    https://gchq.github.io/CyberChef
-  url:    https://nodejs.org/api/crypto.html
-  tags:   encryption
-
 * url:    http://ohshitgit.com/
   title:  I accidentally committed something to master that should have been on a brand new branch!
   title:  I accidentally committed to the wrong branch!
@@ -247,11 +242,6 @@
 * url:    https://github.com/JamieMason/ImageOptim-CLI
   tags:   kleinbild image_optim::name
 
-* url:    https://github.com/puleos/object-hash
-  about:  given a serializable value, returns a cryptographic hash representing all the sub-values
-          in arrays, object attributes
-  tags:   javascript cryptography/digest cryptography/hash object-hash stable-value-id
-
 * url:    https://github.com/mike-marcacci/node-redlock#usage-promise-style
   tags:   serializable lock asynchronous redis::name
 
@@ -307,3 +297,68 @@
   url:    http://www.eki.ee/letter/
   url:    https://unicode-table.com/
   tags:   unicode selection tool characters
+
+
+* url:    http://www2.ihp.sinica.edu.tw/~asiamajor/pdf/2008a/12%20Bottero%20v21.pdf
+  title:  The Shuowen Jiezi Dictionary and the Human Sciences in China
+  tags:   author="Françoise Bottéro"::name author="Christoph Harbsmeier"::name
+
+* url:    https://grafana.com/
+  tags:   kannwas
+
+* url:    http://blog.flowdock.com/2015/06/22/debugging-node-js-memory-leaks/
+  url:    https://www.alexkras.com/simple-guide-to-finding-a-javascript-memory-leak-in-node-js/
+  tags:   programming debugging memory-leaks
+
+* url:    https://12factor.net/
+  tags:   programming/architecture programming/design-patterns
+
+* url:    https://linuxconfig.org/using-openssl-to-encrypt-messages-and-files-on-linux
+  url:    https://github.com/quorrajs/Encrypter
+  url:    https://gchq.github.io/CyberChef
+  url:    https://nodejs.org/api/crypto.html
+  tags:   encryption
+
+* url:    https://github.com/puleos/object-hash
+  about:  given a serializable value, returns a cryptographic hash representing all the sub-values
+          in arrays, object attributes
+  tags:   javascript cryptography/digest cryptography/hash object-hash stable-value-id
+
+* url:    https://github.com/StackExchange/blackbox
+  url:    http://the-cloud-book.com
+  url:    http://www.slideshare.net/TomLimoncelli/the-blackbox-project-sfae
+  url:    https://12factor.net/config
+  about:  Safely store secrets in Git/Mercurial/Subversion
+
+          (from
+          https://www.reddit.com/r/CoderRadio/comments/7t9al0/blackbox_safely_store_secrets_in/)
+          i follow the 12factor step of storing that data in environment
+          variables and loading the environment variables from decrypted files
+          stored in git. blackbox sets up a lot of the gitignore and other hooks
+          to make sure unencrypted data doesn't get stashed into git, but
+          instead is deleted upon commit. it depends on open pgp, which is a bit
+          of a commitment to learning and managing, but for me it was well worth
+          it.
+
+* url:    https://github.com/benwbooth/python-teacup
+  tags:   templating inverse-templating source-code-generation teacup::name
+
+* url:    https://github.com/frandiox/Inquirer.js
+  url:    https://github.com/SBoudrias/Inquirer.js
+  url:    https://github.com/ewnd9/inquirer-menu
+  url:    https://npms.io/search?q=inquirer
+  url:    https://github.com/nathanpeck/clui
+  url:    http://blessedjs.org/
+  url:    https://github.com/chjj/blessed
+  url:    https://github.com/yaronn/blessed-contrib
+  url:    https://github.com/rse/blessed-xterm
+  url:    https://github.com/blessed-ng
+  url:    https://github.com/gizak/termui
+  url:    https://github.com/FormidableLabs/nodejs-dashboard#customizing-layouts
+  tags:   robotron::name dashboard
+
+* url:    https://github.com/kdeldycke/awesome-falsehood
+  tags:   programming falsehoods education
+
+
+
