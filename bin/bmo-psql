@@ -8,7 +8,7 @@ source bin/_bmo-prepare-environment
 
 
 #-----------------------------------------------------------------------------------------------------------
-psql -U bmo --set QUIET=on --set ON_ERROR_STOP=1 -f ./db/update-os-env.sql
+psql -U bmo -p $bmo_psql_port --set QUIET=on --set ON_ERROR_STOP=1 -f ./db/update-os-env.sql
 PAGER="postgres-pager -s 6 --less-status-bar" psql -U bmo -p $bmo_psql_port --set QUIET=on --set ON_ERROR_STOP=1 "$@"
 
 
