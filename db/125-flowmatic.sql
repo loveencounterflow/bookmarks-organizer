@@ -151,18 +151,11 @@ insert into FM.board ( value ) select value from FM.board where bc = 0 ;  select
 
 */
 -- ---------------------------------------------------------------------------------------------------------
+/* thx to https://stackoverflow.com/a/25393923/7568091 */
 create table FM.board (
-  bc    serial unique not null primary key,
-  value jsonb );
-
--- ---------------------------------------------------------------------------------------------------------
-/* ### TAINT max( sequence ) is not concurrency-proof */
-create function FM.bc() returns integer stable language sql as $$ select max( bc ) from FM.board;$$;
-
--- -- ---------------------------------------------------------------------------------------------------------
--- create function FM.new_boardline() returns void volatile language sql as $$
---   /* thx to https://stackoverflow.com/a/12336849/7568091 */
---   insert into FM.board values ( default ); $$;
+  _onerow boolean primary key default true,
+  value   jsonb,
+  constraint "board can not have more than one row" check ( _onerow ) );
 
 
 /*  ========================================================================================================
@@ -172,7 +165,6 @@ create function FM.bc() returns integer stable language sql as $$ select max( bc
 -- ---------------------------------------------------------------------------------------------------------
 create table FM.journal (
   ac            serial    unique  not null  primary key,
-  bc            integer                     references FM.board       ( bc      ) default FM.bc(),
   cc            integer           not null,
   tc            integer           not null  references FM.transitions ( tc      ),
   tail          text                        references FM.states      ( state   ),
@@ -195,10 +187,85 @@ create function FM.cc()  returns integer stable language sql as $$ select coales
 --   select coalesce( ( select last_value from FM.cc_seq ), 0 ) from FM.journal;  $$;
 
 -- ---------------------------------------------------------------------------------------------------------
+create table FM.results (
+  ac    integer references FM.journal ( ac ),
+  value jsonb );
+
+-- ---------------------------------------------------------------------------------------------------------
+create view FM.journal_and_board as ( select distinct
+    j.ac                                    as ac,
+    -- j.bc                                    as bc,
+    j.cc                                    as cc,
+    j.tc                                    as tc,
+    j.tail                                  as tail,
+    j.act                                   as act,
+    j.cmd                                   as cmd,
+    j.point                                 as point,
+    j.data                                  as data,
+    j.ok                                    as ok,
+    case when j.ok then '->' else '' end    as "R",
+    r.value                                 as results
+  from FM.journal       as j
+  left join FM.results  as r on ( j.ac = r.ac )
+  order by j.ac );
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM.save_board() returns void volatile language sql as $$
+  insert into FM.results ( ac, value )
+    select
+        j.ac,
+        b.value
+      from
+        FM.board as b
+        left join FM.journal as j on ( j.ac = FM.ac() ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM.log_board() returns void volatile language sql as $$
+  select case when true then FM.save_board() else null end; $$;
+  /*               ^^^^                   */
+  /* imagine configuration variable here  */
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM.new_boardline() returns void volatile language sql as $$
+  select FM.save_board(); $$;
+  -- insert into FM.board ( value ) select value from FM.board where bc = 0; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM._board_as_tabular() returns text stable language sql as $outer$
+  select U.tabulate_query( $$ select * from FM.board; $$ ); $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM._journal_as_tabular( n integer ) returns text stable language sql as $outer$
+    select case
+      when n is not distinct from null then
+        U.tabulate_query( $$
+          select * from FM.journal_and_board
+          order by ac;
+          $$ )
+      when n > 0 then
+        U.tabulate_query( format( $$
+          select * from FM.journal_and_board
+          order by ac
+          limit %L;
+          $$, n ) )
+      else
+        U.tabulate_query( format( $$
+          with j as ( select * from FM.journal_and_board order by ac desc limit 0 - %L )
+          select * from j
+          order by ac
+          $$, n ) )
+      end;
+  $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM._journal_as_tabular() returns text stable language sql as $$
+    select FM._journal_as_tabular( null ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
 create function FM._log_journal_context() returns void stable language plpgsql as $$
   begin
     perform log();
-    perform log( 'FM #19002', 'Journal up to problematic act:' );     perform log();
+    perform log( 'FM #19002 Journal up to problematic act:' );        perform log();
     perform log( FM._journal_as_tabular() );                          perform log();
     end; $$;
 
@@ -206,7 +273,7 @@ create function FM._log_journal_context() returns void stable language plpgsql a
 create function FM._log_journal_context( n integer ) returns void stable language plpgsql as $$
   begin
     perform log();
-    perform log( 'FM #19002', 'Journal up to problematic act:' );     perform log();
+    perform log( 'FM #19002 Journal up to problematic act:' );        perform log();
     perform log( FM._journal_as_tabular( n ) );                       perform log();
     end; $$;
 
@@ -248,6 +315,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
     ¶transition :=  FM.proceed( ¶tail, ¶act );
     -- .....................................................................................................
     loop
+      -- perform log( 'push77631', ¶act::text, ¶data::text, ¶transition::text );
       -- ...................................................................................................
       if not ( ¶next_transition is null ) then
         ¶transition       :=  ¶next_transition;
@@ -286,8 +354,8 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
           ¶transition.point,
           ¶data );
       -- ...................................................................................................
-      -- /* Reflect state of registers table into `journal ( registers )`: */
-      -- perform FM.copy_boardline_to_journal();
+      /* Reflect state of registers table into `FM.results`: */
+      perform FM.log_board();
       -- ...................................................................................................
       if ¶transition.point = '...' then
         select * from FM.transitions
@@ -407,29 +475,23 @@ NCC       # Next Case Count, indicates the next batch, line, set of inputs (with
 /* ====================================================================================================== */
 
 
--- -- ---------------------------------------------------------------------------------------------------------
--- create function FMAS.reset() returns void
---   volatile language sql as $$
---   truncate table FM.board cascade;
---   insert into FM.board values ( 0, null ); $$;
-
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.set( ¶regkey text, ¶data jsonb ) returns void
-  volatile language sql as $$
-  select null::void; $$;
+  volatile language plpgsql as $$
+  declare
+    ¶row jsonb;
+  begin
+    perform log();
+    perform log( 'FMAS.set 55442-0', ¶regkey, ¶data::text );
+    select into ¶row value from FM.board limit 1; perform log( 'FMAS.set 55442-1', ¶row::text );
+    update FM.board values set value = jsonb_set( value, array[ ¶regkey ], ¶data );
+    select into ¶row value from FM.board limit 1; perform log( 'FMAS.set 55442-2 >>>>>>>>', ¶row::text );
+    end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.set( ¶data jsonb ) returns void
   volatile language sql as $$
-  update FM.board values set value = ¶data where bc = 0; $$;
-
-  -- begin
-  --   case ( select count(*) from FM.board where bc = 0 )
-  --     when 0 then insert into FM.board values ( 0, ¶data );
-  --     when 1 then update FM.board values set value = ¶data where bc = 0;
-  --     end case;
-  --   end;
-  -- $$;
+  update FM.board values set value = ¶data; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.get( ¶regkey text ) returns jsonb
@@ -444,6 +506,8 @@ create function FMAS.yes( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
     R             FMAS.cmd_output;
   begin
     ¶ac     :=  FM.ac();
+    R       :=  FMAS.nbc( ¶cmd_parts, null );
+    if not ( R.error is null ) then return R; end if;
     update FM.journal set ok = true where ac = ¶ac;
     R.ok_ac :=  ¶ac;
     return R; end; $$;
@@ -454,7 +518,7 @@ create function FMAS.nbc( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
   declare
     R             FMAS.cmd_output;
   begin
-    perform log( '77726', 'FMAS.NBC: wants to call FM.new_boardline()' );
+    perform FM.new_boardline();
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -463,9 +527,36 @@ create function FMAS.ncc( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
   declare
     R             FMAS.cmd_output;
   begin
-    R := FMAS.nbc( ¶cmd_parts, ¶data );
-    if not ( R.error is null ) then return R; end if;
+    -- R := FMAS.nbc( ¶cmd_parts, ¶data );
+    -- if not ( R.error is null ) then return R; end if;
     R.next_cc := true;
+    return R; end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FMAS._default_value_from_jsonb_type( ¶jsonb_type text ) returns jsonb
+  immutable language sql as $$
+    select case ¶jsonb_type
+      when 'null'     then  'null'::jsonb
+      when 'boolean'  then 'false'::jsonb
+      when 'number'   then     '0'::jsonb
+      when 'string'   then    '""'::jsonb
+      when 'array'    then    '[]'::jsonb
+      when 'object'   then    '{}'::jsonb
+      end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FMAS.clr( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
+  declare
+    R             FMAS.cmd_output;
+  begin
+    if array_length( ¶cmd_parts, 1 ) != 1 then
+      R.error := 'CLR does not take arguments';
+      return R;
+      end if;
+    update FM.board
+      set value = FMAS._default_value_from_jsonb_type( jsonb_typeof(
+        ( select value from FM.board ) ) );
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -474,13 +565,24 @@ create function FMAS.rst( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
   declare
     R             FMAS.cmd_output;
   begin
-    if array_length( ¶cmd_parts, 1 ) != 1 then
-      R.error := 'RST does not accept arguments';
+    if array_length( ¶cmd_parts, 1 ) != 2 then
+      R.error := 'RST needs initialization value as argument';
       return R;
       end if;
     truncate table FM.journal cascade;
     truncate table FM.board   cascade;
-    insert into FM.board values ( 0, null );
+    truncate table FM.results cascade;
+    -- perform log( '33910', ¶cmd_parts::text, ¶cmd_parts[ 2 ]::text, ¶data::text );
+    -- ### TAINT rewrite using FMAS._default_value_from_jsonb_type()
+    case ¶cmd_parts[ 2 ]
+      when '0'      then insert into FM.board ( value ) values ( '0'     );
+      when '[]'     then insert into FM.board ( value ) values ( '[]'    );
+      when '""'     then insert into FM.board ( value ) values ( '""'    );
+      when 'false'  then insert into FM.board ( value ) values ( 'false' );
+      when 'true'   then insert into FM.board ( value ) values ( 'true'  );
+      when 'null'   then insert into FM.board ( value ) values ( 'null'  );
+      when '{}'     then insert into FM.board ( value ) values ( '{}'    );
+      end case;
     perform nextval( 'FM.cc_seq' );
     return R; end; $$;
 
@@ -619,6 +721,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition ) 
       case ¶base
         when 'RST' then S := FMAS.rst( ¶cmd_parts, ¶data );
         when 'NUL' then S := FMAS.nul( ¶cmd_parts, ¶data );
+        when 'CLR' then S := FMAS.clr( ¶cmd_parts, ¶data );
         when 'NBC' then S := FMAS.nbc( ¶cmd_parts, ¶data );
         when 'NCC' then S := FMAS.ncc( ¶cmd_parts, ¶data );
         when 'LOD' then S := FMAS.lod( ¶cmd_parts, ¶data );
@@ -627,7 +730,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition ) 
         when 'YES' then S := FMAS.yes( ¶cmd_parts, ¶data );
         else
           perform FM._log_journal_context( -10 );
-          perform log( 'FM #19003', 'transition: %', ¶transition::text );   perform log();
+          perform log( 'FM #19003 transition:', ¶transition::text );   perform log();
           raise exception 'unknown command %', ¶cmd;
         end case;
       -- ...................................................................................................
