@@ -12,9 +12,8 @@
 sudo apt install postgresql-server-dev-10
 sudo apt install postgresql-plpython3-10
 sudo apt install postgresql-contrib-10
-sudo apt install postgresql-10-pgtap
+# sudo apt install postgresql-10-pgtap
 sudo apt install postgresql-10-plsh
-# sudo apt install postgresql-9.6-python3-multicorn
 # sudo apt install postgresql-9.6-plv8
 # sudo apt install postgresql-plperl-9.6
 ```

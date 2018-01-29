@@ -53,8 +53,11 @@ create type FMAS.cmd_output as (
   ok_ac       integer,
   error       text );
 
--- ---------------------------------------------------------------------------------------------------------
-/* STATES AND ACTS */
+
+/*  ========================================================================================================
+    STATES AND ACTS
+--------------------------------------------------------------------------------------------------------- */
+
 
 -- ---------------------------------------------------------------------------------------------------------
 create table FM.states (
@@ -64,8 +67,10 @@ create table FM.states (
 create table FM.acts (
   act text unique not null primary key );
 
--- ---------------------------------------------------------------------------------------------------------
-/* TRANSITIONS */
+
+/*  ========================================================================================================
+    TRANSITIONS
+--------------------------------------------------------------------------------------------------------- */
 
 -- ---------------------------------------------------------------------------------------------------------
 create type FM.transition as (
@@ -110,120 +115,56 @@ alter table FM.transitions
 create function FM.proceed( ¶tail text, ¶act text ) returns FM.transition stable language sql as $$
   select * from FM.transitions where ( tail = ¶tail ) and ( act = ¶act ); $$;
 
--- ---------------------------------------------------------------------------------------------------------
-/* REGISTERS */
+
+/*  ========================================================================================================
+    THE BOARD (REGISTERS)
+--------------------------------------------------------------------------------------------------------- */
 
 -- ---------------------------------------------------------------------------------------------------------
-/* `FM.registers` is where registers are defined: */
-create table FM.registers (
-  id      serial,
-  regkey  text unique not null primary key check ( regkey::U.chr = regkey ),
-  name    text unique not null,
-  comment text );
+/*
 
--- ---------------------------------------------------------------------------------------------------------
-/* ...and the 'board' is where register data gets collected. 'BC' is the board counter, which identifies
-  rows; referenced by `FM.journal ( bc )`: */
-create table FM.board ( bc serial primary key );
+The 'board' is where register data gets collected. 'BC' is the board counter, which identifies rows;
+referenced by `FM.journal ( bc )`.
 
--- ---------------------------------------------------------------------------------------------------------
-/* ### TAINT max( sequence ) is not concurrency-proof */
-create function FM.bc()   returns integer stable language sql as $$ select max(  bc ) from FM.board;    $$;
+Modus operandi of the `FM.board` table:
 
--- ---------------------------------------------------------------------------------------------------------
-create function FM.new_boardline() returns void volatile language sql as $$
-  /* thx to https://stackoverflow.com/a/12336849/7568091 */
-  insert into FM.board values ( default ); $$;
+* `value` is of type JSONb;
+* `value` can be primitive JSONb value or JSONb list, object;
+* current value always at index zero;
+* on creation current value is set to JSONb `null`;
+* operations on board either use update; this can be an update to the entire field (as in `update FM.board
+  values set value = x where bc = 0;`) or else an update to a single data member of a complex field value
+  (as in `... set value = jsonb_set( '{"X":"second"}', '{X}', '"third"' ) where bc = 0;`) (in either case,
+  the entire field will technically be rewritten, but conceptually it's an update nonetheless);
+* at any point in time, a copy of row zero may be appended to the board table;
+* results may be linked (or copied?) to other tables.
 
--- ---------------------------------------------------------------------------------------------------------
-create function FM.copy_boardline_to_journal() returns void volatile language sql as $$
-  select null::void; $$;
+```sql
+insert into FM.board values ( 0, null );                                      select * from FM.board order by bc;
+update FM.board values set value = '"first"'  where bc = 0;                     select * from FM.board order by bc;
+insert into FM.board ( value ) select value from FM.board where bc = 0 ;  select * from FM.board order by bc;
+update FM.board values set value = '{"X":"second"}' where bc = 0;                     select * from FM.board order by bc;
+insert into FM.board ( value ) select value from FM.board where bc = 0 ;  select * from FM.board order by bc;
+update FM.board values set value = jsonb_set( '{"X":"second"}', '{X}', '"third"' ) where bc = 0;                     select * from FM.board order by bc;
+insert into FM.board ( value ) select value from FM.board where bc = 0 ;  select * from FM.board order by bc;
+```
 
+*/
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.get_adaptive_statement_for_copy_function() returns text stable language plpgsql as $outer$
-  declare
-    R     text;
-    ¶q1   text[];
-    ¶q2   text;
-  begin
-    -- .....................................................................................................
-    select array_agg( format( '%I', regkey ) order by id ) from FM.registers
-      into ¶q1;
-    -- .....................................................................................................
-    ¶q2 :=  array_to_string( ¶q1, ', ' );
-    R   := format( '
-      create or replace function FM.copy_boardline_to_journal() returns void volatile language sql as $$
-        update FM.journal set
-        ( %s ) = ( select %s from FM.board where bc = FM.bc() )
-        where ac = FM.ac(); $$;',
-      ¶q2, ¶q2 );
-    -- .....................................................................................................
-    return R; end; $outer$;
+/* thx to https://stackoverflow.com/a/25393923/7568091 */
+create table FM.board (
+  _onerow boolean primary key default true,
+  value   jsonb,
+  constraint "board can not have more than one row" check ( _onerow ) );
 
--- ---------------------------------------------------------------------------------------------------------
-create function FM.adapt_copy_function() returns void volatile language plpgsql as $$
-  begin execute FM.get_adaptive_statement_for_copy_function(); end; $$;
 
--- ---------------------------------------------------------------------------------------------------------
-create function FM.get_create_statement_for_longboard() returns text stable language plpgsql as $outer$
-  declare
-    R     text;
-    ¶q1   text[];
-    ¶q2   text;
-  begin
-    -- .....................................................................................................
-    select array_agg(
-      format( 'select bc, %L as regkey, %I as data from FM.board union all', regkey, regkey ) order by id
-      ) from FM.registers
-      into ¶q1;
-    -- .....................................................................................................
-    ¶q2 :=  array_to_string( ¶q1, E'\n' );
-    R   := format( '
-      drop view if exists FM.longboard cascade;
-      create view FM.longboard as (
-        %s
-        select null, null, null where false );',
-      ¶q2, ¶q2 );
-    -- .....................................................................................................
-    return R; end; $outer$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FM.create_longboard() returns void volatile language plpgsql as $$
-  begin execute FM.get_create_statement_for_longboard(); end; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-/* ### TAINT we use `NAMEOF.relation` (a.k.a. `regclass`) to ensure integrity and then go and insert the
-  name using `%s` formatting; not clear whether that is Bobby-Tables-proof. */
-create function FM.get_adaptive_statement_for_table( ¶tablename NAMEOF.relation ) returns text volatile
-  language plpgsql as $$
-  declare
-    R         text;
-    ¶q        text[];
-    ¶row      record;
-  begin
-    -- .....................................................................................................
-    select
-        array_agg(
-          format( E'alter table %s add column %I jsonb default null;\n', ¶tablename, regkey )
-          order by id )
-      from FM.registers
-      into ¶q;
-    -- .....................................................................................................
-    R := array_to_string( ¶q, '' );
-    return R;
-    end; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FM.adapt_board() returns void volatile language plpgsql as $$
-  begin execute FM.get_adaptive_statement_for_table( 'FM.board'::NAMEOF.relation ); end; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-/* JOURNAL */
+/*  ========================================================================================================
+    JOURNAL
+--------------------------------------------------------------------------------------------------------- */
 
 -- ---------------------------------------------------------------------------------------------------------
 create table FM.journal (
   ac            serial    unique  not null  primary key,
-  bc            integer                     references FM.board       ( bc      ) default FM.bc(),
   cc            integer           not null,
   tc            integer           not null  references FM.transitions ( tc      ),
   tail          text                        references FM.states      ( state   ),
@@ -246,32 +187,85 @@ create function FM.cc()  returns integer stable language sql as $$ select coales
 --   select coalesce( ( select last_value from FM.cc_seq ), 0 ) from FM.journal;  $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM.adapt_journal() returns void volatile language plpgsql as $outer$
-  begin
-    execute FM.get_adaptive_statement_for_table( 'FM.journal'::NAMEOF.relation );
-    end; $outer$;
+create table FM.results (
+  ac    integer references FM.journal ( ac ),
+  value jsonb );
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FM._journal_as_tabular() returns text stable language sql as $outer$
-    select U.tabulate_query( $$ select * from FM.journal order by ac; $$ );
-    $outer$;
+create view FM.journal_and_board as ( select distinct
+    j.ac                                    as ac,
+    -- j.bc                                    as bc,
+    j.cc                                    as cc,
+    j.tc                                    as tc,
+    j.tail                                  as tail,
+    j.act                                   as act,
+    j.cmd                                   as cmd,
+    j.point                                 as point,
+    j.data                                  as data,
+    j.ok                                    as ok,
+    case when j.ok then '->' else '' end    as "R",
+    r.value                                 as results
+  from FM.journal       as j
+  left join FM.results  as r on ( j.ac = r.ac )
+  order by j.ac );
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM.save_board() returns void volatile language sql as $$
+  insert into FM.results ( ac, value )
+    select
+        j.ac,
+        b.value
+      from
+        FM.board as b
+        left join FM.journal as j on ( j.ac = FM.ac() ); $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM.log_board() returns void volatile language sql as $$
+  select case when true then FM.save_board() else null end; $$;
+  /*               ^^^^                   */
+  /* imagine configuration variable here  */
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM.new_boardline() returns void volatile language sql as $$
+  select FM.save_board(); $$;
+  -- insert into FM.board ( value ) select value from FM.board where bc = 0; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM._board_as_tabular() returns text stable language sql as $outer$
+  select U.tabulate_query( $$ select * from FM.board; $$ ); $outer$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM._journal_as_tabular( n integer ) returns text stable language sql as $outer$
-    select case when n > 0 then
-        U.tabulate_query( format( $$ select * from FM.journal order by ac limit %L; $$, n ) )
+    select case
+      when n is not distinct from null then
+        U.tabulate_query( $$
+          select * from FM.journal_and_board
+          order by ac;
+          $$ )
+      when n > 0 then
+        U.tabulate_query( format( $$
+          select * from FM.journal_and_board
+          order by ac
+          limit %L;
+          $$, n ) )
       else
         U.tabulate_query( format( $$
-          with v1 as ( select * from FM.journal order by ac desc limit 0 - %L )
-          select * from v1 order by ac asc $$, n ) )
-        end;
-    $outer$;
+          with j as ( select * from FM.journal_and_board order by ac desc limit 0 - %L )
+          select * from j
+          order by ac
+          $$, n ) )
+      end;
+  $outer$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FM._journal_as_tabular() returns text stable language sql as $$
+    select FM._journal_as_tabular( null ); $$;
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM._log_journal_context() returns void stable language plpgsql as $$
   begin
     perform log();
-    perform log( 'FM #19002', 'Journal up to problematic act:' );     perform log();
+    perform log( 'FM #19002 Journal up to problematic act:' );        perform log();
     perform log( FM._journal_as_tabular() );                          perform log();
     end; $$;
 
@@ -279,12 +273,15 @@ create function FM._log_journal_context() returns void stable language plpgsql a
 create function FM._log_journal_context( n integer ) returns void stable language plpgsql as $$
   begin
     perform log();
-    perform log( 'FM #19002', 'Journal up to problematic act:' );     perform log();
+    perform log( 'FM #19002 Journal up to problematic act:' );        perform log();
     perform log( FM._journal_as_tabular( n ) );                       perform log();
     end; $$;
 
--- ---------------------------------------------------------------------------------------------------------
-/* PUSH */
+
+/*  ========================================================================================================
+    PUSH
+--------------------------------------------------------------------------------------------------------- */
+
 
 -- ---------------------------------------------------------------------------------------------------------
 /* ### TAINT should probably use `lock for update` */
@@ -318,6 +315,7 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
     ¶transition :=  FM.proceed( ¶tail, ¶act );
     -- .....................................................................................................
     loop
+      -- perform log( 'push77631', ¶act::text, ¶data::text, ¶transition::text );
       -- ...................................................................................................
       if not ( ¶next_transition is null ) then
         ¶transition       :=  ¶next_transition;
@@ -356,8 +354,8 @@ create function FM.push( ¶act text, ¶data jsonb ) returns integer volatile lan
           ¶transition.point,
           ¶data );
       -- ...................................................................................................
-      /* Reflect state of registers table into `journal ( registers )`: */
-      perform FM.copy_boardline_to_journal();
+      /* Reflect state of registers table into `FM.results`: */
+      perform FM.log_board();
       -- ...................................................................................................
       if ¶transition.point = '...' then
         select * from FM.transitions
@@ -478,28 +476,45 @@ NCC       # Next Case Count, indicates the next batch, line, set of inputs (with
 
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.get( ¶regkey text ) returns jsonb stable language sql as $$
+create function FMAS.set( ¶regkey text, ¶data jsonb ) returns void
+  volatile language plpgsql as $$
+  declare
+    ¶row jsonb;
+  begin
+    perform log();
+    perform log( 'FMAS.set 55442-0', ¶regkey, ¶data::text );
+    select into ¶row value from FM.board limit 1; perform log( 'FMAS.set 55442-1', ¶row::text );
+    update FM.board values set value = jsonb_set( value, array[ ¶regkey ], ¶data );
+    select into ¶row value from FM.board limit 1; perform log( 'FMAS.set 55442-2 >>>>>>>>', ¶row::text );
+    end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FMAS.set( ¶data jsonb ) returns void
+  volatile language sql as $$
+  update FM.board values set value = ¶data; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FMAS.get( ¶regkey text ) returns jsonb
+  stable language sql as $$
   select null::jsonb; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.set( ¶regkey text, ¶data jsonb ) returns void volatile language sql as $$
-  select null::void; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FMAS.yes( ¶cmd_parts text[], ¶data jsonb )
-  returns FMAS.cmd_output volatile language plpgsql as $$
+create function FMAS.yes( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
   declare
     ¶ac           integer;
     R             FMAS.cmd_output;
   begin
     ¶ac     :=  FM.ac();
+    R       :=  FMAS.nbc( ¶cmd_parts, null );
+    if not ( R.error is null ) then return R; end if;
     update FM.journal set ok = true where ac = ¶ac;
     R.ok_ac :=  ¶ac;
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.nbc( ¶cmd_parts text[], ¶data jsonb )
-  returns FMAS.cmd_output volatile language plpgsql as $$
+create function FMAS.nbc( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
   begin
@@ -507,35 +522,73 @@ create function FMAS.nbc( ¶cmd_parts text[], ¶data jsonb )
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.ncc( ¶cmd_parts text[], ¶data jsonb )
-  returns FMAS.cmd_output volatile language plpgsql as $$
+create function FMAS.ncc( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
   begin
-    R := FMAS.nbc( ¶cmd_parts, ¶data );
-    if not ( R.error is null ) then return R; end if;
+    -- R := FMAS.nbc( ¶cmd_parts, ¶data );
+    -- if not ( R.error is null ) then return R; end if;
     R.next_cc := true;
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.rst( ¶cmd_parts text[], ¶data jsonb )
-  returns FMAS.cmd_output volatile language plpgsql as $$
+create function FMAS._default_value_from_jsonb_type( ¶jsonb_type text ) returns jsonb
+  immutable language sql as $$
+    select case ¶jsonb_type
+      when 'null'     then  'null'::jsonb
+      when 'boolean'  then 'false'::jsonb
+      when 'number'   then     '0'::jsonb
+      when 'string'   then    '""'::jsonb
+      when 'array'    then    '[]'::jsonb
+      when 'object'   then    '{}'::jsonb
+      end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FMAS.clr( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
   begin
     if array_length( ¶cmd_parts, 1 ) != 1 then
-      R.error := 'RST does not accept arguments';
+      R.error := 'CLR does not take arguments';
+      return R;
+      end if;
+    update FM.board
+      set value = FMAS._default_value_from_jsonb_type( jsonb_typeof(
+        ( select value from FM.board ) ) );
+    return R; end; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
+create function FMAS.rst( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
+  declare
+    R             FMAS.cmd_output;
+  begin
+    if array_length( ¶cmd_parts, 1 ) != 2 then
+      R.error := 'RST needs initialization value as argument';
       return R;
       end if;
     truncate table FM.journal cascade;
     truncate table FM.board   cascade;
+    truncate table FM.results cascade;
+    -- perform log( '33910', ¶cmd_parts::text, ¶cmd_parts[ 2 ]::text, ¶data::text );
+    -- ### TAINT rewrite using FMAS._default_value_from_jsonb_type()
+    case ¶cmd_parts[ 2 ]
+      when '0'      then insert into FM.board ( value ) values ( '0'     );
+      when '[]'     then insert into FM.board ( value ) values ( '[]'    );
+      when '""'     then insert into FM.board ( value ) values ( '""'    );
+      when 'false'  then insert into FM.board ( value ) values ( 'false' );
+      when 'true'   then insert into FM.board ( value ) values ( 'true'  );
+      when 'null'   then insert into FM.board ( value ) values ( 'null'  );
+      when '{}'     then insert into FM.board ( value ) values ( '{}'    );
+      end case;
     perform nextval( 'FM.cc_seq' );
-    R.next_cmd := 'NUL *';
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb )
-  returns FMAS.cmd_output volatile language plpgsql as $$
+create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
     ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
@@ -545,7 +598,7 @@ create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb )
     -- .....................................................................................................
     if ¶regkey_1 = '*' then
       if ¶regkey_2 is null then
-        perform FMAS.set_all( null );
+        perform FMAS.set( null );
       else
         if ¶regkey_2 = '*' then
           R.error = 'second argument to NUL can not be star';
@@ -562,8 +615,8 @@ create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb )
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.lod( ¶cmd_parts text[], ¶data jsonb )
-  returns FMAS.cmd_output volatile language plpgsql as $$
+create function FMAS.lod( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
     ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
@@ -572,8 +625,8 @@ create function FMAS.lod( ¶cmd_parts text[], ¶data jsonb )
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.mov( ¶cmd_parts text[], ¶data jsonb )
-  returns FMAS.cmd_output volatile language plpgsql as $$
+create function FMAS.mov( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
     ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
@@ -584,8 +637,8 @@ create function FMAS.mov( ¶cmd_parts text[], ¶data jsonb )
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.psh( ¶cmd_parts text[], ¶data jsonb )
-  returns FMAS.cmd_output volatile language plpgsql as $$
+create function FMAS.psh( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
     ¶regkey_1     text    :=  ¶cmd_parts[ 2 ];
@@ -641,8 +694,8 @@ create function FMAS.psh_data( ¶regkey text, ¶data jsonb )
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
-  returns FMAS.cmd_output volatile language plpgsql as $$
+create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition ) returns FMAS.cmd_output
+  volatile language plpgsql as $$
   declare
     ¶cmd_parts    text[];
     ¶base         text;
@@ -668,6 +721,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
       case ¶base
         when 'RST' then S := FMAS.rst( ¶cmd_parts, ¶data );
         when 'NUL' then S := FMAS.nul( ¶cmd_parts, ¶data );
+        when 'CLR' then S := FMAS.clr( ¶cmd_parts, ¶data );
         when 'NBC' then S := FMAS.nbc( ¶cmd_parts, ¶data );
         when 'NCC' then S := FMAS.ncc( ¶cmd_parts, ¶data );
         when 'LOD' then S := FMAS.lod( ¶cmd_parts, ¶data );
@@ -676,7 +730,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
         when 'YES' then S := FMAS.yes( ¶cmd_parts, ¶data );
         else
           perform FM._log_journal_context( -10 );
-          perform log( 'FM #19003', 'transition: %', ¶transition::text );   perform log();
+          perform log( 'FM #19003 transition:', ¶transition::text );   perform log();
           raise exception 'unknown command %', ¶cmd;
         end case;
       -- ...................................................................................................
@@ -690,135 +744,6 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition )
       ¶transition :=  null;
       end loop;
     return S; end; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FMAS.get_create_statement_for_set() returns text stable language plpgsql as $outer$
-  declare
-    R     text;
-    ¶q1   text[];
-    ¶q2   text;
-  begin
-    -- .....................................................................................................
-    select array_agg(
-      format( 'when %L then update FM.board set %I = ¶data where bc = FM.bc();', regkey, regkey ) order by id
-      ) from FM.registers
-      into ¶q1;
-    -- .....................................................................................................
-    ¶q2 :=  array_to_string( ¶q1, E'\n' );
-    R   := format( '
-      create or replace function FMAS.set( ¶regkey text, ¶data jsonb )
-        returns void volatile language plpgsql as $$
-        begin
-          case ¶regkey
-            %s
-            end case;
-        end; $$;',
-      ¶q2 );
-    -- .....................................................................................................
-    return R; end; $outer$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FMAS.create_set() returns void volatile language plpgsql as $$
-  begin execute FMAS.get_create_statement_for_set(); end; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FMAS.get_create_statement_for_set_all() returns text stable language plpgsql as $outer$
-  declare
-    R     text;
-    ¶q1   text[];
-    ¶q2   text;
-  begin
-    -- .....................................................................................................
-    select array_agg(
-      format( 'update FM.board set %I = ¶data where bc = ¶bc;', regkey ) order by id
-      ) from FM.registers
-      into ¶q1;
-    -- .....................................................................................................
-    ¶q2 :=  array_to_string( ¶q1, E'\n' );
-    R   := format( '
-      create or replace function FMAS.set_all( ¶data jsonb )
-        returns void volatile language plpgsql as $$
-        declare
-          ¶bc integer := FM.bc();
-        begin
-          %s
-        end; $$;',
-      ¶q2 );
-    -- .....................................................................................................
-    return R; end; $outer$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FMAS.create_set_all() returns void volatile language plpgsql as $$
-  begin execute FMAS.get_create_statement_for_set_all(); end; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FMAS.get_create_statement_for_set_all_except() returns text stable language plpgsql as $outer$
-  declare
-    R     text;
-    ¶q1   text[];
-    ¶q2   text;
-  begin
-    -- .....................................................................................................
-    select array_agg(
-      format( 'if ¶regkey != %L then
-        update FM.board set %I = ¶data where bc = ¶bc;
-        ¶count = 1; end if;', regkey, regkey ) order by id
-      ) from FM.registers
-      into ¶q1;
-    -- .....................................................................................................
-    ¶q2 :=  array_to_string( ¶q1, E'\n' );
-    R   := format( '
-      create or replace function FMAS.set_all_except( ¶regkey text, ¶data jsonb )
-        returns void volatile language plpgsql as $$
-        declare
-          ¶bc     integer := FM.bc();
-          ¶count  integer := 0;
-        begin
-          %s
-        -- ### TAINT here we raise an exception; in other places, we return an error value
-        if ¶count = 0 then
-          raise exception ''unknown regkey %%'', ¶regkey;
-          end if;
-        end; $$;',
-      ¶q2 );
-    -- .....................................................................................................
-    return R; end; $outer$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FMAS.create_set_all_except() returns void volatile language plpgsql as $$
-  begin execute FMAS.get_create_statement_for_set_all_except(); end; $$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FMAS.get_create_statement_for_get() returns text stable language plpgsql as $outer$
-  declare
-    R     text;
-    ¶q1   text[];
-    ¶q2   text;
-  begin
-    -- .....................................................................................................
-    select array_agg(
-      format( 'when %L then select %I from FM.board where bc = FM.bc() into R;', regkey, regkey ) order by id
-      ) from FM.registers
-      into ¶q1;
-    -- .....................................................................................................
-    ¶q2 :=  array_to_string( ¶q1, E'\n' );
-    R   := format( '
-      create or replace function FMAS.get( ¶regkey text )
-        returns jsonb volatile language plpgsql as $$
-        declare
-          R jsonb;
-        begin
-          case ¶regkey
-            %s
-            end case;
-        return R; end; $$;',
-      ¶q2 );
-    -- .....................................................................................................
-    return R; end; $outer$;
-
--- ---------------------------------------------------------------------------------------------------------
-create function FMAS.create_get() returns void volatile language plpgsql as $$
-  begin execute FMAS.get_create_statement_for_get(); end; $$;
 
 
 

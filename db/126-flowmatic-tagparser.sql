@@ -1,17 +1,16 @@
 
 
--- ---------------------------------------------------------------------------------------------------------
-insert into FM.registers ( regkey, name, comment ) values
-  ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
-  ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
-  ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
-  ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' );
+  -- ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
+  -- ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
+  -- ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
+  -- ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into FM.states values
    ( '*'          ),
    ( '...'        ),
    ( 'FIRST'      ),
+   ( 'pre-s1'     ),
    ( 's1'         ),
    ( 's2'         ),
    ( 's3'         ),
@@ -39,11 +38,18 @@ insert into FM.transitions
   ( tail,                 act,                cmd,          point           ) values
   -- .......................................................................................................
   /* reset: */
-  ( '*',                  'RESET',            'RST',        'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST 0',     'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST []',    'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST ""',    'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST false', 'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST true',  'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST null',  'FIRST'         ),
+  ( '*',                  'RESET',            'RST {}',    'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST',    'FIRST'         ),
   -- .......................................................................................................
   /* inceptive states: */
   ( 'FIRST',              'START',            'NCC',        's1'            ),
-  ( 'LAST',               'START',            'NCC',        's1'            ),
+  ( 'LAST',               'START',            'NOP',        'next-tag'      ),
   -- .......................................................................................................
   /* intermediate states: */
   ( 's1',                 'identifier',       'LOD T',      's2'            ),
@@ -64,7 +70,11 @@ insert into FM.transitions
   -- ( '...',                '->',               'BAR',        '...'           ),
   -- ( '...',                '->',               'BAZ',        's1'            ),
   -- .......................................................................................................
-  ( 'next-tag',           '->',               'NBC',        's1'            ),
+  -- ( 'next-tag',           '->',               'NCC',        'pre-s1'            ),
+  -- ( 'pre-s1',             '->',               'CLR',        's1'            ),
+  -- .......................................................................................................
+  ( 'next-tag',           '->',               'NCC',        '...'           ),
+  ( '...',                '->',               'CLR',        's1'            ),
   -- .......................................................................................................
   /* states that indicate completion and lead to STOP: */
   ( 's1',                 'STOP',             'NOP',        'LAST'          ),
@@ -74,26 +84,57 @@ insert into FM.transitions
 
 -- ---------------------------------------------------------------------------------------------------------
 do $$ begin
-  perform FM.adapt_journal();
-  perform FM.adapt_board();
-  perform FM.adapt_copy_function();
-  perform FM.create_longboard();
-  perform FMAS.create_set();
-  perform FMAS.create_get();
-  perform FMAS.create_set_all();
-  perform FMAS.create_set_all_except();
   perform FM.push( 'RESET' );
   end; $$;
 
--- \echo FM.registers
--- select * from FM.registers;
--- \echo FM.transitions
--- select * from FM.transitions;
--- \echo FM.board
--- select * from FM.board;
--- \echo FM.journal
--- select * from FM.journal;
+\set ECHO queries
+select * from FM.transitions;
+select * from FM.board;
+select * from FM.journal;
+\set ECHO none
 
+/* ###################################################################################################### */
+
+
+-- ---------------------------------------------------------------------------------------------------------
+/* spaceships */
+
+select * from FM.journal_and_board;
+do $$ begin  perform FM.push( 'START'                           ); end; $$; select * from FM.journal_and_board;
+do $$ begin  perform FM.push( 'identifier',  'spaceships'       ); end; $$; select * from FM.journal_and_board;
+do $$ begin  perform FM.push( 'dcolon',      '::'               ); end; $$; select * from FM.journal_and_board;
+do $$ begin  perform FM.push( 'identifier',  'noun'             ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin  perform FM.push( 'blank',       ' '                ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin  perform FM.push( 'identifier',  'planets'          ); end; $$; select * from FM.journal_and_board;
+do $$ begin  perform FM.push( 'STOP'                            ); end; $$; select * from FM.journal_and_board;
+-- \quit
+
+
+-- do $$ begin perform FM.push( 'RESET'                        ); end; $$;
+do $$ begin perform FM.push( 'START'                        ); end; $$; select * from FM.journal_and_board;
+do $$ begin perform FM.push( 'identifier',  'IT'            ); end; $$; select * from FM.journal_and_board;
+do $$ begin perform FM.push( 'slash',       '/'             ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( 'identifier',  'programming'   ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( 'slash',       '/'             ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( 'identifier',  'language'      ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( 'equals',      '='             ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( 'identifier',  'SQL'           ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( 'dcolon',      '::'            ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( 'identifier',  'name'          ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( 'blank',       ' '             ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( 'identifier',  'mytag'         ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( 'STOP'                         ); end; $$; select * from FM.journal_and_board;
+\set ECHO queries
+select * from FM.journal_and_board;
+select * from FM.board;
+select * from FM.results order by ac;
+\set ECHO none
+\quit
+
+-- \set ECHO queries
+-- select * from FM.journal where ok;
+-- select * from FM.journal;
+-- \quit
 /* ###################################################################################################### */
 
 
@@ -134,19 +175,16 @@ update FM.input as i1
     order by ic ) as i2
   where i1.ic = i2.ic;
 
+
+\set ECHO queries
 select * from FM.input;
-select * from FM.journal;
+select * from FM.journal_and_board;
+\set ECHO none
 
 /*   —————————————————————————————=============######|######=============—————————————————————————————    */
 /* Function to turn `select` statement into JSONb object */
 
--- select distinct on ( typelem ) typname, typelem from pg_type;
--- select typelem, array_agg( typname ) from pg_type group by typelem;
--- \quit
-
-
-
-
+/*
 \echo FM.board
 select * from FM.board where bc = FM.bc();
 select
@@ -154,43 +192,17 @@ select
     U.row_as_jsonb_object( format( 'select * from FM.board where bc = %L;', bc ) ) as dacts
   from FM.board;
 \quit
+*/
 /*   —————————————————————————————=============######|######=============—————————————————————————————    */
 
-
-
-select
-    i.ic,                          -- as ic_,
-    i.act,                         -- as act_,
-    i.data,                        -- as data_,
-    i.ac,                          -- as ac_
-    j.ac as j_ac,
-    j.bc,
-    j.cc,
-    j.tc,
-    j.tail,
-    j.cmd,
-    j.point,
-    j.ok,
-    j."C",
-    j."T",
-    j."V",
-    j."Y"
-  from FM.input    as i
-  right join FM.journal  as j on ( i.ac = j.ac )
-  order by j.ac
-  ;
-
--- select pg_typeof( ac ) from FM.input;
--- select pg_typeof( ac ) from FM.journal;
-
-\quit
-
-/*   —————————————————————————————=============######|######=============—————————————————————————————    */
 
 /* IT/programming/language=SQL::name */
 /* '{IT,/,programming,/,language,=,SQL,::,name}' */
 do $$ begin
-  perform FM.push( 'RESET'                           );
+  perform FM.push( 'RESET'                        );
+  perform FM.push( 'START'                        );
+  perform FM.push( 'identifier',  'yahoo'         );
+  perform FM.push( 'STOP'                         );
   perform FM.push( 'START'                        );
   perform FM.push( 'identifier',  'IT'            );
   perform FM.push( 'slash',       '/'             );
@@ -205,22 +217,12 @@ do $$ begin
   perform FM.push( 'identifier',  'mytag'         );
   perform FM.push( 'STOP'                         );
   end; $$;
-select * from FM.journal;
-select * from FM.journal where ok;
+\set ECHO queries
+select * from FM.input;
+select * from FM.journal_and_board;
 select * from FM.board;
-
--- ---------------------------------------------------------------------------------------------------------
-/* spaceships */
-do $$ begin
-  perform FM.push( 'START'                           );
-  perform FM.push( 'identifier',  'spaceships'       );
-  perform FM.push( 'blank',       ' '                );
-  perform FM.push( 'identifier',  'planets'          );
-  perform FM.push( 'STOP'                            );
-  end; $$;
-select * from FM.journal;
-select * from FM.journal where ok;
-select * from FM.board;
+\set ECHO none
+\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 /* color=red */
