@@ -34,7 +34,11 @@ create extension if not exists pgcrypto   with schema _pgcrypto;
 -- create extension if not exists pgtap;
 -- comment on extension pgtap    is 'Testing framework; see http://pgtap.org/documentation.html';
 create extension if not exists tablefunc with schema _tablefunc;
-set search_path = public, pg_catalog, _plpgsql, _pgcrypto;
+/* https://github.com/ChristophBerg/postgresql-unit */
+create extension unit;
+grant select, insert, update on unit_units, unit_prefixes to public;
+
+set search_path = public, pg_catalog, _plpgsql, _pgcrypto, pgunit;
 reset role;
 
 
