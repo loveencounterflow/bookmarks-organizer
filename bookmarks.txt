@@ -81,8 +81,8 @@
     ~ sql rdbms
     ~ text-processing typesetting markdown editor text-editor
     ~ kannwas terminal webgl
-    mojikura-typesetter             = mkts MKTS
-    ~ mojikura-typesetter typesetting
+    mingkwai-typesetter             = mkts MKTS
+    ~ mingkwai-typesetter typesetting
 
 * tag:    jzr/components
   about:  A recurring visual part of characters
@@ -190,7 +190,7 @@
 
 * url:    https://github.com/jwilm/alacritty/issues/965
   url:    https://github.com/jwilm/alacritty/issues/957
-  tags:   mojikura-typesetter kannwas
+  tags:   mingkwai-typesetter kannwas
 
 * url:    https://github.com/jwilm/alacritty
   tags:   terminal text-rendering-on-gpu kannwas
@@ -359,6 +359,21 @@
 
 * url:    https://github.com/kdeldycke/awesome-falsehood
   tags:   programming falsehoods education
+
+* url:    https://github.com/ChristophBerg/postgresql-unit
+  tags:   programming sql units SI-units postgresql
+
+* url:    https://github.com/petere/pguri
+  tags:   url postgresql parsing bookmarks-organizer::name bmo::name
+
+* url:    https://begriffs.com/posts/2017-10-21-sql-domain-integrity.html
+  tags:   programming sql units postgresql programming/datatypes postgresql/domains postgresql/extensions
+
+* url:    https://spectrum.ieee.org/tech-history/silicon-revolution/hans-peter-luhn-and-the-birth-of-the-hashing-algorithm
+  url:    https://babel.hathitrust.org/cgi/pt?id=mdp.39015005511467;view=1up;seq=12
+  tags:   programming jizura mojikura kwic "Hans-Peter Luhn"::name
+
+
 
 
 
