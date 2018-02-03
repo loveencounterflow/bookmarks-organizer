@@ -231,6 +231,10 @@ create function FM.new_boardline() returns void volatile language sql as $$
   -- insert into FM.board ( value ) select value from FM.board where bc = 0; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
+create function FM.get_board_value() returns jsonb stable language sql as $$
+  select value from FM.board limit 1; $$;
+
+-- ---------------------------------------------------------------------------------------------------------
 create function FM._board_as_tabular() returns text stable language sql as $outer$
   select U.tabulate_query( $$ select * from FM.board; $$ ); $outer$;
 
@@ -478,14 +482,9 @@ NCC       # Next Case Count, indicates the next batch, line, set of inputs (with
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.set( ¶regkey text, ¶data jsonb ) returns void
   volatile language plpgsql as $$
-  declare
-    ¶row jsonb;
   begin
-    perform log();
-    perform log( 'FMAS.set 55442-0', ¶regkey, ¶data::text );
-    select into ¶row value from FM.board limit 1; perform log( 'FMAS.set 55442-1', ¶row::text );
-    update FM.board values set value = jsonb_set( value, array[ ¶regkey ], ¶data );
-    select into ¶row value from FM.board limit 1; perform log( 'FMAS.set 55442-2 >>>>>>>>', ¶row::text );
+    if ¶data is not distinct from null then ¶data := 'null'::jsonb; end if;
+    update FM.board set value = jsonb_set( value, array[ ¶regkey ], ¶data );
     end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -495,25 +494,30 @@ create function FMAS.set( ¶data jsonb ) returns void
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FMAS.get( ¶regkey text ) returns jsonb
-  stable language sql as $$
-  select null::jsonb; $$;
+  stable language plpgsql as $$
+  declare
+    R jsonb;
+  begin
+    R := FM.get_board_value();
+    if jsonb_typeof( R ) != 'object' then return null::jsonb; end if;
+    return R->¶regkey; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.yes( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+create function FMAS.cmd_yes( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
   volatile language plpgsql as $$
   declare
     ¶ac           integer;
     R             FMAS.cmd_output;
   begin
     ¶ac     :=  FM.ac();
-    R       :=  FMAS.nbc( ¶cmd_parts, null );
+    R       :=  FMAS.cmd_nbc( ¶cmd_parts, null );
     if not ( R.error is null ) then return R; end if;
     update FM.journal set ok = true where ac = ¶ac;
     R.ok_ac :=  ¶ac;
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.nbc( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+create function FMAS.cmd_nbc( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
   volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
@@ -522,12 +526,12 @@ create function FMAS.nbc( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.ncc( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+create function FMAS.cmd_ncc( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
   volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
   begin
-    -- R := FMAS.nbc( ¶cmd_parts, ¶data );
+    -- R := FMAS.cmd_nbc( ¶cmd_parts, ¶data );
     -- if not ( R.error is null ) then return R; end if;
     R.next_cc := true;
     return R; end; $$;
@@ -545,7 +549,7 @@ create function FMAS._default_value_from_jsonb_type( ¶jsonb_type text ) returns
       end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.clr( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+create function FMAS.cmd_clr( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
   volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
@@ -560,7 +564,7 @@ create function FMAS.clr( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.rst( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+create function FMAS.cmd_rst( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
   volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
@@ -587,7 +591,7 @@ create function FMAS.rst( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+create function FMAS.cmd_nul( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
   volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
@@ -604,7 +608,7 @@ create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
           R.error = 'second argument to NUL can not be star';
           return R;
           end if;
-        perform FMAS.set_all_except( ¶regkey_2, ¶data );
+        perform FMAS.set_all_except( ¶regkey_2, null );
         return R;
       end if;
     -- .....................................................................................................
@@ -615,7 +619,7 @@ create function FMAS.nul( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.lod( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+create function FMAS.cmd_lod( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
   volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
@@ -625,7 +629,7 @@ create function FMAS.lod( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.mov( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+create function FMAS.cmd_mov( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
   volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
@@ -637,7 +641,7 @@ create function FMAS.mov( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.psh( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
+create function FMAS.cmd_psh( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_output
   volatile language plpgsql as $$
   declare
     R             FMAS.cmd_output;
@@ -660,19 +664,20 @@ create function FMAS.psh( ¶cmd_parts text[], ¶data jsonb ) returns FMAS.cmd_ou
         R.error = 'unable to push to star register';
         return R;
         end if;
-      if ¶regkey_1 = '*' then
-        perform FMAS.psh_data( ¶target_key, FM.get_registers_except( ¶target_key ) );
-        R.next_cmd  := format( 'NUL * %s', ¶target_key );
-      else
-        perform FMAS.psh_data( ¶target_key, FMAS.get( ¶regkey_1 ) );
-        R.next_cmd  := format( 'NUL %s', ¶regkey_1 );
-        end if;
+      end if;
+    -- .....................................................................................................
+    if ¶regkey_1 = '*' then
+      perform FMAS.push_data( ¶target_key, FM.get_registers_except( ¶target_key ) );
+      R.next_cmd  := format( 'NUL * %s', ¶target_key );
+    else
+      perform FMAS.push_data( ¶target_key, FMAS.get( ¶regkey_1 ) );
+      R.next_cmd  := format( 'NUL %s', ¶regkey_1 );
       end if;
     -- .....................................................................................................
     return R; end; $$;
 
 -- ---------------------------------------------------------------------------------------------------------
-create function FMAS.psh_data( ¶regkey text, ¶data jsonb )
+create function FMAS.push_data( ¶regkey text, ¶data jsonb )
   returns void volatile language plpgsql as $$
   declare
     ¶target       jsonb;
@@ -688,8 +693,7 @@ create function FMAS.psh_data( ¶regkey text, ¶data jsonb )
       ¶target = jsonb_build_array( ¶target );
       end if;
     -- .....................................................................................................
-    ¶target := ¶target || ¶data;
-    perform FMAS.set( ¶regkey, ¶target );
+    perform FMAS.set( ¶regkey, ¶target || ¶data );
     -- .....................................................................................................
     end; $$;
 
@@ -711,6 +715,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition ) 
         ¶cmd        :=  S.next_cmd;
         S.next_cmd  :=  null;
         end if;
+      -- perform log( '02011', ¶cmd );
       -- ...................................................................................................
       /* ### TAINT should check whether there are extraneous arguments with NOP */
       if ( ¶cmd is null ) or ( ¶cmd = 'NOP' ) or ( ¶cmd = '' ) then return S; end if;
@@ -719,15 +724,15 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition ) 
       ¶base       :=  ¶cmd_parts[ 1 ];
       -- ...................................................................................................
       case ¶base
-        when 'RST' then S := FMAS.rst( ¶cmd_parts, ¶data );
-        when 'NUL' then S := FMAS.nul( ¶cmd_parts, ¶data );
-        when 'CLR' then S := FMAS.clr( ¶cmd_parts, ¶data );
-        when 'NBC' then S := FMAS.nbc( ¶cmd_parts, ¶data );
-        when 'NCC' then S := FMAS.ncc( ¶cmd_parts, ¶data );
-        when 'LOD' then S := FMAS.lod( ¶cmd_parts, ¶data );
-        when 'MOV' then S := FMAS.mov( ¶cmd_parts, ¶data );
-        when 'PSH' then S := FMAS.psh( ¶cmd_parts, ¶data );
-        when 'YES' then S := FMAS.yes( ¶cmd_parts, ¶data );
+        when 'RST' then S := FMAS.cmd_rst( ¶cmd_parts, ¶data );
+        when 'NUL' then S := FMAS.cmd_nul( ¶cmd_parts, ¶data );
+        when 'CLR' then S := FMAS.cmd_clr( ¶cmd_parts, ¶data );
+        when 'NBC' then S := FMAS.cmd_nbc( ¶cmd_parts, ¶data );
+        when 'NCC' then S := FMAS.cmd_ncc( ¶cmd_parts, ¶data );
+        when 'LOD' then S := FMAS.cmd_lod( ¶cmd_parts, ¶data );
+        when 'MOV' then S := FMAS.cmd_mov( ¶cmd_parts, ¶data );
+        when 'PSH' then S := FMAS.cmd_psh( ¶cmd_parts, ¶data );
+        when 'YES' then S := FMAS.cmd_yes( ¶cmd_parts, ¶data );
         else
           perform FM._log_journal_context( -10 );
           perform log( 'FM #19003 transition:', ¶transition::text );   perform log();
