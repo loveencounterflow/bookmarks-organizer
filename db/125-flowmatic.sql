@@ -175,6 +175,9 @@ create table FM.journal (
   ok            boolean                                                           default false );
 
 -- ---------------------------------------------------------------------------------------------------------
+create index on FM.journal ( cc );
+
+-- ---------------------------------------------------------------------------------------------------------
 create sequence FM.cc_seq minvalue 0 start 0;
 do $$ begin perform nextval( 'FM.cc_seq' ); end; $$;
 
