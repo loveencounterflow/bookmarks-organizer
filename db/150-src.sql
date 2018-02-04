@@ -160,17 +160,28 @@ create table SRC._bookmarks_070 as ( select
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(10)=--':O
 create view SRC._bookmarks_075_urls as ( select
-    a.*,
+    a.linenr                                            as linenr,
+    a.star                                              as star,
+    a.level                                             as level,
+    a.key                                               as key,
+    a.value                                             as value,
+    w.keytype                                           as keytype,
+    w.keyword                                           as keyword
     -- SRC.keywords_from_url( a.value )
-    unnest( U.parse_url_words( a.value ) )
-  from SRC._bookmarks_050_split_values as a
+  from
+    SRC._bookmarks_050_split_values as a,
+    lateral (
+      select
+          v[ 1 ] as keytype,
+          v[ 2 ] as keyword
+        from U.unnest_2d_1d( U.parse_url_words( a.value ) ) as v ) as w
   where a.key = 'url'
   )
   ;
 
 -- select * from SRC._bookmarks_050_split_values;
--- select * from SRC._bookmarks_075_urls;
--- \quit
+select * from SRC._bookmarks_075_urls;
+\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(11)=--':O

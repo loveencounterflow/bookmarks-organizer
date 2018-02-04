@@ -1,7 +1,8 @@
 
 
+#-----------------------------------------------------------------------------------------------------------
 from urllib.parse import urlparse as _parse_url
-
+import re as _re
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -30,19 +31,22 @@ def parse( url_ ):
     R.path,     R.params,   R.query,    R.fragment, ]
 
 #-----------------------------------------------------------------------------------------------------------
+_word_splitters = _re.compile( r'[/._]' )
+
+#-----------------------------------------------------------------------------------------------------------
+def split_words( text ):
+  R = _word_splitters.split( text )
+  return [ r for r in R if r ]
+
+#-----------------------------------------------------------------------------------------------------------
 def parse_words( url_ ):
   R = []
   scheme, netloc, username, password, hostname, port, path, params, query, fragment = parse( url_ )
-  # if scheme:    R.append( scheme      )
-  # if netloc:    R.append( netloc      )
-  if username:  R.append( username    )
-  if password:  R.append( password    )
-  if hostname:  R.append( hostname    )
-  # if port:      R.append( port        )
-  if path:      R.append( path        )
-  # if params:    R.append( params      )
-  # if query:     R.append( query       )
-  if fragment:  R.append( fragment    )
+  if username:  R.extend( [ [ 'url/username',   w, ] for w in split_words( username ) ] )
+  if password:  R.extend( [ [ 'url/password',   w, ] for w in split_words( password ) ] )
+  if hostname:  R.extend( [ [ 'url/hostname',   w, ] for w in split_words( hostname ) ] )
+  if path:      R.extend( [ [ 'url/path',       w, ] for w in split_words( path     ) ] )
+  if fragment:  R.extend( [ [ 'url/fragment',   w, ] for w in split_words( fragment ) ] )
   return R
 
 
