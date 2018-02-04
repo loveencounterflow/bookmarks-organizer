@@ -224,7 +224,7 @@ create function FM.save_board() returns void volatile language sql as $$
 
 -- ---------------------------------------------------------------------------------------------------------
 create function FM.log_board() returns void volatile language sql as $$
-  select case when true then FM.save_board() else null end; $$;
+  select case when false then FM.save_board() else null end; $$;
   /*               ^^^^                   */
   /* imagine configuration variable here  */
 
@@ -424,17 +424,12 @@ create function FM.push_dacts( ¶dacts text[] ) returns integer[] volatile stric
     -- .....................................................................................................
     exception
       when others then
-        perform log( 'FM #11211', 'something went wrong' );
-        perform log( 'FM #11211', 'sqlerrm:',  sqlerrm );
-        perform log( 'FM #11211', 'sqlstate:', sqlstate );
-        perform log( 'FM #11211', '¶dacts:', ¶dacts::text );
+        perform log( 'FM #11211 push_dacts():', 'something went wrong'     );
+        perform log( 'FM #11211 push_dacts():', 'sqlerrm:',   sqlerrm      );
+        perform log( 'FM #11211 push_dacts():', 'sqlstate:',  sqlstate     );
+        perform log( 'FM #11211 push_dacts():', '¶dacts:',    ¶dacts::text );
         perform FM._log_journal_context( -10 );
         raise;
-        -- return null;
-        -- raise exception 'foobar % %', sqlstate, sqlerrm;
-        -- raise exception '%', sqlerrm using errcode = sqlstate;
-      -- when invalid_recursion then -- 38000
-      -- raise exception using message = 'Recursion not allowed for schema "meta"', errcode = '42P19';
     end; $$;
 
 
@@ -738,7 +733,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition ) 
         when 'YES' then S := FMAS.cmd_yes( ¶cmd_parts, ¶data );
         else
           perform FM._log_journal_context( -10 );
-          perform log( 'FM #19003 transition:', ¶transition::text );   perform log();
+          perform log( 'FMAS #19003 do:', 'transition:', ¶transition::text ); perform log();
           raise exception 'unknown command %', ¶cmd;
         end case;
       -- ...................................................................................................
@@ -763,3 +758,7 @@ create function FMAS.do( ¶cmd text, ¶data jsonb, ¶transition FM.transition ) 
 /* #    .    #    .    #    .    #    .    #    .    #    .    #    .    #    .    #    .    #    .    #  */
 /* ====================================================================================================== */
 
+    -- t0 timestamp with time zone; -- 44301
+    -- t1 timestamp with time zone; -- 44301
+    -- t0 := clock_timestamp(); -- 44301
+    -- t1 := clock_timestamp(); perform log( '44301', '-/1/-', ( t1 - t0 )::text ); t0 := t1;
