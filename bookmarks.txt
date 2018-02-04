@@ -1,7 +1,9 @@
 
 * url:    https://jaa2100.org/entry/genr/cat_10_1/
+  url:    http://usr:pwd@subdomain.example.com:80/deeply/nested/inside?x=42&x=108#fragment-here
   tags:   japan history historical-imagery download
   note:   EXAMPLE
+
 
 * tags:   foo bar baz
   tags:   ctx/tag spaceships/orville
@@ -12,7 +14,7 @@
   tags:   'tag with spaces'
   tags:   some/more/context/a-tag='and value'
   tags:   tag=value
-<!-- *stop* -->
+*stop*
 
 * tags:   tag foo 'bar' "baz" 'gnu x' "moo y"
   tags:   q=tag q=foo q='bar' q="baz" q='gnu x' q="moo y"

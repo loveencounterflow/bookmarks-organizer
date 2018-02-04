@@ -13,34 +13,12 @@ Y88b  d88P 888  T88b  Y88b  d88P
 */
 
 \ir './010-trm.sql'
--- \pset tuples_only off
 \timing on
 
-
--- select linenr, value, 'C', U.text_array_from_json( parts->'C' ) from SRC.bookmarks;
--- select * from SRC.bookmarks;
--- select parts->'C' from SRC.bookmarks;
--- select parts->'C' from SRC.bookmarks where ( parts->'C' ) != 'null'::jsonb;
--- -- select pg_typeof( parts->'C' ) from SRC.bookmarks;
--- select U.text_array_from_json( parts->'C' ) from SRC.bookmarks where ( parts->'C' ) != 'null'::jsonb;
--- \quit
-
-
--- \echo 'select * from SRC._bookmarks_050_split_values;'
--- select * from SRC._bookmarks_050_split_values;
-
--- \echo 'select * from SRC._bookmarks_060;'
--- select * from SRC._bookmarks_060;
-
--- \echo 'select * from SRC._bookmarks_070;'
--- select * from SRC._bookmarks_070;
-
--- \quit
 
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists SRC cascade;
 create schema SRC;
-vacuum;
 
 -- ---------------------------------------------------------------------------------------------------------
 set role dba;
@@ -48,6 +26,16 @@ create function SRC.split_on_whitespace( x text ) returns text[]
   immutable strict language sql as $$
     select regexp_split_to_array( x, E'\\s+' ); $$;
 reset role;
+
+-- -- ---------------------------------------------------------------------------------------------------------
+-- set role dba;
+-- create function SRC.keywords_from_url( ¶url text ) returns text[]
+--   immutable strict language plpgsql as $$
+--   begin
+--     perform U.parse_url( ¶url );
+--     return '{}'::text[];
+--     end; $$;
+-- reset role;
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(1)=--':O
@@ -153,16 +141,6 @@ create table SRC._bookmarks_060 as ( select
   from SRC._bookmarks_050_split_values
   order by linenr);
 
-create table SRC._bookmarks_060_A as ( select
-    linenr                            as linenr,
-    value                             as value,
-    ac
-  from
-    SRC._bookmarks_050_split_values     as t,
-    unnest( FM.push_dacts( t.dacts ) )  as ac
-  order by linenr);
-\quit
-
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(10)=--':O
 create table SRC._bookmarks_070 as ( select
@@ -172,13 +150,27 @@ create table SRC._bookmarks_070 as ( select
     b.key                                               as key,
     v1.value                                            as value,
     j.ac                                                as ac,
-    j.bc                                                as bc,
-    U.row_as_jsonb_object( format(
-      'select * from FM.board where bc = %L;', j.bc ) ) as parts
-  from SRC._bookmarks_060 as v1
+    r.value                                             as result
+  from SRC._bookmarks_060                   as v1
   left join FM.journal                      as j on ( v1.ac       = j.ac      )
   left join SRC._bookmarks_050_split_values as b on ( v1.linenr   = b.linenr  )
+  left join FM.results                      as r on ( v1.ac       = r.ac      )
   order by linenr );
+
+-- ---------------------------------------------------------------------------------------------------------
+\echo :X'--=(10)=--':O
+create view SRC._bookmarks_075_urls as ( select
+    a.*,
+    -- SRC.keywords_from_url( a.value )
+    unnest( U.parse_url_words( a.value ) )
+  from SRC._bookmarks_050_split_values as a
+  where a.key = 'url'
+  )
+  ;
+
+-- select * from SRC._bookmarks_050_split_values;
+-- select * from SRC._bookmarks_075_urls;
+-- \quit
 
 -- ---------------------------------------------------------------------------------------------------------
 \echo :X'--=(11)=--':O
@@ -189,8 +181,7 @@ create table SRC._bookmarks_080_complement_missing as ( with v1 as ( select
     key,
     value,
     ac,
-    bc,
-    parts
+    result
   from SRC._bookmarks_070 )
 select * from v1
 union select
@@ -200,12 +191,11 @@ union select
     key         as key,
     value       as value,
     null        as ac,
-    null        as bc,
-    null        as parts
+    null        as result
   from SRC._bookmarks_050_split_values
     /* Choose the more efficient one: */
-    -- where not linenr = any ( select linenr from v1 )
-    where linenr not in ( select linenr from v1 )
+    where not linenr = any ( select linenr from v1 )
+    -- where linenr not in ( select linenr from v1 )
 );
 
 -- ---------------------------------------------------------------------------------------------------------
@@ -216,26 +206,32 @@ create view SRC.bookmarks as ( select * from SRC._bookmarks_080_complement_missi
 /* ###################################################################################################### */
 
 
--- \echo 'select * from FM.journal;'
--- select * from FM.journal;
-
--- \echo 'select * from SRC.bookmarks;'
--- select * from SRC.bookmarks;
 
 select
     null::integer   as linenr,
     null::text      as value,
-    null::text      as fieldname,
-    null::text    as fieldvalues
+    null::text      as keytype,
+    null::text      as keyword
   where false union
-select linenr, value, 'C', unnest( U.text_array_from_json( parts->'C' ) ) from SRC.bookmarks where ( parts->'C' ) != 'null'::jsonb union
-select linenr, value, 'T', unnest( array( select parts->>'T' ) ) from SRC.bookmarks where ( parts->'T' ) != 'null'::jsonb union
-select linenr, value, 'V', unnest( array( select parts->>'V' ) ) from SRC.bookmarks where ( parts->'V' ) != 'null'::jsonb union
-select linenr, value, 'Y', unnest( array( select parts->>'Y' ) ) from SRC.bookmarks where ( parts->'Y' ) != 'null'::jsonb union
+select linenr, value, 'C', unnest( U.text_array_from_json( result->'C' ) ) from SRC.bookmarks where ( result->'C' ) != 'null'::jsonb union
+select linenr, value, 'T', unnest( array( select result->>'T' ) ) from SRC.bookmarks where ( result->'T' ) != 'null'::jsonb union
+select linenr, value, 'V', unnest( array( select result->>'V' ) ) from SRC.bookmarks where ( result->'V' ) != 'null'::jsonb union
+select linenr, value, 'Y', unnest( array( select result->>'Y' ) ) from SRC.bookmarks where ( result->'Y' ) != 'null'::jsonb union
 select null, null, null, null where false
-order by fieldvalues;
+order by
+  -- linenr,
+  keytype,
+  keyword,
+  1
+  ;
 
 
+-- select * from FM.results;
+\set ECHO queries
+select * from SRC.bookmarks;
+select * from SRC._bookmarks_050_split_values;
+select * from SRC._bookmarks_080_complement_missing;
+\set ECHO none
 \quit
 
 

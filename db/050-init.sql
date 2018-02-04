@@ -120,6 +120,7 @@ create function INIT._test() returns void language plpython3u as $$
   ctx.log( "INIT.py_init OK" )
   import signals
   ctx.log( 'signals', signals )
+  ctx.log( ctx.url_parser )
   return
   $$;
 reset role;

@@ -38,10 +38,10 @@ results as ( select
   join pcts on ( main.funcid = pcts.funcid ) )
 select * from results
   order by
+    "self/ms" desc,
     "total/ms" desc,
     calls desc,
     "1k st/ms" desc,
-    "self/ms" desc,
     "1k tt/ms" desc,
     1
   ;

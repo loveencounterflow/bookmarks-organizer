@@ -99,30 +99,46 @@ select * from FM.journal;
 -- ---------------------------------------------------------------------------------------------------------
 /* spaceships */
 
-select * from FM.journal_and_board;
-do $$ begin  perform FM.push( 'START'                           ); end; $$; select * from FM.journal_and_board;
-do $$ begin  perform FM.push( 'identifier',  'spaceships'       ); end; $$; select * from FM.journal_and_board;
-do $$ begin  perform FM.push( 'dcolon',      '::'               ); end; $$; select * from FM.journal_and_board;
-do $$ begin  perform FM.push( 'identifier',  'noun'             ); end; $$; select * from FM.journal_and_board;
--- do $$ begin  perform FM.push( 'blank',       ' '                ); end; $$; select * from FM.journal_and_board;
--- do $$ begin  perform FM.push( 'identifier',  'planets'          ); end; $$; select * from FM.journal_and_board;
-do $$ begin  perform FM.push( 'STOP'                            ); end; $$; select * from FM.journal_and_board;
--- \quit
+-- select * from FM.journal_and_board;
+-- do $$ begin  perform FM.push( 'START'                           ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin  perform FM.push( 'identifier',  'spaceships'       ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin  perform FM.push( 'dcolon',      '::'               ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin  perform FM.push( 'identifier',  'noun'             ); end; $$; select * from FM.journal_and_board;
+-- -- do $$ begin  perform FM.push( 'blank',       ' '                ); end; $$; select * from FM.journal_and_board;
+-- -- do $$ begin  perform FM.push( 'identifier',  'planets'          ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin  perform FM.push( 'STOP'                            ); end; $$; select * from FM.journal_and_board;
+-- -- \quit
 
-do $$ begin perform FM.push( 'RESET'                        ); end; $$;
-do $$ begin perform FM.push( 'START'                        ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'identifier',  'IT'            ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'slash',       '/'             ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'identifier',  'programming'   ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'slash',       '/'             ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'identifier',  'language'      ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'equals',      '='             ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'identifier',  'SQL'           ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'dcolon',      '::'            ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'identifier',  'name'          ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'blank',       ' '             ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'identifier',  'mytag'         ); end; $$; select * from FM.journal_and_board;
-do $$ begin perform FM.push( 'STOP'                         ); end; $$; select * from FM.journal_and_board;
+-- -- do $$ begin perform FM.push( 'RESET'                        ); end; $$;
+-- do $$ begin perform FM.push( array[ 'START'                       ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'identifier',  'IT'           ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'slash',       '/'            ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'identifier',  'programming'  ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'slash',       '/'            ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'identifier',  'language'     ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'equals',      '='            ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'identifier',  'SQL'          ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'dcolon',      '::'           ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'identifier',  'name'         ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'blank',       ' '            ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'identifier',  'mytag'        ] ); end; $$; select * from FM.journal_and_board;
+-- do $$ begin perform FM.push( array[ 'STOP'                        ] ); end; $$; select * from FM.journal_and_board;
+
+do $$ begin
+  perform FM.push_dacts( array[
+    array[ 'identifier',  'IT'           ],
+    array[ 'slash',       '/'            ],
+    array[ 'identifier',  'programming'  ],
+    array[ 'slash',       '/'            ],
+    array[ 'identifier',  'language'     ],
+    array[ 'equals',      '='            ],
+    array[ 'identifier',  'SQL'          ],
+    array[ 'dcolon',      '::'           ],
+    array[ 'identifier',  'name'         ],
+    array[ 'blank',       ' '            ],
+    array[ 'identifier',  'mytag'        ] ] );
+  end; $$;
+
 \set ECHO queries
 -- select * from FM.journal_and_board;
 select * from FM.board;
@@ -148,7 +164,7 @@ create table FM.input (
   ac    integer
   );
 
-do $$ begin perform FM.push( 'RESET' ); end; $$;
+-- do $$ begin perform FM.push( 'RESET' ); end; $$;
 insert into FM.input ( act, data ) values ( 'START',        null              );
 insert into FM.input ( act, data ) values ( 'identifier',   'author'          );
 insert into FM.input ( act, data ) values ( 'equals',       '='               );
@@ -179,6 +195,7 @@ update FM.input as i1
 select * from FM.input;
 select * from FM.journal_and_board;
 \set ECHO none
+-- \quit
 
 /*   —————————————————————————————=============######|######=============—————————————————————————————    */
 /* Function to turn `select` statement into JSONb object */
@@ -198,7 +215,7 @@ select
 /* IT/programming/language=SQL::name */
 /* '{IT,/,programming,/,language,=,SQL,::,name}' */
 do $$ begin
-  perform FM.push( 'RESET'                        );
+  -- perform FM.push( 'RESET'                        );
   perform FM.push( 'START'                        );
   perform FM.push( 'identifier',  'yahoo'         );
   perform FM.push( 'STOP'                         );
@@ -221,7 +238,6 @@ select * from FM.input;
 select * from FM.journal_and_board;
 select * from FM.board;
 \set ECHO none
-\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 /* color=red */
@@ -234,9 +250,7 @@ do $$ begin
   perform FM.push( 'identifier',  'red'         );
   perform FM.push( 'STOP'                       );
   end; $$;
-select * from FM.journal;
-select * from FM.journal where ok;
-select * from FM.board;
+select * from FM.journal_and_board where ok;
 
 
 /* author=Faulkner::name */
@@ -250,9 +264,7 @@ do $$ begin
   perform FM.push( 'STOP'                       );
   -- perform FM.push( 'equals',      '='          );
   end; $$;
-select * from FM.journal;
-select * from FM.journal where ok;
-select * from FM.board;
+select * from FM.journal_and_board where ok;
 
 
 
