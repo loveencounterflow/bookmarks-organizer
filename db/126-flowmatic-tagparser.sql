@@ -1,9 +1,9 @@
 
 
-  -- ( 'C', 'context',   'a list of strings when the tag is written as path with slashes' ),
-  -- ( 'T', 'tag',       'the tag itself; in the case of path notation, the last part of the path' ),
-  -- ( 'V', 'value',     'written after an equals sign, the value of a valued tag, as in `color=red`' ),
-  -- ( 'Y', 'type',      'the type of a tag, written with a double colon, as in `Mickey::name`' );
+  -- ( 'tag/context', 'a list of strings when the tag is written as path with slashes'             ),
+  -- ( 'tag/key',     'the tag itself; in the case of path notation, the last part of the path'    ),
+  -- ( 'tag/value',   'written after an equals sign, the value of a valued tag, as in `color=red`' ),
+  -- ( 'tag/type',    'the type of a tag, written with a double colon, as in `Mickey::name`'       );
 
 -- ---------------------------------------------------------------------------------------------------------
 insert into FM.states values
@@ -38,33 +38,33 @@ insert into FM.transitions
   ( tail,                 act,                cmd,          point           ) values
   -- .......................................................................................................
   /* reset: */
-  -- ( '*',                  'RESET',            'RST 0',     'FIRST'         ),
-  -- ( '*',                  'RESET',            'RST []',    'FIRST'         ),
-  -- ( '*',                  'RESET',            'RST ""',    'FIRST'         ),
-  -- ( '*',                  'RESET',            'RST false', 'FIRST'         ),
-  -- ( '*',                  'RESET',            'RST true',  'FIRST'         ),
-  -- ( '*',                  'RESET',            'RST null',  'FIRST'         ),
-  ( '*',                  'RESET',            'RST {}',    'FIRST'         ),
-  -- ( '*',                  'RESET',            'RST',    'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST 0',                   'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST []',                  'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST ""',                  'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST false',               'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST true',                'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST null',                'FIRST'         ),
+  ( '*',                  'RESET',            'RST {}',                   'FIRST'         ),
+  -- ( '*',                  'RESET',            'RST',                     'FIRST'         ),
   -- .......................................................................................................
   /* inceptive states: */
-  ( 'FIRST',              'START',            'NCC',        's1'            ),
-  ( 'LAST',               'START',            'NOP',        'next-tag'      ),
+  ( 'FIRST',              'START',            'NCC',                      's1'            ),
+  ( 'LAST',               'START',            'NOP',                      'next-tag'      ),
   -- .......................................................................................................
   /* intermediate states: */
-  ( 's1',                 'identifier',       'LOD T',      's2'            ),
-  ( 's2',                 'dcolon',           'NOP',        's5'            ),
-  ( 's2',                 'equals',           'NOP',        's3'            ),
-  ( 's2',                 'slash',            'PSH T C',    's1'            ),
-  ( 's3',                 'identifier',       'LOD V',      's4'            ),
-  ( 's4',                 'dcolon',           'NOP',        's5'            ),
-  ( 's5',                 'identifier',       'LOD Y',      's6'            ),
+  ( 's1',                 'identifier',       'LOD tag/key',              's2'            ),
+  ( 's2',                 'dcolon',           'NOP',                      's5'            ),
+  ( 's2',                 'equals',           'NOP',                      's3'            ),
+  ( 's2',                 'slash',            'PSH tag/key tag/context',  's1'            ),
+  ( 's3',                 'identifier',       'LOD tag/value',            's4'            ),
+  ( 's4',                 'dcolon',           'NOP',                      's5'            ),
+  ( 's5',                 'identifier',       'LOD tag/type',             's6'            ),
   -- .......................................................................................................
   /* states that indicate completion and lead to next item: */
-  ( 's1',                 'blank',            'NBC',        'next-tag'      ),
-  ( 's2',                 'blank',            'YES',        'next-tag'      ),
-  ( 's6',                 'blank',            'YES',        'next-tag'      ),
-  ( 's4',                 'blank',            'YES',        'next-tag'      ),
+  ( 's1',                 'blank',            'NBC',                      'next-tag'      ),
+  ( 's2',                 'blank',            'YES',                      'next-tag'      ),
+  ( 's6',                 'blank',            'YES',                      'next-tag'      ),
+  ( 's4',                 'blank',            'YES',                      'next-tag'      ),
   -- ( 's2',                 'blank',            'YES',        's9'            ),
   -- ( 's9',                 '->',               'FOO',        '...'           ),
   -- ( '...',                '->',               'BAR',        '...'           ),
@@ -73,14 +73,14 @@ insert into FM.transitions
   -- ( 'next-tag',           '->',               'NCC',        'pre-s1'            ),
   -- ( 'pre-s1',             '->',               'CLR',        's1'            ),
   -- .......................................................................................................
-  ( 'next-tag',           '->',               'NCC',        '...'           ),
-  ( '...',                '->',               'CLR',        's1'            ),
+  ( 'next-tag',           '->',               'NCC',                      '...'           ),
+  ( '...',                '->',               'CLR',                      's1'            ),
   -- .......................................................................................................
   /* states that indicate completion and lead to STOP: */
-  ( 's1',                 'STOP',             'NOP',        'LAST'          ),
-  ( 's2',                 'STOP',             'YES',        'LAST'          ),
-  ( 's6',                 'STOP',             'YES',        'LAST'          ),
-  ( 's4',                 'STOP',             'YES',        'LAST'          );
+  ( 's1',                 'STOP',             'NOP',                      'LAST'          ),
+  ( 's2',                 'STOP',             'YES',                      'LAST'          ),
+  ( 's6',                 'STOP',             'YES',                      'LAST'          ),
+  ( 's4',                 'STOP',             'YES',                      'LAST'          );
 
 -- ---------------------------------------------------------------------------------------------------------
 do $$ begin
