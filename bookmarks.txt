@@ -1,7 +1,41 @@
 
+* title:  Text processing umbrella: Parse / Transform / Compile
+  url:    https://github.com/unifiedjs/unified
+  url:    https://unifiedjs.github.io
+  tags:   text-processing typesetting markdown
+  about:  unified is an interface for processing text using syntax trees. It’s what powers remark, retext,
+    and rehype, but it also allows for processing between multiple syntaxes.
+  note:   EXAMPLE
+
+* url:    https://github.com/petere/pguri
+  tags:   url postgresql parsing bookmarks-organizer::name bmo::name
+  note:   EXAMPLE
+
+* url:    https://www.npmjs.com/package/threejs-term
+  title:  Terminal Renderer for Three.js
+  tags:   webgl font-rendering kannwas threejs::name
+  note:   EXAMPLE
+*stop*
+
+
+* url:    https://github.com
+  tags:   a
+          b
+  title:  The Title
+  note:   this is
+          an EXAMPLE
+
+  title:  over
+          three
+          lines
+  about:  grouping
+
 * url:    https://jaa2100.org/entry/genr/cat_10_1/
-  url:    http://usr:pwd@subdomain.example.com:80/deeply/nested/inside?x=42&x=108#fragment-here
-  tags:   japan history historical-imagery download
+  url:    http://usr:pwd@foo.bar.baz.example.com:80/deeply/nested/inside?x=42&x=108#fragment-here
+  tags:   japan history
+          historical-imagery
+          some/more/context/a-tag='and value'
+          download
   note:   EXAMPLE
 
 
@@ -13,8 +47,8 @@
 * tags:   tag
   tags:   'tag with spaces'
   tags:   some/more/context/a-tag='and value'
-  tags:   tag=value
-*stop*
+          tag=value
+  note:   EXAMPLE
 
 * tags:   tag foo 'bar' "baz" 'gnu x' "moo y"
   tags:   q=tag q=foo q='bar' q="baz" q='gnu x' q="moo y"
@@ -88,6 +122,9 @@
 
 * tag:    jzr/components
   about:  A recurring visual part of characters
+
+
+<!-- ######################################################################################################################## -->
 
 * url:    http://www.yywzw.com/pan/pan-03b-02-1.htm
   tags:   cjk analysis-of-chinese-characters character-components jizura jzr/factors
@@ -375,7 +412,15 @@
   url:    https://babel.hathitrust.org/cgi/pt?id=mdp.39015005511467;view=1up;seq=12
   tags:   programming jizura mojikura kwic "Hans-Peter Luhn"::name
 
+* url:    https://dba.stackexchange.com/questions/197125/in-postgresql-how-can-i-assign-group-ids-depending-on-content
+  url:    https://stackoverflow.com/questions/48628743/define-a-window-over-consecutive-rows-with-a-particular-value
+  url:    https://stackoverflow.com/a/48630284/7568091
+  tags:   postgresql grouping
 
-
+* url:    http://rachbelaid.com/postgres-full-text-search-is-good-enough/
+  url:    https://linuxgazette.net/164/sephton.html
+  url:    https://blog.lateral.io/2015/05/full-text-search-in-milliseconds-with-postgresql/
+  url:    http://shisaa.jp/postset/postgresql-full-text-search-part-1.html
+  tags:   postgresql full-text-search
 
 
