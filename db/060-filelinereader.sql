@@ -38,8 +38,8 @@ create function FLR.read_lines( path_ text ) returns setof U.line_facet
   volatile language plpython3u as $$
   # plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
   with open( path_, 'rb' ) as input:
-    for linenr, line in enumerate( input ):
-      yield [ linenr, line.decode( 'utf-8' ).rstrip(), ]
+    for line_idx, line in enumerate( input ):
+      yield [ line_idx + 1, line.decode( 'utf-8' ).rstrip(), ]
   $$;
 reset role;
 
