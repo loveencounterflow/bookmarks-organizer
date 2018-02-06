@@ -54,6 +54,17 @@ create function UTP.lex_tags( text_ text ) returns text[] immutable strict langu
 reset role;
 
 -- ---------------------------------------------------------------------------------------------------------
+set role dba;
+create function UTP.lex_tags( texts_ text[] ) returns text[] immutable strict language plpython3u as $$
+  plpy.execute( 'select INIT.py_init()' ); ctx = GD[ 'ctx' ]
+  R = []
+  for text in texts_:
+    R.extend( ctx.utp_tag_parser.lex_tags( ctx, text ) )
+  return R
+  $$;
+reset role;
+
+-- ---------------------------------------------------------------------------------------------------------
 create function UTP.taglex_as_table( taglex text[] ) returns table ( act_and_data text[] )
   immutable strict language sql as $$
   select
