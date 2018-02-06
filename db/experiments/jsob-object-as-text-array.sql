@@ -6,19 +6,21 @@ create schema _X_;
 create function _X_.jsonb_object_as_text_facets( ¶x jsonb ) returns text[]
   immutable strict language plpgsql as $$
   declare
-    ¶key    text;
-    ¶value  jsonb;
-    R       text[];
+    ¶key      text;
+    ¶value    jsonb;
+    ¶element  text;
+    R         text[];
   begin
     for ¶key, ¶value in select key, value from jsonb_each( ¶x ) loop
-    -- for ¶key, ¶value in select key, value from jsonb_each_text( ¶x ) loop
-      raise notice '90901 %', ¶key;
-      raise notice '90901 %', ¶value;
-      raise notice '90901 %', text( ¶value );
-      R := R || array[ array[ ¶key, ¶value::text ] ];
+      if jsonb_typeof( ¶value ) = 'array' then
+        for ¶element in select value from jsonb_array_elements_text( ¶value ) loop
+          R := R || ¶element;
+          end loop;
+        else
+          R := R || ( ¶x->>¶key );
+          end if;
       end loop;
-    return R;
-    end; $$;
+    return R; end; $$;
 
 /*   —————————————————————————————=============######|######=============—————————————————————————————    */
 
