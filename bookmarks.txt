@@ -408,10 +408,6 @@
 * url:    https://begriffs.com/posts/2017-10-21-sql-domain-integrity.html
   tags:   programming sql units postgresql programming/datatypes postgresql/domains postgresql/extensions
 
-* url:    https://spectrum.ieee.org/tech-history/silicon-revolution/hans-peter-luhn-and-the-birth-of-the-hashing-algorithm
-  url:    https://babel.hathitrust.org/cgi/pt?id=mdp.39015005511467;view=1up;seq=12
-  tags:   programming jizura mojikura kwic "Hans-Peter Luhn"::name
-
 * url:    https://dba.stackexchange.com/questions/197125/in-postgresql-how-can-i-assign-group-ids-depending-on-content
   url:    https://stackoverflow.com/questions/48628743/define-a-window-over-consecutive-rows-with-a-particular-value
   url:    https://stackoverflow.com/a/48630284/7568091
@@ -422,5 +418,50 @@
   url:    https://blog.lateral.io/2015/05/full-text-search-in-milliseconds-with-postgresql/
   url:    http://shisaa.jp/postset/postgresql-full-text-search-part-1.html
   tags:   postgresql full-text-search
+
+
+* url:    https://github.com/ianstormtaylor/superstruct
+  title:  A simple and composable way to validate data in JavaScript.
+  tags:   nodejs data-types programming/type-validation
+
+  about:  Superstruct makes it easy to define interfaces and then validate
+          JavaScript data against them. Its type annotation API was inspired by
+          Typescript, Flow, Go, and GraphQL, giving it a familiar and easy to
+          understand API.
+
+          But Superstruct is designed for validating data at runtime, so it
+          throws (or returns) detailed runtime errors for you or your end users.
+          This is especially useful in situations like accepting arbitrary input
+          in a REST or GraphQL API. But it can even be used to validate internal
+          data structures at runtime when needed.
+
+* url:    https://github.com/devsnek/fused
+  url:    https://github.com/mafintosh/fuse-bindings
+  url:    https://www.npmjs.com/package/fuseql
+  tags:   nodejs programming/filesystem/fuse::name
+
+
+* url:    https://superuser.com/questions/154908/define-a-keyboard-layout-input-method-for-ubuntu-in-python#154909
+  url:    https://help.ubuntu.com/community/Custom%20keyboard%20layout%20definitions
+  url:    https://www.linux.com/learn/hacking-your-linux-keyboard-xkb
+  url:    https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
+  url:    https://forum.colemak.com/topic/1438-dreymars-big-bag-of-keyboard-tricks-linuxxkb-files-included/
+  url:    https://colemak.com/Unix
+  tags:   programming/keyboard-layout
+
+* url:    https://github.com/eventbrite/cartogram
+  tags:   kannwas::name webgl threejs::name
+
+* url:    https://www.unicode.org/L2/L2018/18012-irgn2273-four-new-idcs.pdf
+  tags:   jizura IDL unicode
+
+
+* url:    https://spectrum.ieee.org/tech-history/silicon-revolution/hans-peter-luhn-and-the-birth-of-the-hashing-algorithm
+  url:    https://babel.hathitrust.org/cgi/pt?id=mdp.39015005511467;view=1up;seq=12
+  url:    https://babel.hathitrust.org/cgi/pt?id=mdp.39015005511467;view=1up;seq=7
+  url:    https://archive.org/search.php?query=kwic
+  url:    https://archive.org/stream/ERIC_ED072826#page/n59/mode/2up
+  tags:   programming jizura mojikura kwic "Hans-Peter Luhn"::name
+
 
 
