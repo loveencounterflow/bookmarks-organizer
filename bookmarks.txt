@@ -511,6 +511,7 @@
   tags:   python sqlite trees
   title:  Querying Tree Structures in SQLite using Python and the Transitive Closure Extension
 
-
-
+* url:    https://github.com/orsinium/textdistance
+  tags:   python text distance similarity levenshtein
+  about:  Compute distance between sequences. 30+ algorithms, pure python implementation, common interface, optional external libs usage.
 
