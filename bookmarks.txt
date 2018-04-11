@@ -515,3 +515,21 @@
   tags:   python text distance similarity levenshtein
   about:  Compute distance between sequences. 30+ algorithms, pure python implementation, common interface, optional external libs usage.
 
+* url:    https://github.com/andychu/pratt-parsing-demo
+  url:    http://www.oilshell.org/blog/2016/11/03.html
+  title:  Pratt Parsing Without Prototypal Inheritance, Global Variables, Virtual Dispatch, or Java
+  tags:   parsing python oilshell::name pratt-parsing tdop
+
+* url:    https://www.reddit.com/r/node/comments/8azttj/security_psa_check_your_code_for_vulnerable/
+  url:    https://github.com/davisjam/vuln-regex-detector
+  title:  Detect vulnerable regexes in your project. REDOS, catastrophic backtracking.
+  tags:   programming/security regexes/catastrophic-backtracking
+
+* url:    https://github.com/junegunn/fzf
+  title:  A command-line fuzzy finder
+
+
+
+
+
+
