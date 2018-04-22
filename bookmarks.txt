@@ -528,8 +528,14 @@
 * url:    https://github.com/junegunn/fzf
   title:  A command-line fuzzy finder
 
+* url:    https://edgedb.com/blog/edgedb-a-new-beginning/
+  tags:   databases graphdb
 
+* url:    https://github.com/facebook/pfff/wiki/Examples2
+  tags:   programming/dependencies programming/tools treemaps
 
-
+* url:    https://beautifulracket.com/
+  title:  Beau­ti­ful Racket: how to make your own pro­gram­ming lan­guages with Racket
+  tags:   parsing racket::name
 
 
