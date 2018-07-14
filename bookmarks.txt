@@ -538,4 +538,7 @@
   title:  Beau­ti­ful Racket: how to make your own pro­gram­ming lan­guages with Racket
   tags:   parsing racket::name
 
+* url:    https://jspreadsheets.com/
+  title:  JavaScript Open-Source Spreadsheets and Data Grids
+  tags:   programming web-design spreadsheets datagrids
 
