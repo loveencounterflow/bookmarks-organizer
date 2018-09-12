@@ -546,3 +546,21 @@
   title:  VZL: Minimal Visualization Editor
   about:  Editor built on Electron.js to preview Graphviz output
 
+* url:    https://github.com/marcosci/cividis
+          https://github.com/loveencounterflow/cmaputil/tree/master/colormaps
+          https://rtask.thinkr.fr/blog/ggplot2-welcome-viridis/
+          https://www.scientificamerican.com/article/end-of-the-rainbow-new-map-scale-is-more-readable-by-people-who-are-color-blind
+          https://arxiv.org/pdf/1712.01662.pdf
+  about:  Yellow/blue color map (color ramp) to replace rainbow maps
+
+
+* url:    http://coe21.zinbun.kyoto-u.ac.jp/djvuchar
+  title:  拓本文字データベース
+  about:  Database with inscriptions in Kaishu style, by characters
+
+* url:    http://www.guoxuedashi.com/zidian/so.php?sokeyzi=%s&submit=&kz=1
+* url:    http://www.guoxuedashi.com/zidian/so.php?sokeyshufa=%s&submit=&kz=70
+  about:  Search Engines (inceptive)
+
+
+
