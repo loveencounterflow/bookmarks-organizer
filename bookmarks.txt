@@ -559,8 +559,40 @@
   about:  Database with inscriptions in Kaishu style, by characters
 
 * url:    http://www.guoxuedashi.com/zidian/so.php?sokeyzi=%s&submit=&kz=1
-* url:    http://www.guoxuedashi.com/zidian/so.php?sokeyshufa=%s&submit=&kz=70
+  url:    http://www.guoxuedashi.com/zidian/so.php?sokeyshufa=%s&submit=&kz=70
   about:  Search Engines (inceptive)
+
+* url:    https://github.com/erikbrinkman/d3-dag
+  tags:   visualization programming/tree programming/dag
+  title:  Layout algorithms for visualizing directed acylic graphs
+
+* url:    http://logio.org/
+  url:    https://github.com/NarrativeScience/Log.io
+  title:  Real-time log monitoring in your browser. Powered by node.js + socket.io
+
+* url:    http://joeduffyblog.com/2016/02/07/the-error-model
+  url:    https://inko-lang.org/manual/getting-started/error-handling/
+  title:  The Error Model
+  tags:   programming/exceptions programming/happy-sad-bad
+
+* url:    https://www.youtube.com/watch?v=y9dSACedK44
+  url:    https://gist.github.com/marcocitus/cd3e52ea897de2200f103adb6b511197
+  title:  PostgreSQL as a distributed computing platform
+  tags:   programming/concurrency rdbms postgresql
+
+* url:    https://www.citusdata.com/blog/2016/09/09/pgcron-run-periodic-jobs-in-postgres/
+  url:    https://github.com/citusdata/pg_cron/
+  title:  Run periodic jobs in PostgreSQL
+  tags:   postgresql
+
+* url:    https://crontab.guru
+  title:  Cron schedule expression editor
+
+
+
+
+
+
 
 
 
