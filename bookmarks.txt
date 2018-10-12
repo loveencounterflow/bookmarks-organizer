@@ -588,10 +588,77 @@
 * url:    https://crontab.guru
   title:  Cron schedule expression editor
 
+* url:    https://bitbucket.org/tablam/tablam/src/default/
+  url:    https://np.reddit.com/r/ProgrammingLanguages/comments/9laha0/cell_02_functionalrelational_and_reactive/
+  url:    http://cell-lang.net/
+  url:    [Why relations are better than objects](http://cell-lang.net/relations.html)
+  see:    "Rich Hickey"::name datomic
+  tags:   rdbms programming/language programming/relational-language
 
+* url:    https://github.com/p-org/PSharp/blob/master/Docs/Features/SafetyLivenessProperties.md
+  url:    http://pdeligia.github.io/
+  tags    async
 
+* url:    https://www.youtube.com/results?search_query=asynchronous+programming+actor+model
+  tags    async actor-pattern
 
+* url:    http://ftp.fau.de/ctan/macros/latex/contrib/abraces/abraces-doc.pdf
+  tags:   tex typesetting tables
+  about:  The abraces 1 package provides a character key-driven interface to supplement new constructions of
+          the traditional overbrace and underbrace pairs in an asymmetric or arbitrary way.
 
+* url:    ftp://ftp.rrzn.uni-hannover.de/pub/mirror/tex-archive/macros/latex/contrib/mathtools/mathtools.pdf
+  tags:   tex typesetting superscript subscript about:  provide useful tools for mathematical typesetting,
+          be it a small macro for typesetting a prescript or an underbracket, or entirely new display math
+          constructs such as a multlined environment.
+
+* url:    https://github.com/nylas/nylas-mail?utm_source=recordnotfound.com
+  url:    https://www.recordnotfound.com/N1-nylas-101
+  about:  Nylas Mail - the open-source, extensible mail client (built with electron)
+
+* url:    https://de.wikipedia.org/wiki/Selektivit%C3%A4t_(Informatik)
+  tags:   selectivity
+
+* url:    https://github.com/dataspread/dataspread-web
+  url:    http://www.vldb.org/pvldb/vol8/p2000-bendre.pdf
+  tags:   spreadsheets databases RDBMS postgresql
+  about:  DataSpread is a spreadsheet-database hybrid system, with a spreadsheet frontend, and a database
+          backend. Thus, DataSpread inherits the flexibility and ease-of-use of spreadsheets, as well as the
+          scalability and power of databases. A paper describing DataSpread's architecture, design
+          decisions, and optimization can be found
+          [here](http://data-people.cs.illinois.edu/dataspread.pdf). DataSpread is a multi-year project,
+          supported by the National Science Foundation via award number 1633755.
+
+          DataSpread is built using PostgreSQL and ZKSpreadsheet, an open-source web-based spreadsheet tool.
+
+          DataSpread's version 0.1 enables users to scale to billions of cells and return results for common
+          spreadsheet operations within seconds. It does so via on-demand loading of spreadsheet data.
+
+* url:    https://github.com/tobixen/thrash-protect
+  about:  Python script to stop processes that seem to be causing thrashing so as to avoid OS freeze
+
+* url:    http://asciiflow.com/
+          https://github.com/lewish/asciiflow2
+  about:  Online editor for ASCII-art boxes etc.
+
+* url:    https://github.com/remarkjs/remark
+  url:    https://remark.js.org
+  url:    https://github.com/syntax-tree
+  about:  Markdown processor powered by plugins based on @unifiedjs (and @vfile, @syntax-tree)
+
+          remark is an ecosystem of plugins for processing markdown built on unified. The project parses and
+          compiles markdown, and lets programs process markdown without ever compiling to HTML (it can
+          though). Powered by plugins to do all kinds of things: check markdown code style, transform safely
+          to React, add a table of contents, or compile to man pages.
+
+          It aims to do for Markdown what Esprima did for JavaScript and PostCSS for CSS: bring Markdown
+          into the tooling age.
+
+* url:    https://github.com/unifiedjs
+  about:  Text processing umbrella using @vfile and @syntax-tree powering @remarkjs, @rehypejs, and @retextjs
+
+* url:    http://www.towo.net/mined/
+  about   console-based text editor with advanced Unicode capabilities
 
 
 
