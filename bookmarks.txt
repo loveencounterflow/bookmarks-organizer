@@ -531,9 +531,6 @@
 * url:    https://edgedb.com/blog/edgedb-a-new-beginning/
   tags:   databases graphdb
 
-* url:    https://github.com/facebook/pfff/wiki/Examples2
-  tags:   programming/dependencies programming/tools treemaps
-
 * url:    https://beautifulracket.com/
   title:  Beau­ti­ful Racket: how to make your own pro­gram­ming lan­guages with Racket
   tags:   parsing racket::name
@@ -541,6 +538,10 @@
 * url:    https://jspreadsheets.com/
   title:  JavaScript Open-Source Spreadsheets and Data Grids
   tags:   programming web-design spreadsheets datagrids
+
+* url:    https://github.com/fin-hypergrid/core
+  tags:   programming web-design spreadsheets datagrids
+  about:  renders data grid with canvas, claims to be fast, can do borders etc.
 
 * url:    https://github.com/vutran/vzl
   title:  VZL: Minimal Visualization Editor
@@ -660,6 +661,93 @@
 * url:    http://www.towo.net/mined/
   about   console-based text editor with advanced Unicode capabilities
 
+* url:    https://github.com/tabatkins/railroad-diagrams
+  about:  A small JS+SVG library for drawing railroad syntax diagrams, like on JSON.org. Now with a Python port!
+  tags:   railroad syntax diagram parser grammar generator svg
+
+* url:    http://dundalek.com/GrammKit/
+  url:    https://github.com/dundalek/GrammKit
+  about:  Generate diagrams for parser grammars http://dundalek.com/GrammKit/
+  tags:   railroad syntax diagram parser grammar generator svg
+
+* url:    https://github.com/francoislaberge/diagrams
+  about:  Command line tool for generating a suite of various types of diagrams, each based on intuitive
+          text DSLs. Also see Atom Diagrams Plugin that integrates this into the Atom IDE
+
+* url:    https://github.com/klorenz/atom-regex-railroad-diagrams
+  about:  A regular expression railroad diagram view for regular expression under cursor.
+  tags:   railroad syntax diagram parser grammar generator svg atom regex
+
+* url:    http://2ality.com/2017/05/regexp-named-capture-groups.html
+  url:    https://www.bennadel.com/blog/3508-playing-with-regexp-named-capture-groups-in-node-10.htm
+  url:    http://xregexp.com/
+  tags:   programming/regex XRegExp::name named-capture-groups
+
+* url:    https://github.com/datagrok/dialogue
+  about:  draft/unfinished/vaporware Dialogue is a system for asynchronous conversation on the Internet,
+          intended to replace all of these with a single, decentralized, user-centric open protocol: email,
+          blogs, newsgroups, forums...
+
+* url:    https://stackoverflow.com/a/32435735/7568091
+  tags:   develop Atom::name
+  about:  Essential workflow to develop packages with Atom:
+          * Clone your package from GitHub using apm develop <package-name>. This will clone the package's
+            repo to your local ~/.atom/dev/packages/<package-name>
+          * `cd` into this directory;
+          * Start Atom in this directory using `atom -d .`
+
+* url:    https://github.com/gregs1104/pgtune
+  url:    https://pgtune.leopard.in.ua/#/
+  tags:   postgresql configuration
+  about:  pgtune takes the wimpy default postgresql.conf and expands the database server to be as powerful
+          as the hardware it's being deployed on
+
+* url:    https://github.com/facebook/pfff/wiki/Examples2
+  tags:   programming/dependencies programming/tools treemaps
+
+* url:    https://github.com/laserson/squarify
+  tags:   visualization treemaps MKTS python
+  about:  Pure Python implementation of the squarify treemap layout algorithm. The function returns a list
+          of JSON objects, each one a rectangle with coordinates corresponding to the given coordinate
+          system and area proportional to the corresponding value. The rectangles can be easily plotted
+          using, for example, d3.js.
+
+* url:    https://launchpad.net/treemap
+  tags:   visualization treemaps MKTS python
+  about:  Treemap is an open-source Treemap generator script written in Python. Supported outputs:
+          pstricks-TeX, PS, pdf. Python and LaTeX with PSTrick support needed.
+
+* url:    https://launchpad.net/squaremap
+  tags:   visualization treemaps MKTS python
+  about:  A simple wxPython control to display hierarchic data as a recursive set of nested squares, each of
+          which represents the relative size of a given child within its parent. Used by RunSnakeRun to
+          provide profiling overview data.
+
+* url:    https://datavizcatalogue.com/methods/treemap.html
+  url:    https://datavizcatalogue.com
+  tags:   visualization treemaps visualization/overview
+
+* url:    https://www.zingchart.com/docs/chart-types/treemap/
+  tags:   visualization treemaps MKTS JavaScript
+
+* url:    https://developers.google.com/chart/interactive/docs/gallery/treemap?csw=1
+  tags:   visualization treemaps JavaScript
+
+* url:    https://docs.google.com/spreadsheets
+  tags:   visualization treemaps online free spreadsheets
+
+* url:    https://github.com/evmar/webtreemap
+  url:    http://evmar.github.io/webtreemap/
+  tags:   visualization treemaps free spreadsheets
+  about:  A simple treemap implementation using web technologies (DOM nodes, CSS styling and transitions)
+          rather than a big canvas/svg/plugin. It's usable as a library as part of a larger web app, but it
+          also includes a command-line app that dumps a self-contained HTML file that displays a map.
+
+* url:    https://mapire.eu/en/
+  about:  synchronized historical and modern maps, zoomable, 3D
+
+* url:    https://maps.hungaricana.hu/en/map/?layers=google-roadmap%2Cvector-data&bbox=-1510396.3804016244%2C4709743.364429541%2C5172034.380401624%2C7258459.635570459
+  about:  historical maps
 
 
 
