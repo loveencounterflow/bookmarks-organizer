@@ -749,5 +749,33 @@
 * url:    https://maps.hungaricana.hu/en/map/?layers=google-roadmap%2Cvector-data&bbox=-1510396.3804016244%2C4709743.364429541%2C5172034.380401624%2C7258459.635570459
   about:  historical maps
 
+* url:    http://sliderulemuseum.com/SR_Course.htm
+  url:    http://www.antiquark.com/sliderule/sim/n909es/virtual-n909-es.html
+  about:  Slide Rule Simulator and Slide Rule Manual
+
+* url:    http://www.earl-grey.io
+  about:  Earl Grey is a neat little language that compiles to JavaScript. Here's what it has to offer:
+          * Concise and streamlined syntax inspired by the Python language.
+          * Fully compatible with the node.js ecosystem
+          * Generators and async/await (no callback hell!)
+          * Powerful, deeply integrated pattern matching
+          * Used for assignment, function declaration, looping, exceptions...
+          * A document-building DSL with customizable behavior!
+          * A very powerful hygienic macro system!
+          * Define your own control structures or DSLs
+          * Macros integrate seamlessly with the language
+          * Macro libraries! Test with earl-mocha, build with earl-gulp, make dynamic pages with earl-react,
+            etc.
+
+* url:    http://facebook.github.io/immutable-js/
+  url:    https://www.youtube.com/watch?v=kbnUIhsX2ds&feature=youtu.be&t=47m41s
+  about:  immutable data structures for JavaScript
+
+
+
+
+
+
+
 
 
