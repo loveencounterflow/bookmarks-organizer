@@ -221,6 +221,9 @@
   url:    https://medium.com/@evanwallace/easy-scalable-text-rendering-on-the-gpu-c3f4d782c5ac
   tags:   webgl font-rendering infinite-desktop kannwas
 
+* url:    https://github.com/uber/luma.gl
+  tags:   webgl kannwas
+
 * url:    https://github.com/kittykatattack/learningPixi
   url:    http://pixijs.download/release/docs
   url:    http://www.pixijs.com/
@@ -520,6 +523,16 @@
   title:  Pratt Parsing Without Prototypal Inheritance, Global Variables, Virtual Dispatch, or Java
   tags:   parsing python oilshell::name pratt-parsing tdop
 
+* url:    https://github.com/true-grue/raddsl
+  title:  Tools for rapid prototyping of DSL compilers
+  tags:   parsing python pratt-parsing tdop
+  about:  raddsl is a toolset for rapid prototyping of DSL compilers. It
+    consists of two combinator-based libraries (embedded DSLs) written in
+    Python: parse.py for lexical and syntax analysis (PEG, Pratt parser).
+    rewrite.py for AST transformations and code generation (strategic term
+    rewriting).
+
+
 * url:    https://www.reddit.com/r/node/comments/8azttj/security_psa_check_your_code_for_vulnerable/
   url:    https://github.com/davisjam/vuln-regex-detector
   title:  Detect vulnerable regexes in your project. REDOS, catastrophic backtracking.
@@ -771,11 +784,77 @@
   url:    https://www.youtube.com/watch?v=kbnUIhsX2ds&feature=youtu.be&t=47m41s
   about:  immutable data structures for JavaScript
 
+* url:    http://www.fourmilab.ch/random/
+  tags:   kleinbild compression image_optim randomness
+  about:  `ent`:  A Pseudorandom Number Sequence Test Program.
 
+          This page describes a program, `ent`, which applies various tests to sequences of bytes stored in
+          files and reports the results of those tests. The program is useful for evaluating pseudorandom
+          number generators for encryption and statistical sampling applications, compression algorithms,
+          and other applications where the information density of a file is of interest.
 
+* url:    https://ncomputers.org/entropy
+  url:    https://ncomputers.org/entropyarray
+  tags:   kleinbild compression image_optim randomness
+  about:  This shell script tests entropy and serial correlation of its input. It makes use of [Entropy
+          estimation tool](https://ncomputers.org/entropy) and [Rearray binary
+          tool](https://ncomputers.org/rearray). Outputs `gnuplot` charts.
 
+          This high performance tool outputs on demand of its input:
 
+            * The Shannon entropy estimation (through stdout).
+            * The minimum, medium and maximum frequencies (through stderr).
+            * The frequency of possibilities (through entropy.freq file).
+            * The frequency of frequencies (through entropy.gaus file).
 
+          These outputs are useful to measure the equiprobability regardless of the unpredictability.
 
+* url:    http://www.gnuplotting.org/
+  tags:   visualization charts gnuplot::name
+  about:  very nice sample charts, chart types, tutorials how to use gnuplot
 
+* url:    https://highlightjs.org/
+  about:  Syntax highlighting for the Web
+          * 185 languages and 89 styles
+          * automatic language detection
+          * multi-language code highlighting
+          * available for node.js
+          * works with any markup
+          * compatible with any js framework
+
+* url:    http://www.ccamc.org/cjkv_shuowen.php?juan=%E5%8D%B7%E4%B8%89&bushou=%E9%AC%A5%E9%83%A8
+          http://www.ccamc.org/cjkv.php?cjkv=%E5%8E%A2
+  title:  古今文字集成 The Complete Collection of Ancient and Modern Characters
+  tags:   漢字 西夏文 契丹文 女真文 八思巴文 歷史地圖集 佛典術語
+          部首檢字 傳統部首檢字 總筆畫數檢字 說文解字 康熙字典 韻書集成 漢字參考資料 漢字總筆畫數分佈圖
+  about:  rich dictionary data on CJK characters, (and Khitan, Phagspa, Jurchen...); liberal license
+
+* url:    http://www.babelstone.co.uk/Fonts/PUA.html
+  about:  xxx CJK characters that are not yet encoded in Unicode, with IDSs, downloadable font, links
+          to sources, notes
+
+* url:    https://www.ubuntuupdates.org/
+  tags:   ubuntu::name package search registry
+  about:  Very complete, readable overview over packages vailable for Ubuntu, with newest
+          updates
+
+* url:    http://www.sublimetext.com/docs/3/syntax.html
+  url:    http://docs.sublimetext.info/en/latest/extensibility/syntaxdefs.html
+  url:    https://stackoverflow.com/a/25198423/7568091
+  url:    https://stackoverflow.com/questions/25184605/cloning-a-sublime-text-3-highlighting-syntax-definition
+  url:    https://stackoverflow.com/a/49784249/7568091
+  url:    https://github.com/SublimeText/PackageDev/wiki
+  tags:   "Sublime Text"::name syntax definitions
+
+* url:    https://github.com/mathiasbynens/regenerate
+  about:  Library to create regular expressions that match any given set of Unicode code points.
+
+* url:    https://github.com/fent/randexp.js
+  about:  Library to generate random strings from regular expressions.
+
+* url:    https://mathiasbynens.be/demo/javascript-identifier-regex
+  about:  Regular expressions that match JavaScript identifiers
+
+* list:
+  The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
 
