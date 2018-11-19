@@ -855,6 +855,15 @@
 * url:    https://mathiasbynens.be/demo/javascript-identifier-regex
   about:  Regular expressions that match JavaScript identifiers
 
+* url:    https://flockingjs.org/
+  url:    http://mohayonao.github.io/timbre.js/chord.html
+  url:    https://github.com/audiojs/audio-speaker
+  tags:   audio nodejs
+
+* url:    http://unisonweb.org/2015-05-07/about.html
+  url:    https://github.com/unisonweb/unison
+  tags:   async distributed programming/language
+
 * list:
   The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
-
+  https://github.com/cemulate/nearley-generator
