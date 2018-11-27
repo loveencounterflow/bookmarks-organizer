@@ -864,6 +864,37 @@
   url:    https://github.com/unisonweb/unison
   tags:   async distributed programming/language
 
+* url:    http://digitalcomicmuseum.com
+  about:  free golden-age comics
+
+* url:    http://humanum.arts.cuhk.edu.hk/Lexis/lexi-mf/search.php?word=%E8%A6%81
+  title:  漢語多功能字庫 Multi-function Chinese Character Database: With Archaic Script
+          Forms, Componential Trees, Etymologies, Shuowen Jiezi Full-text
+          Search, Du Shi Fangyu Jiyao, Idioms Collection, English-Chinese
+          Lookup, & Word-formations
+
+* url:    http://okbob.blogspot.com/2018/11/plpgsqlcheck-can-be-used-as-profiler.html
+  tags:   postgresql profiler profiling
+  about:  using plpgsql-check as a *line-by-line* profiler for PostgreSQL
+
+* url:    http://npm.anvaka.com/#/view/2d/intershop
+  about:  Draws a graphical dependency tree for a given module
+
+* bash:   `npm ls $module_name`
+  about:  When executed in an NPM module directory, will list all dependency subtrees
+          that the cause that `$module_name` is part of the project
+
+* url:    http://www.tug.dk/FontCatalogue/seriffonts.html
+  about:  LaTeX / TeX Live font list
+
 * list:
   The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
   https://github.com/cemulate/nearley-generator
+  http://www.spiegel.de/wissenschaft/technik/dinosaurier-skelette-neuer-langhals-art-in-brasilien-entdeckt-a-1239642.html
+  http://www.spiegel.de/einestages/tempodrom-in-berlin-irene-moessingers-zirkuszelt-der-traeume-a-1235108.html
+  http://www.spiegel.de/stil/riba-international-prize-2018-das-beste-gebaeude-der-welt-ist-eine-schule-a-1239578.html
+
+  https://www.youtube.com/watch?v=UNK74_nXKxs
+  https://www.youtube.com/watch?v=JaCWxRA9G0Y
+
+
