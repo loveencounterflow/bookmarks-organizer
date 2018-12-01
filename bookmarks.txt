@@ -891,6 +891,9 @@
   url:    https://github.com/pull-stream/pull-stream
   tags:   streams
 
+* url:    https://youtu.be/OgaxUxsJrww?t=194
+  about:  best depiction ever how kids experience watching the news on TV
+
 * list:
   The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
   https://github.com/cemulate/nearley-generator
