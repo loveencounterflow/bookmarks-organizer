@@ -894,6 +894,21 @@
 * url:    https://youtu.be/OgaxUxsJrww?t=194
   about:  best depiction ever how kids experience watching the news on TV
 
+* url:    https://lwn.net/Articles/766374/
+  title:  Archiving web sites
+  about:  discusses several options to download / archive web pages, touches
+          upon `wget`, WARC (web archive) file format, `pywb`, `wpull`, HTTrack,
+          `wget2`, `crawl`
+
+* url:    https://git.autistici.org/ale/crawl/
+  about:  web crawler written in Go; supports output in WARC format which can be
+          read with `pywb`
+
+* url:    https://github.com/udhos/update-golang
+  about:  update-golang is a script to easily fetch and install new Golang
+          releases with minimum system intrusion
+
+
 * list:
   The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
   https://github.com/cemulate/nearley-generator
