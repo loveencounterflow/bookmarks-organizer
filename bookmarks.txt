@@ -908,6 +908,41 @@
   about:  update-golang is a script to easily fetch and install new Golang
           releases with minimum system intrusion
 
+* url:    ftp://ftp.fu-berlin.de/tex/CTAN/graphics/pgf/contrib/tikz-page/tikz-page.pdf
+  url:    https://ctan.org/pkg/tikz-page
+  about:  similar to MKTS page-geometry.sty, allows to define layouts, inlcuding header / footer
+
+* url:    https://mirror.informatik.hs-fulda.de/tex-archive/graphics/pgf/contrib/forest/forest-doc.pdf
+  url:    https://ctan.org/pkg/forest
+  about:  draw (linguistic) trees; maybe an option to display CJK character decompositions
+
+* url:
+  titel:  l3experimental – Experimental LaTeX3 concepts
+
+  about:  The l3­ex­per­i­men­tal pack­ages are a col­lec­tion of
+          ex­per­i­men­tal im­ple­men­ta­tions for as­pects of the LaTeX3
+          ker­nel, deal­ing with higher-level ideas such as the De­signer
+          In­ter­face. Some of them work as stand alone pack­ages, pro­vid­ing
+          new func­tion­al­ity, and can be used on top of LaTeX2ε with no
+          changes to the ex­ist­ing ker­nel.
+
+          The present re­lease in­cludes:
+
+          * l3bench­mark for mea­sur­ing the time taken by TeX to run cer­tain
+            code;
+          * l3c­ctab, sup­port for sav­ing and restor­ing cat­e­gory codes en
+            masse in a ta­ble;
+          * l3­color, sup­port for set­ting col­ors us­ing a range of color
+            mod­els;
+          * l3­draw, a code-level in­ter­face for con­struct­ing draw­ings;
+          * l3str, sup­port for string ma­nip­u­la­tion;
+          * l3sys-shell, which pro­vides ab­strac­tions for com­mon shell
+            func­tions like file dele­tion and copy­ing;
+          * xcoffins, which al­lows the align­ment of boxes us­ing a se­ries of
+            ‘han­dle’ po­si­tions, sup­ple­ment­ing the sim­ple TeX ref­er­ence
+            point;
+          * xgal­ley, which con­trols boxes re­ceiv­ing text for type­set­ting.
+
 
 * list:
   The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
