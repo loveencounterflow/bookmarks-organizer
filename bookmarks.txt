@@ -943,6 +943,9 @@
             point;
           * xgal­ley, which con­trols boxes re­ceiv­ing text for type­set­ting.
 
+* url:    https://github.com/joliss/node-multidep#readme
+  about:  allow multiple versions of npm modules to be installed
+          simultaneously
 
 * list:
   The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
@@ -963,5 +966,4 @@ https://muscle-growth.org/uploads/monthly_2017_03/58baf48392503_HandsomeGodR.jpg
 https://muscle-growth.org/uploads/monthly_2017_02/58ae81992a6ee_muscleatattentionR.jpg.7b3d4c9bb1c25950363b03fc7a96825e.jpg
 https://muscle-growth.org/uploads/monthly_2017_03/58cf03fe65e4a_BeyondPumpedR2.jpg.9def3c4a5e453ea582b654abb66e9416.jpg
 
-https://www.youtube.com/watch?v=yRT7aF6lOTA
 
