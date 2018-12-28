@@ -536,7 +536,11 @@
 * url:    https://www.reddit.com/r/node/comments/8azttj/security_psa_check_your_code_for_vulnerable/
   url:    https://github.com/davisjam/vuln-regex-detector
   title:  Detect vulnerable regexes in your project. REDOS, catastrophic backtracking.
-  tags:   programming/security regexes/catastrophic-backtracking
+  tags:   programming/security regexes/catastrophic-backtracking regexes/redos
+
+* url:    https://github.com/uhop/node-re2/
+  title:  node.js bindings for RE2: fast, safe alternative to backtracking regular expression engines.
+  tags:   programming/security regexes/catastrophic-backtracking regexes/redos
 
 * url:    https://github.com/junegunn/fzf
   title:  A command-line fuzzy finder
