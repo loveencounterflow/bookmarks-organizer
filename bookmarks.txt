@@ -951,6 +951,33 @@
   about:  allow multiple versions of npm modules to be installed
           simultaneously
 
+* url:    https://github.com/sindresorhus/is#readme
+  about:  JavaScript value type checking library, to be used in upcoming
+          version of CND.
+
+* url:    https://www.youtube.com/watch?v=9H75enWM22k
+  url:    https://st.suckless.org/
+  url:    https://github.com/LukeSmithxyz/st
+  about:  Suckless Terminal
+
+* url:    https://rsms.me/inter/
+  url:    https://boingboing.net/2019/01/02/inter-ui.html
+  about:  Sansserif font, variable, variants, OTF features, huge glyphset
+
+* url:    http://coconut-lang.org/
+  url:    https://np.reddit.com/r/ProgrammingLanguages/comments/ac7ezj/coconut_programming_language/
+
+  about:  Coconut is a functional programming language that compiles to Python.
+          Since all valid Python is valid Coconut, using Coconut will only
+          extend and enhance what you're already capable of in Python. Coconut
+          enhances the repertoire of Python programmers to include the tools of
+          modern functional programming, in such a way that those tools are easy
+          to use and immensely powerful; that is, Coconut does to functional
+          programming what Python did to imperative programming.
+
+
+
+
 * list:
   The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
   https://github.com/cemulate/nearley-generator
@@ -963,11 +990,11 @@
 
   https://www.youtube.com/watch?v=P7VfYgOCZTQ
 
-https://muscle-growth.org/uploads/monthly_2017_02/58b3169c7996e_SelfieReleaseR2.jpg.82b61b0d84afad89021d60328c04b3b3.jpg
-https://muscle-growth.org/uploads/monthly_2017_02/58b32d32ec7ef_MusclePupIIr.jpg.b2252299a87b7931071a931acb9523ac.jpg
-https://muscle-growth.org/uploads/monthly_2017_02/58b1c7df0d1f9_ConfidentPoseR.jpg.5b3feef8043618c15c7d79adee9a1ea5.jpg
-https://muscle-growth.org/uploads/monthly_2017_03/58baf48392503_HandsomeGodR.jpg.2f797dd4f7e1c30064b9d1de8572ddf1.jpg
-https://muscle-growth.org/uploads/monthly_2017_02/58ae81992a6ee_muscleatattentionR.jpg.7b3d4c9bb1c25950363b03fc7a96825e.jpg
-https://muscle-growth.org/uploads/monthly_2017_03/58cf03fe65e4a_BeyondPumpedR2.jpg.9def3c4a5e453ea582b654abb66e9416.jpg
-
+  https://muscle-growth.org/uploads/monthly_2017_02/58b3169c7996e_SelfieReleaseR2.jpg.82b61b0d84afad89021d60328c04b3b3.jpg
+  https://muscle-growth.org/uploads/monthly_2017_02/58b32d32ec7ef_MusclePupIIr.jpg.b2252299a87b7931071a931acb9523ac.jpg
+  https://muscle-growth.org/uploads/monthly_2017_02/58b1c7df0d1f9_ConfidentPoseR.jpg.5b3feef8043618c15c7d79adee9a1ea5.jpg
+  https://muscle-growth.org/uploads/monthly_2017_03/58baf48392503_HandsomeGodR.jpg.2f797dd4f7e1c30064b9d1de8572ddf1.jpg
+  https://muscle-growth.org/uploads/monthly_2017_02/58ae81992a6ee_muscleatattentionR.jpg.7b3d4c9bb1c25950363b03fc7a96825e.jpg
+  https://muscle-growth.org/uploads/monthly_2017_03/58cf03fe65e4a_BeyondPumpedR2.jpg.9def3c4a5e453ea582b654abb66e9416.jpg
+  https://www.youtube.com/user/Mykel930/videos
 
