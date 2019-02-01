@@ -893,7 +893,28 @@
 
 * url:    https://github.com/push-stream/push-stream
   url:    https://github.com/pull-stream/pull-stream
-  tags:   streams
+  tags:   nodejs streams pull-stream
+
+* url:    https://github.com/pull-stream/pull-stream-workshop
+  title:  self-guided workshop to learn pull-streams
+  tags:   nodejs streams pull-stream
+
+* url:    https://www.youtube.com/watch?v=Yn-U6ygClyU
+  title:  Dominic Tarr - Pull Streams (bootleged)
+  tags:   nodejs streams pull-stream
+
+* url:    http://dominictarr.com/post/149248845122/pull-streams-pull-streams-are-a-very-simple
+  tags:   nodejs streams pull-stream
+  title:  pull-streams are a very simple streaming primitive, but can do
+          everything that streams need to do, from back pressure to propagating
+          errors.
+
+* url:    https://arxiv.org/pdf/1801.06144.pdf
+  url:    https://arxiv.org/abs/1801.06144
+  url:    https://github.com/elavoie/pull-stream-specification
+  tags:   nodejs streams pull-stream
+  title:  A Formalization for Specifying and Implementing Correct Pull-Stream
+          Modules (by Erick Lavoie, Laurie Hendren)
 
 * url:    https://youtu.be/OgaxUxsJrww?t=194
   about:  best depiction ever how kids experience watching the news on TV
@@ -966,7 +987,6 @@
 
 * url:    http://coconut-lang.org/
   url:    https://np.reddit.com/r/ProgrammingLanguages/comments/ac7ezj/coconut_programming_language/
-
   about:  Coconut is a functional programming language that compiles to Python.
           Since all valid Python is valid Coconut, using Coconut will only
           extend and enhance what you're already capable of in Python. Coconut
@@ -975,8 +995,52 @@
           to use and immensely powerful; that is, Coconut does to functional
           programming what Python did to imperative programming.
 
+* url:    https://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0003zP
+  url:    http://www.drones.com/bart.html
+  url:    https://www.sma-partner.com/en/solutions/viriato-and-zlr/functionality/graphic-timetable
+  url:    https://www.researchgate.net/publication/305864636_CREATING_A_GRAPHIC_TRAIN_SCHEDULE_IN_MS_EXCEL
+  url:    http://mech-ing.com/journal/Archive/2012/1/z200.pdf
+  url:    http://mbostock.github.io/protovis/ex/caltrain.html
+  tags:   Marey::name Tufte::name marey-diagram train-schedules visualization graphic-timetable train-diagram
 
 
+* url:    https://www.onux.com/jspp/
+  tags:   languages-that-compile-to-js typed-languages
+
+* url:    http://www.natubunko.net/kotoba03.html
+  title:  漢字部首名一覧
+  about:  Japanese names for radicals, kanji components
+
+* url:    https://github.com/LingDong-/edges2calligraphy
+  title:  Using pix2pix to convert scribbles to Chinese calligraphy
+
+* url:    http://app.programmingfonts.org/
+  url:    https://www.reddit.com/r/programming/comments/ai7rh0/programming_fonts/
+  about:  Programmers' fonts with code samples
+
+* url:    http://docs.racket-lang.org/megaparsack/
+  url:    https://github.com/lexi-lambda/megaparsack
+  url:    https://np.reddit.com/r/ProgrammingLanguages/comments/ajfdij/sixth_racketcon_alexis_king_languages_in_an/
+  tags:   parsing racket::name
+  about:  parsing with Racket
+
+* url:    https://github.com/StefH/SimMetrics.Net
+  url:    https://www.reddit.com/r/SQL/comments/ahvpl1/anyone_ever_done_fuzzy_matching_in_ms_sql/
+  url:    https://github.com/Simmetrics/simmetrics
+  about:  String similarity metrics
+
+* url:    http://www.cns.nyu.edu/~lcv/ssim/
+  tags:   kleinbild similarity image-quality
+
+  about:  The Structural SIMilarity (SSIM) index is a method for measuring the
+          similarity between two images. The SSIM index can be viewed as a
+          quality measure of one of the images being compared, provided the
+          other image is regarded as of perfect quality. It is an improved
+          version of the universal image quality index proposed before. Detailed
+          description is given in the following paper: Wang &al, "Image quality
+          assessment: From error visibility to structural similarity," IEEE
+          Transactions on Image Processing, vol. 13, no. 4, pp. 600-612, Apr.
+          2004.
 
 * list:
   The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
