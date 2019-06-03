@@ -1,4 +1,5 @@
 
+
 * title:  Text processing umbrella: Parse / Transform / Compile
   url:    https://github.com/unifiedjs/unified
   url:    https://unifiedjs.github.io
@@ -80,6 +81,9 @@
   title:  Terminal Renderer for Three.js
   tags:   webgl font-rendering kannwas threejs::name
 
+* url:    https://github.com/Jolg42/awesome-typography
+  title:  Curated list about digital typography
+  tags:   typography programming fonts
 
 * readme: `tag`—simple tag
 * readme: `minortag1 minortag2 #majortag minortag1`—hash indicates primary position of bookmark, 1st tag otherwise
@@ -193,6 +197,30 @@
   title:  A Pint-sized Earley Parser
   tags:   programming/language parsing earley-parser
 
+* url:    https://www.engr.mun.ca/~theo/Misc/exp_parsing.htm
+  title:  Parsing Expressions by Recursive Descent
+  tags:   programming/language parsing
+  about:  by Theodore Norvell. This article is about parsing expressions such as `a*b - a*d - e*f` using a
+          technique known as recursive descent. I will present the classic solution, a well known
+          alternative known as the "Shunting Yard Algorithm", and a less well known one that I have called
+          "Precedence Climbing".
+
+* url:    https://github.com/ianh/owl
+  url:    https://www.cis.upenn.edu/~alur/nw.html
+  url:    https://en.wikipedia.org/wiki/Nested_word
+  url:    https://madhu.cs.illinois.edu/vpa/
+  tags:   programming/language parsing
+  title:  Owl: A parser generator for visibly pushdown languages.
+  about:  Owl is a parser generator which targets the class of visibly pushdown languages. It is:
+
+          * Efficient — Owl can parse any syntactically valid grammar in linear time.
+          * Understandable — like regular expressions, its parsing model (and error messages[1]) can be
+            understood without talking about parser states, backtracking, lookahead, or any other
+            implementation details.
+          * Easy to use — using Owl's interpreter mode, you can design, test, and debug your grammar without
+            writing any code. An Owl grammar compiles to a single C header file which provides a
+            straightforward parse tree API.
+
 * url:    https://github.com/Chalarangelo/30-seconds-of-code#readme
   title:  30 seconds of code: Curated collection of useful Javascript snippets that you can understand in 30 seconds or less.
   tags:   programming javascript snippets algorithms
@@ -251,11 +279,6 @@
   url:    http://yedict.com/download/
   tags:   CJK fonts download
 
-* url:    https://github.com/edsilv/key-codes/blob/master/src/KeyCodes.ts
-  url:    https://github.com/timoxley/keycode
-  url:    https://github.com/RobertWHurst/KeyboardJS
-  tags:   javascript keyboard keycodes programming
-
 
 * url:    http://stack.gl/
   url:    https://www.html5rocks.com/en/tutorials/webgl/million_letters/
@@ -286,6 +309,10 @@
 
 * url:    https://github.com/mike-marcacci/node-redlock#usage-promise-style
   tags:   serializable lock asynchronous redis::name
+
+* url:    https://github.com/optimalbits/bull
+  about:  Premium Queue package for handling distributed jobs and messages in NodeJS.
+  tags:   queue redis::name
 
 * url:    https://medium.com/@weyoss/building-a-simple-message-queue-using-redis-server-and-node-js-964eda240a2a
 * url:    https://github.com/weyoss/redis-smq
@@ -337,7 +364,9 @@
 
 * url:    https://www.copypastecharacter.com/arrows
   url:    http://www.eki.ee/letter/
+  url:    http://www.amp-what.com/unicode/search/
   url:    https://unicode-table.com/
+  url:    http://shapecatcher.com/
   tags:   unicode selection tool characters
 
 
@@ -443,14 +472,6 @@
   url:    https://www.npmjs.com/package/fuseql
   tags:   nodejs programming/filesystem/fuse::name
 
-
-* url:    https://superuser.com/questions/154908/define-a-keyboard-layout-input-method-for-ubuntu-in-python#154909
-  url:    https://help.ubuntu.com/community/Custom%20keyboard%20layout%20definitions
-  url:    https://www.linux.com/learn/hacking-your-linux-keyboard-xkb
-  url:    https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
-  url:    https://forum.colemak.com/topic/1438-dreymars-big-bag-of-keyboard-tricks-linuxxkb-files-included/
-  url:    https://colemak.com/Unix
-  tags:   programming/keyboard-layout
 
 * url:    https://github.com/eventbrite/cartogram
   tags:   kannwas::name webgl threejs::name
@@ -921,11 +942,20 @@
 
 * url:    https://lwn.net/Articles/766374/
   title:  Archiving web sites
+  tags:   web-archiving
   about:  discusses several options to download / archive web pages, touches
           upon `wget`, WARC (web archive) file format, `pywb`, `wpull`, HTTrack,
           `wget2`, `crawl`
 
+* url:    https://github.com/pirate/ArchiveBox
+  url:    https://archivebox.io
+  title:  Archiving web sites
+  tags:   web-archiving
+  about:  The open source self-hosted web archive. Takes browser history/bookmarks/Pocket/Pinboard/etc.,
+          saves HTML, JS, PDFs, media, and more...
+
 * url:    https://git.autistici.org/ale/crawl/
+  tags:   web-archiving
   about:  web crawler written in Go; supports output in WARC format which can be
           read with `pywb`
 
@@ -979,6 +1009,7 @@
 * url:    https://www.youtube.com/watch?v=9H75enWM22k
   url:    https://st.suckless.org/
   url:    https://github.com/LukeSmithxyz/st
+  url:    https://wiki.archlinux.org/index.php/Rxvt-unicode
   about:  Suckless Terminal
 
 * url:    https://rsms.me/inter/
@@ -1042,23 +1073,120 @@
           Transactions on Image Processing, vol. 13, no. 4, pp. 600-612, Apr.
           2004.
 
+* url:    https://www.nuffield.ox.ac.uk/politics/papers/2004/McLean%20and%20Shephard.pdf
+  title:  A program to implement the Condorcet and Borda rules in a small-n election
+  tags:   election voting-procedures Condorcet::name Borda::name
+  about:  Discussion and implementation of Condorcet, Borda elections
+
+* url:    http://scorevoting.net/RangeVoting.html
+  url:    http://scorevoting.net/CondorcetExec.html
+  tags:   election voting-procedures range-voting
+  about:  Discussion and implementation of Condorcet, Borda elections
+
+* url:    https://en.wikipedia.org/wiki/Condorcet_method#Condorcet_ranking_methods
+  url:    https://gist.github.com/asafh/a8e9af7a3e5282cbba27
+  tags:   election voting-procedures ranking
+
+* url:    https://superuser.com/questions/154908/define-a-keyboard-layout-input-method-for-ubuntu-in-python#154909
+  url:    https://help.ubuntu.com/community/Custom%20keyboard%20layout%20definitions
+  url:    https://www.linux.com/learn/hacking-your-linux-keyboard-xkb
+  url:    https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
+  url:    https://forum.colemak.com/topic/1438-dreymars-big-bag-of-keyboard-tricks-linuxxkb-files-included/
+  url:    https://colemak.com/Unix
+  url:    https://www.charvolant.org/doug/xkb/html/node5.html
+  url:    http://rlog.rgtti.com/2014/05/01/how-to-modify-a-keyboard-layout-in-linux/
+  url:    https://en.wikipedia.org/wiki/X_keyboard_extension
+  tags:   programming/keyboard-layout
+
+* url:    https://wiki.archlinux.org/index.php/X_keyboard_extension
+  tags:   programming/keyboard-layout xkb::name
+  about:  detailed description of the X keyboard extension (XKB)
+
+* url:    https://askubuntu.com/a/423245
+  tags:   programming/keyboard-layout xkb::name xmodmap::name
+  about:  How to use xmodmap, xkb
+
+* url:    https://wiki.archlinux.org/index.php/Xmodmap
+  tags:   programming/keyboard-layout xmodmap::name
+  about:  Fairly detailed explanation of xmodmap, including how to remap
+          modifier keys.
+
+* url:    https://github.com/adriancooney/Taskfile
+  url:    https://medium.com/@adrian_cooney/introducing-the-taskfile-5ddfe7ed83bd
+  url:    https://github.com/kjkuan/taskit
+  tags:   taskfile programming
+  about:  simple bash pattern how to create taskfiles for repetitive
+          application-centric console commands (think `./run server`)
+
+* url:    https://github.com/edsilv/key-codes/blob/master/src/KeyCodes.ts
+  url:    https://github.com/timoxley/keycode
+  url:    https://github.com/RobertWHurst/KeyboardJS
+  tags:   javascript keyboard keycodes programming
+
+* url:    https://github.com/mooz/xkeysnail
+  url:    https://pynput.readthedocs.io/en/latest/keyboard.html
+  url:    https://github.com/boppreh/keyboard/tree/master/examples
+  title:  Yet another keyboard remapping tool for X environment
+  tags:   keyboard keycodes programming python
+
+* url:    https://github.com/kernc/logkeys
+  about:  keylogger
+
+* url:    http://nipstr.com/#yesql
+  url:    http://npms.io
+  tags:   javascript npm search
+
+* url:    http://detexify.kirelabs.org/classify.html
+  url:    http://shapecatcher.com/
+  about:  handwriting recognition for LaTeX, Unicode glyphs.
+
+* url:    https://www.google.com/inputtools/try/
+  url:    https://www.lexilogos.com/keyboard/japanese.php
+  tags:   online ime input-method cjkv
+
+* books:
+  https://www.amazon.com/Pictograms-Pictographic-Evolution-Graphic-Creation/dp/9881470323/ref=sr_1_4?keywords=asian+typography&qid=1550770451&s=gateway&sr=8-4
+  https://www.amazon.com/Type-Making-Influence-Technology-19081993-Manuscripts/dp/9004303774/ref=sr_1_16?keywords=asian+typography&qid=1550770451&s=gateway&sr=8-16
+
+* url:    https://www.proglangdesign.net/
+  url:    https://www.reddit.com/r/ProgrammingLanguages/
+  title:  Programming Language Design
+  tags:   programming proglangdesign programming/language
+
+* url:    https://dict.tu-chemnitz.de/
+  tags:   dictionary german english spanish portuguese
+  about:  great English, German dictionary with reams of sample sentences
+
 * list:
   The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
-  https://github.com/cemulate/nearley-generator
-  http://www.spiegel.de/wissenschaft/technik/dinosaurier-skelette-neuer-langhals-art-in-brasilien-entdeckt-a-1239642.html
   http://www.spiegel.de/einestages/tempodrom-in-berlin-irene-moessingers-zirkuszelt-der-traeume-a-1235108.html
   http://www.spiegel.de/stil/riba-international-prize-2018-das-beste-gebaeude-der-welt-ist-eine-schule-a-1239578.html
 
-  https://www.youtube.com/watch?v=UNK74_nXKxs
-  https://www.youtube.com/watch?v=JaCWxRA9G0Y
 
+session:
+  https://www.compart.com/en/unicode/scripts/Latn
+  http://aworldofenglishes.blogspot.com/
+  https://redditsearch.io/?term=parsing&dataviz=false&aggs=false&subreddits=&searchtype=posts&search=true&start=1551776210&end=1552381010&size=100
+  https://github.com/atom-archive/node-runas#readme
+  https://github.com/sindresorhus/default-uid
+  https://www.npmjs.com/package/is-root
+  https://github.com/sindresorhus/passwd-user#readme
+  https://github.com/feross/downgrade
+  https://github.com/evanlucas/effective
+  https://electronjs.org/docs/tutorial/application-architecture
+  https://electronjs.org/apps
+  https://github.com/tonton-pixel/unicopedia-plus
+  http://kanji.zinbun.kyoto-u.ac.jp/~yasuoka/
+  https://electronjs.org/apps/front
+  http://ksbookshelf.com/DW/Kanjirin/index.html#kanjirinhbabout
+
+session:
+  https://electronjs.org/docs/tutorial/application-architecture
+  https://www.christianengvall.se/main-and-renderer-process-in-electron/
   https://www.youtube.com/watch?v=P7VfYgOCZTQ
+  https://electronjs.org/docs/api/remote
+  https://www.christianengvall.se/ipcmain-and-ipcrenderer/
 
-  https://muscle-growth.org/uploads/monthly_2017_02/58b3169c7996e_SelfieReleaseR2.jpg.82b61b0d84afad89021d60328c04b3b3.jpg
-  https://muscle-growth.org/uploads/monthly_2017_02/58b32d32ec7ef_MusclePupIIr.jpg.b2252299a87b7931071a931acb9523ac.jpg
-  https://muscle-growth.org/uploads/monthly_2017_02/58b1c7df0d1f9_ConfidentPoseR.jpg.5b3feef8043618c15c7d79adee9a1ea5.jpg
-  https://muscle-growth.org/uploads/monthly_2017_03/58baf48392503_HandsomeGodR.jpg.2f797dd4f7e1c30064b9d1de8572ddf1.jpg
-  https://muscle-growth.org/uploads/monthly_2017_02/58ae81992a6ee_muscleatattentionR.jpg.7b3d4c9bb1c25950363b03fc7a96825e.jpg
-  https://muscle-growth.org/uploads/monthly_2017_03/58cf03fe65e4a_BeyondPumpedR2.jpg.9def3c4a5e453ea582b654abb66e9416.jpg
-  https://www.youtube.com/user/Mykel930/videos
+hyperdrive https://www.youtube.com/watch?v=UK1uREW4Dvw&list=PLzovi87vDfzKqyUqGm8M7eMGfgzpMwbe8&index=22
+red dwarf https://www.youtube.com/results?search_query=red+dwarf
 
