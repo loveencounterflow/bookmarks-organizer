@@ -858,6 +858,42 @@
   about:  xxx CJK characters that are not yet encoded in Unicode, with IDSs, downloadable font, links
           to sources, notes
 
+* url:    http://www.babelstone.co.uk/Fonts/Erjian.html
+  tags:   fonts CJK
+  about:  extensive table of the PRC's "second round" simplifications
+
+* url:    http://www.babelstone.co.uk/Fonts/index.html
+  url:    http://iij.dl.sourceforge.jp/hanazono-font/
+  url:    https://osdn.net/projects/hanazono-font/releases/
+  url:    https://chinese.stackexchange.com/a/14193
+  url:    https://en.wikipedia.org/wiki/List_of_CJK_fonts
+  tags:   fonts CJK
+
+* url:    https://github.com/kawabata/glyphwiki-afdko
+  url:    http://glyphwiki.org/wiki/GlyphWiki:%e3%83%a1%e3%82%a4%e3%83%b3%e3%83%9a%e3%83%bc%e3%82%b8
+  tags:   fonts CJK
+  about:  tool to produce the fonts from GlyphWiki, the wiki site that anyone can post any glyph
+
+* url:    https://github.com/loveencounterflow/dot-fonts
+  tags:   fonts CJK
+  about:  Programmer and CJK / Unicode fonts, forked from https://github.com/tony/dot-fonts
+
+* url:    http://kanji-database.sourceforge.net
+  url:    https://github.com/kawabata?tab=repositories
+  tags:   CJK characters ideographs analysis components IDS
+
+* url:    http://kanji.zinbun.kyoto-u.ac.jp/~tomo/
+  url:    http://www.chise.org/est/view/character/rep.cns11643-7:0x3675
+  url:    http://www.chise.org/ids-find?components=%E4%BA%BB
+  url:    http://www.chise.org/ids-find
+  url:    http://www.chise.org
+  url:    http://dl.ndl.go.jp/search/searchResult?featureCode=all&searchWord=%E6%BC%A2%E5%92%8C&viewRestricted=0
+  about:  CHISE project, find CJK characters by components, glyph images, links to Morohashi 諸橋大漢和字典
+          in the National Diet's Library
+
+* url:    https://github.com/mifunetoshiro/kanjium
+  tags:   jizura
+  about:  Kanji Database, focused on Japanese (?)
 * url:    https://www.ubuntuupdates.org/
   tags:   ubuntu::name package search registry
   about:  Very complete, readable overview over packages vailable for Ubuntu, with newest
@@ -1157,11 +1193,34 @@
   tags:   dictionary german english spanish portuguese
   about:  great English, German dictionary with reams of sample sentences
 
+* url:    https://github.com/sverweij/state-machine-cat
+  url:    https://state-machine-cat.js.org/
+  about:  Generate state charts in SVG using a DSL
+
+* url:    https://github.com/sverweij/dependency-cruiser
+  url:    https://github.com/sverweij/dependency-cruiser/blob/develop/doc/rules-reference.md
+  about:  manage dependency rules for software; can generate diagrams
+
+* url:    https://github.com/xiaohanyu/awesome-tikz
+  about:  curated list of TikZ packages / solutions
+
 * list:
   The F# Path To Relaxation - Don Syme https://www.youtube.com/watch?v=yL7xBhWrdKw
   http://www.spiegel.de/einestages/tempodrom-in-berlin-irene-moessingers-zirkuszelt-der-traeume-a-1235108.html
   http://www.spiegel.de/stil/riba-international-prize-2018-das-beste-gebaeude-der-welt-ist-eine-schule-a-1239578.html
 
+* url:    https://beyondgrep.com/feature-comparison/
+  url:    https://github.com/BurntSushi/ripgrep
+  url:    https://phiresky.github.io/blog/2019/rga--ripgrep-for-zip-targz-docx-odt-epub-jpg/
+  about:  Pattern matching, code search, search in archives, PDFs etc.
+
+* url:    https://tug.org/FontCatalogue/docs.html
+  about:  TeX LaTeX fonts, downloads, font catalogs
+
+* url:    https://github.com/sebastianseilund/stack2source
+  url:    https://github.com/xpl/stacktracey
+  tags:   JavaScript CoffeeScript errors exceptions stacktraces sourcemaps
+  about:  stacktraces with original line numbers, source lines
 
 session:
   https://www.compart.com/en/unicode/scripts/Latn
@@ -1189,4 +1248,15 @@ session:
 
 hyperdrive https://www.youtube.com/watch?v=UK1uREW4Dvw&list=PLzovi87vDfzKqyUqGm8M7eMGfgzpMwbe8&index=22
 red dwarf https://www.youtube.com/results?search_query=red+dwarf
+
+books:
+  https://www.amazon.de/Lost-Languages-Enigma-Undeciphered-Scripts/dp/050028816X/ref=sr_1_1?tag=rionline00-21&keywords=Lost+Languages%3a+The+Enigma+of+the+World’s+Undeciphered+Scripts&qid=1563813004&s=books&sr=1-1
+  https://www.amazon.com/Chinese-Character-Dictionary-explaining-characters/dp/1491011076/ref=sr_1_10?crid=2ULZQN0IZEGZC&keywords=chinese+characters+dictionary&qid=1564902451&s=books&sprefix=chinese+cha%2Cstripbooks-intl-ship%2C269&sr=1-10
+  https://www.amazon.com/Keys-Chinese-Characters-Shizuka-Shirakawa/dp/1503036308/ref=sr_1_37?crid=2ULZQN0IZEGZC&keywords=chinese+characters+dictionary&qid=1564902812&s=books&sprefix=chinese+cha%2Cstripbooks-intl-ship%2C269&sr=1-37
+
+videos:
+  https://www.youtube.com/watch?v=tzGT8VruvC4
+  https://www.youtube.com/watch?v=9Gl8pwY2kW8
+  https://www.spektrum.de/video/archaeologie-ki-fuer-babylon/1667412
+  https://www.spektrum.de/video/multiversen-gibt-es-einen-gott/1663388
 
