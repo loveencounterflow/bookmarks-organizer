@@ -553,6 +553,15 @@
     rewrite.py for AST transformations and code generation (strategic term
     rewriting).
 
+* url:    https://engineering.desmos.com/articles/pratt-parser/
+  url:    https://github.com/desmosinc/pratt-parser-blog-code
+  title:  How Desmos uses Pratt Parsers
+  tags:   parsing typescript javascript pratt-parsing tdop
+
+* url:    https://www.engr.mun.ca/~theo/Misc/exp_parsing.htm
+  title:  Parsing Expressions by Recursive Descent by Theodore Norvell (C) 1999 with updates later on.
+  tags:   parsing python pratt-parsing tdop
+
 
 * url:    https://www.reddit.com/r/node/comments/8azttj/security_psa_check_your_code_for_vulnerable/
   url:    https://github.com/davisjam/vuln-regex-detector
@@ -1222,41 +1231,103 @@
   tags:   JavaScript CoffeeScript errors exceptions stacktraces sourcemaps
   about:  stacktraces with original line numbers, source lines
 
-session:
-  https://www.compart.com/en/unicode/scripts/Latn
-  http://aworldofenglishes.blogspot.com/
-  https://redditsearch.io/?term=parsing&dataviz=false&aggs=false&subreddits=&searchtype=posts&search=true&start=1551776210&end=1552381010&size=100
-  https://github.com/atom-archive/node-runas#readme
-  https://github.com/sindresorhus/default-uid
-  https://www.npmjs.com/package/is-root
-  https://github.com/sindresorhus/passwd-user#readme
-  https://github.com/feross/downgrade
-  https://github.com/evanlucas/effective
-  https://electronjs.org/docs/tutorial/application-architecture
-  https://electronjs.org/apps
-  https://github.com/tonton-pixel/unicopedia-plus
-  http://kanji.zinbun.kyoto-u.ac.jp/~yasuoka/
-  https://electronjs.org/apps/front
-  http://ksbookshelf.com/DW/Kanjirin/index.html#kanjirinhbabout
+* url:    https://nixos.org/nixos/
+  url:    https://nixos.org/nix/
+  url:    https://nixos.org/
+  tags:   nix nixos linux os
+  about:  Nix, The Purely Functional Package Manager. Nix is a powerful package manager for Linux and other
+          Unix systems that makes package management reliable and reproducible. It provides atomic upgrades
+          and rollbacks, side-by-side installation of multiple versions of a package, multi-user package
+          management and easy setup of build environments.
 
-session:
-  https://electronjs.org/docs/tutorial/application-architecture
-  https://www.christianengvall.se/main-and-renderer-process-in-electron/
-  https://www.youtube.com/watch?v=P7VfYgOCZTQ
-  https://electronjs.org/docs/api/remote
-  https://www.christianengvall.se/ipcmain-and-ipcrenderer/
+* url:    https://github.com/simoncozens/sile
+  title:  Simon's Improved Layout Engine
+  tags:   typesetting datamill mingkwai-typesetter mkts tex LaTeX
+  about:  SILE is a typesetting system; its job is to produce beautiful printed documents. Conceptually,
+          SILE is similar to TeX—from which it borrows some concepts and even syntax and algorithms—but the
+          similarities end there. Rather than being a derivative of the TeX family SILE is a new typesetting
+          and layout engine written from the ground up using modern technologies and borrowing some ideas
+          from graphical systems such as InDesign.
 
-hyperdrive https://www.youtube.com/watch?v=UK1uREW4Dvw&list=PLzovi87vDfzKqyUqGm8M7eMGfgzpMwbe8&index=22
-red dwarf https://www.youtube.com/results?search_query=red+dwarf
+* url:    https://tex.stackexchange.com/questions/323575/how-can-i-specify-a-chain-of-fallback-fonts-in-xelatex
+  title:  How can I specify a chain of fallback fonts in XeLaTeX?
+  tags:   typesetting datamill mingkwai-typesetter ucdb svgttf
+  about:  Answer: You can't. But: XeLaTeX has character classes (interchar tokens), and
+          `\newunicodechar` can be used to assign a font to a given character.
 
-books:
-  https://www.amazon.de/Lost-Languages-Enigma-Undeciphered-Scripts/dp/050028816X/ref=sr_1_1?tag=rionline00-21&keywords=Lost+Languages%3a+The+Enigma+of+the+World’s+Undeciphered+Scripts&qid=1563813004&s=books&sr=1-1
-  https://www.amazon.com/Chinese-Character-Dictionary-explaining-characters/dp/1491011076/ref=sr_1_10?crid=2ULZQN0IZEGZC&keywords=chinese+characters+dictionary&qid=1564902451&s=books&sprefix=chinese+cha%2Cstripbooks-intl-ship%2C269&sr=1-10
-  https://www.amazon.com/Keys-Chinese-Characters-Shizuka-Shirakawa/dp/1503036308/ref=sr_1_37?crid=2ULZQN0IZEGZC&keywords=chinese+characters+dictionary&qid=1564902812&s=books&sprefix=chinese+cha%2Cstripbooks-intl-ship%2C269&sr=1-37
+* url:    https://beautifulwebtype.com
+  title:  Guide to Only the Best Open-Source Typefaces
+  tags:   typography free
 
-videos:
-  https://www.youtube.com/watch?v=tzGT8VruvC4
-  https://www.youtube.com/watch?v=9Gl8pwY2kW8
-  https://www.spektrum.de/video/archaeologie-ki-fuer-babylon/1667412
-  https://www.spektrum.de/video/multiversen-gibt-es-einen-gott/1663388
+* url:    https://fontparts.readthedocs.io/en/latest/
+  url:    https://github.com/robotools/fontParts
+  name:   FontParts
+  tags:   svgttf typography font-editing
+
+* url:    https://github.com/caryll/otfcc
+  name:   otfcc
+  tags:   svgttf typography font-editing
+  about:  otfcc is a C library and utility used for parsing and writing OpenType font files.
+          * JSON serialization of TrueType and CFF OpenType fonts.
+          * Building OpenType fonts from JSON.
+          * Full support for OpenType features (GSUB, GPOS and GDEF), CID-keyed CFF, vertical metrics, and more.
+          * 4× faster than ttx on CFF OTF, and 40× on TTF.
+          * 900× faster than makeotf for building a fully-optimized CFF OTF.
+
+* url:    https://github.com/grimen/fonteditor-ttf2svg-cli
+  url:    https://github.com/kekee000/fonteditor-core
+  url:    https://github.com/ecomfe/fontmin#svg2ttf
+  title:  CLI for converting TTF fonts to SVG fonts - using fonteditor core library.
+
+* url:    https://github.com/opentypejs/opentype.js
+  url:    https://opentype.js.org
+  tags:   svgttf typography font-editing
+  about:  opentype.js is a JavaScript parser and writer for TrueType and OpenType fonts. It gives you access
+          to the letterforms of text from the browser or Node.js. Create a bézier path out of a piece of
+          text. Support for composite glyphs (accented letters). Support for WOFF, OTF, TTF (both with
+          TrueType glyf and PostScript cff outlines) Support for kerning (Using GPOS or the kern table).
+          Support for ligatures. Support for TrueType font hinting. Support arabic text rendering (See issue
+          #364 & PR #359 #361) A low memory mode is available as an option (see #329) Runs in the browser
+          and Node.js.
+
+* url:    https://code.google.com/archive/p/ifont/downloads
+  url:    https://github.com/ichitenfont/I.Ming
+  url:    https://github.com/ichitenfont/inheritedglyphs
+  url:    https://github.com/hfhchan/hkcs
+  tags:   fonts cjk
+  about:  lots and lots of high-quality CJK fonts, mostly in old style
+
+* url:    https://blog.justfont.com/2013/09/why-songti-is-not-song/
+  url:    https://zh.wikipedia.org/wiki/新字形
+  tags:   宋變體 songbianti songti traditional-character-forms
+
+* url:    https://hsivonen.fi/string-length/
+  title:  It’s Not Wrong that "🤦🏼‍♂️".length == 7
+  tags:   unicode encodings bytes bytelength strings utf-8 utf-16 utf-32 wtf-8
+  about:  From time to time, someone shows that in JavaScript the .length of a string containing an emoji
+          results in a number greater than 1 (typically 2) and then proceeds to the conclusion that haha
+          JavaScript is so broken—and is rewarded with many likes. In this post, I will try to convince you
+          that ridiculing JavaScript for this is less insightful than it first appears and that Swift’s
+          approach to string length isn’t unambiguously the best one. Python 3’s approach is unambiguously
+          the worst one, though.
+
+* url:    https://github.com/plasma-umass/coz
+  url:    http://plasma-umass.org/BLeak/
+  url:    https://www.youtube.com/watch?v=jE0V-p1odPg&t=0m28s
+  url:    https://www.youtube.com/watch?v=r-TLSBdHe1A
+  title:  "Performance Matters" by Emery Berger
+  about:  Optimizing performance and detecting memory leaks automatically.
+
+          Coz finds optimization opportunities in unmanaged code; sadly, does not work with interpreted
+          or JIT-compiled languages.
+
+          BLeak found and diagnosed over 50 memory leaks in dozens of libraries and applications, and can do
+          so without access to unminified/unobfuscated source code.
+
+* url:    https://mnater.github.io/Hyphenopoly/
+  url:    https://github.com/hyphenation/tex-hyphen
+  url:    https://www.tug.org/tex-hyphen/pdf/hyphenator.pdf
+  url:    https://stackoverflow.com/a/54514561
+  url:    https://github.com/bramstein/hypher
+  tags:   html-to-pdf hyphenation datamill
 
