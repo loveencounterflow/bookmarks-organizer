@@ -204,7 +204,7 @@ create view CATALOG.catalog as (
     select * from v1 order by t, schema, name
   );
 
-
+\quit
 
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists report cascade;
