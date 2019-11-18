@@ -13,7 +13,7 @@ cd "$home"
 #-----------------------------------------------------------------------------------------------------------
 bmo_python_path="$home"/python_modules      ; export bmo_python_path
 bmo_psql_output_path='/tmp/bmo-psql-output' ; export bmo_psql_output_path
-bmo_psql_port='5433'                        ; export bmo_psql_port
+bmo_psql_port='5432'                        ; export bmo_psql_port
 
 #-----------------------------------------------------------------------------------------------------------
 # # I'd simply use a pipe here but that invalidates the `$!` (last PID) invocation:
