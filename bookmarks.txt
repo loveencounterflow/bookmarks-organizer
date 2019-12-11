@@ -16,7 +16,7 @@
   title:  Terminal Renderer for Three.js
   tags:   webgl font-rendering kannwas threejs::name
   note:   EXAMPLE
-*stop*
+<!-- *stop* -->
 
 
 * url:    https://github.com
@@ -184,6 +184,7 @@
 
 * url:    https://blog.2ndquadrant.com/what-is-select-skip-locked-for-in-postgresql-9-5/
   url:    https://www.pgcon.org/2016/schedule/attachments/414_queues-pgcon-2016.pdf
+  url:    https://brandur.org/postgres-queues
   tags:   postgresql queue programming
 
 * url:    https://namakajiri.net/nikki/boltz-on-the-origin-of-chinese-characters/
@@ -220,6 +221,9 @@
           * Easy to use — using Owl's interpreter mode, you can design, test, and debug your grammar without
             writing any code. An Owl grammar compiles to a single C header file which provides a
             straightforward parse tree API.
+
+          Owl uses [a *stacked* finite state automaton](https://github.com/ianh/owl#automata) to recognize
+          nested bracketed constructs.
 
 * url:    https://github.com/Chalarangelo/30-seconds-of-code#readme
   title:  30 seconds of code: Curated collection of useful Javascript snippets that you can understand in 30 seconds or less.
@@ -656,7 +660,8 @@
           the traditional overbrace and underbrace pairs in an asymmetric or arbitrary way.
 
 * url:    ftp://ftp.rrzn.uni-hannover.de/pub/mirror/tex-archive/macros/latex/contrib/mathtools/mathtools.pdf
-  tags:   tex typesetting superscript subscript about:  provide useful tools for mathematical typesetting,
+  tags:   tex typesetting superscript subscript
+  about:  provide useful tools for mathematical typesetting,
           be it a small macro for typesetting a prescript or an underbracket, or entirely new display math
           constructs such as a multlined environment.
 
@@ -1330,4 +1335,23 @@
   url:    https://stackoverflow.com/a/54514561
   url:    https://github.com/bramstein/hypher
   tags:   html-to-pdf hyphenation datamill
+
+* url:    https://github.com/brianc/node-sql
+  url:    https://hiddentao.github.io/squel/
+  url:    https://github.com/CSNW/sql-bricks
+  tags:   sql sql-generation dynamic-sql
+
+* url:    https://blog.typeable.io/posts/2019-11-21-sql-sum-types.html
+  url:    https://www.parsonsmatt.org/2019/03/19/sum_types_in_sql.html
+  about:  how to represent sum types ('or' types, disjunct types) in relational databases
+
+* url:    https://zohaib.me/railway-programming-pattern-in-elixir/
+  url:    https://fsharpforfunandprofit.com/rop/
+  tags:   railway-oriented-programming railroad-oriented-programming "Scott Wlashin"::name
+  title:  Railway Oriented Programming in Elixir
+
+* url:    https://www.opensemanticsearch.org/doc/desktop_search
+  url:    https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
+  url:    https://beyondgrep.com/feature-comparison/
+  tags:   desktop-search-engine
 

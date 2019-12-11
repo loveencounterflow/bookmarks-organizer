@@ -15,6 +15,10 @@ Y88b  d88P 888  T88b  Y88b  d88P
 \ir './010-trm.sql'
 -- \timing on
 
+\quit
+
+-- WIP.
+
 -- ---------------------------------------------------------------------------------------------------------
 drop schema if exists _SRC_ cascade;
 create schema _SRC_;
