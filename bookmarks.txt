@@ -114,6 +114,7 @@
     rdbms                           < db
     sql                             < programming/language programming/database
     sql                             = SQL
+    pipestreaming                   = streampiping
     tex                             < typesetting
     text-rendering-on-gpu           < webgl opengl
     xelatex                         < latex
@@ -134,6 +135,23 @@
   tags:   cjk analysis-of-chinese-characters character-components jizura jzr/factors
   about:  discusses systems used in 蒋文钦《表形码编排汉语字典》,
           陈爱文等：《汉字编码的理论与实践》，学林出版社1986年8月
+
+* url:    http://cssn.cn/yyx/wzxgx/?COLLCC=1740443541&COLLCC=1735226005&COLLCC=1731002092&
+  url:    http://cssn.cn/yyx/wzxgx/201709/t20170930_3659064_1.shtml?COLLCC=1740443541&COLLCC=1735204852&COLLCC=1731927052&
+  url:    http://cssn.cn/yyx/wzxgx/201709/t20170927_3655328.shtml?COLLCC=1740443541&COLLCC=1735204852&COLLCC=1731935621&
+  url:    http://miner.wanfangdata.com.cn/themeBootPage/explainAndstatistics.do?themeWord=%E9%83%A8%E4%BB%B6%E6%8B%86%E5%88%86
+  url:    http://miner.wanfangdata.com.cn/themeBootPage/explainAndstatistics.do?themeWord=%E6%B1%89%E5%AD%97%E9%83%A8%E4%BB%B6
+  url:    http://www.wanfangdata.com.cn/details/detail.do?_type=degree&id=D01561010
+  url:    http://www.wanfangdata.com.cn/details/detail.do?_type=perio&id=yyjxyyj200101003#
+  tags:   cjk analysis-of-chinese-characters character-components jizura jzr/factors
+
+* url:    http://lib.chinese.pku.edu.cn/zy/chidzqk
+  title:  Peking University, Library of the Department of Chinese Language and Literature
+
+* url:    http://cssn.cn/yyx/wzxgx/201709/t20170927_3654740.shtml?COLLCC=1740443541&COLLCC=1735204852&COLLCC=1731935621&
+  title:  Yan Zhenqing and the Maturation of Regular Script in the Middle and Later Tang Dynasty
+  title:  颜真卿与唐代中后期楷书系统的成熟
+  author: 李祥俊
 
 * url:    https://github.com/zestedesavoir/zmarkdown/tree/master/packages/remark-grid-tables
   tags:   mingkwai-typesetter markdown tables
@@ -566,6 +584,9 @@
   title:  Parsing Expressions by Recursive Descent by Theodore Norvell (C) 1999 with updates later on.
   tags:   parsing python pratt-parsing tdop
 
+* url:    http://daniel-holden.com/page/you-could-have-invented-parser-combinators
+  url:    https://www.youtube.com/watch?v=6oQLRhw5Ah0
+  tags:   parsing parser-combinators
 
 * url:    https://www.reddit.com/r/node/comments/8azttj/security_psa_check_your_code_for_vulnerable/
   url:    https://github.com/davisjam/vuln-regex-detector
@@ -964,18 +985,18 @@
 
 * url:    https://github.com/push-stream/push-stream
   url:    https://github.com/pull-stream/pull-stream
-  tags:   nodejs streams pull-stream
+  tags:   nodejs streams pipestreaming pull-stream
 
 * url:    https://github.com/pull-stream/pull-stream-workshop
   title:  self-guided workshop to learn pull-streams
-  tags:   nodejs streams pull-stream
+  tags:   nodejs streams pipestreaming pull-stream
 
 * url:    https://www.youtube.com/watch?v=Yn-U6ygClyU
   title:  Dominic Tarr - Pull Streams (bootleged)
-  tags:   nodejs streams pull-stream
+  tags:   nodejs streams pipestreaming pull-stream
 
 * url:    http://dominictarr.com/post/149248845122/pull-streams-pull-streams-are-a-very-simple
-  tags:   nodejs streams pull-stream
+  tags:   nodejs streams pipestreaming pull-stream
   title:  pull-streams are a very simple streaming primitive, but can do
           everything that streams need to do, from back pressure to propagating
           errors.
@@ -983,7 +1004,7 @@
 * url:    https://arxiv.org/pdf/1801.06144.pdf
   url:    https://arxiv.org/abs/1801.06144
   url:    https://github.com/elavoie/pull-stream-specification
-  tags:   nodejs streams pull-stream
+  tags:   nodejs streams pipestreaming pull-stream
   title:  A Formalization for Specifying and Implementing Correct Pull-Stream
           Modules (by Erick Lavoie, Laurie Hendren)
 
@@ -1016,6 +1037,56 @@
 * url:    ftp://ftp.fu-berlin.de/tex/CTAN/graphics/pgf/contrib/tikz-page/tikz-page.pdf
   url:    https://ctan.org/pkg/tikz-page
   about:  similar to MKTS page-geometry.sty, allows to define layouts, inlcuding header / footer
+
+* url:    https://www.princexml.com/samples/
+  url:    https://shd101wyy.github.io/markdown-preview-enhanced/
+  url:    https://weasyprint.readthedocs.io/en/latest/
+  url:    https://www.pagedmedia.org/paged-js/
+  url:    https://pypi.org/project/pp.server/
+  url:    https://github.com/pkamenarsky/leerraum.js
+  url:    http://patoline.org/
+  tags:   mkts html css pdf paged-html
+  about:  Projects similar to mingkwai-typesetter
+
+* url:    https://github.com/jaroslov/knuth-plass-thoughts/blob/master/plass.md
+  url:    https://github.com/bramstein/typeset
+  url:    https://xxyxyz.org/line-breaking/
+  url:    https://www.unicode.org/reports/tr14/
+  tags:   mkts html css line-breaking slugs knuth-plass-algorithm
+
+* url:    https://www.paperplane.app/blog/modern-html-to-pdf-conversion-2019/
+  tags:   mkts html css pdf paged-html
+  about:  Links on how to get from HTML to PDF
+
+* url:    https://blog.speedata.de
+  url:    https://speedata.de
+  url:    https://github.com/speedata/publisher
+  title:  speedata Publisher - a professional database Publishing system
+  tags:   mkts html css pdf paged-html
+  adr:    speedata GmbH, 13467 Berlin, Tel: +49 (0)30 / 577 050 55, info@speedata.de
+  about:  The speedata Publisher is a full featured and mature database publishing software. It generates
+          PDF files from XML data and XML layout instructions. It is used to make product catalogs and other
+          documents with high demands on the layout.
+
+          Its built-in layout description language allows you to create almost arbitrary layouts, while
+          keeping the job as simple as possible.
+
+          Think of it as »XSL-FO on steroids« or »server side InDesign«.
+
+* url:    https://caniuse.com/#search=column
+  url:    https://caniuse.com/#search=paged
+  tags:   mkts html css pdf paged-html
+
+* url:    https://www.pagedmedia.org/paged-js/
+  tags:   mkts html css pdf paged-html
+  title:  A blog which advocates for innovative approaches to making books in browsers.
+
+* url:    https://www.smashingmagazine.com/2019/06/create-pdf-web-application/
+  tags:   mkts html css pdf paged-html
+  title:  How To Create A PDF From Your Web Application
+  about:  There is a wide variety of choices when it comes to creating a PDF from a web application. In this
+          article, Rachel Andrew takes a look at the tools that are available and shares her recommendations
+          to help you find the tool that works best for you.
 
 * url:    https://mirror.informatik.hs-fulda.de/tex-archive/graphics/pgf/contrib/forest/forest-doc.pdf
   url:    https://ctan.org/pkg/forest
@@ -1347,11 +1418,37 @@
 
 * url:    https://zohaib.me/railway-programming-pattern-in-elixir/
   url:    https://fsharpforfunandprofit.com/rop/
-  tags:   railway-oriented-programming railroad-oriented-programming "Scott Wlashin"::name
+  url:    https://github.com/zorbash/opus
+  tags:   railway-oriented-programming railroad-oriented-programming "Scott Wlashin"::name pipestreaming
   title:  Railway Oriented Programming in Elixir
 
 * url:    https://www.opensemanticsearch.org/doc/desktop_search
   url:    https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
   url:    https://beyondgrep.com/feature-comparison/
   tags:   desktop-search-engine
+
+* url:    https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf
+  title:  Programming Paradigms for Dummies: What Every Programmer Should Know
+  author: Peter Van Roy
+
+* url:    https://github.com/k1LoW/tbls
+  title:  App written in Go to document RDBMS. Offers overview of tables, fields, schema diagram.
+
+* url:    https://github.com/micromatch/picomatch
+  about:  Fast glob-matching for NodeJS. Lots of options. Extended glob patterns supported.
+
+* url:    https://github.com/junegunn/fzf
+  url:    https://github.com/talmobi/node-fzf
+  about:  fuzzy CLI selection tool; interactively filter lines by fuzzy matching against user input
+
+* url:    https://github.com/ytdl-org/youtube-dl/blob/master/README.md
+  about:  CLI tool (written in Python) to download vides from youtube.com. *Many* options to fiddle with.
+
+
+
+
+
+
+
+
 
