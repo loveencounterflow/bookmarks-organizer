@@ -561,6 +561,36 @@
   tags:   python text distance similarity levenshtein
   about:  Compute distance between sequences. 30+ algorithms, pure python implementation, common interface, optional external libs usage.
 
+* url:    https://github.com/StefH/SimMetrics.Net
+  url:    https://www.reddit.com/r/SQL/comments/ahvpl1/anyone_ever_done_fuzzy_matching_in_ms_sql/
+  url:    https://github.com/Simmetrics/simmetrics
+  url:    https://www.npmjs.com/package/leven
+  url:    https://www.npmjs.com/package/js-levenshtein
+  url:    https://www.npmjs.com/package/talisman
+  url:    https://www.npmjs.com/package/node-levenshtein
+  url:    https://www.npmjs.com/package/levenshtein-lte1
+  tags:   text distance similarity levenshtein
+  about:  String similarity metrics
+
+* url:    https://people.csail.mit.edu/dongdeng/projects/passjoin/index.html
+  url:    https://en.wikipedia.org/wiki/Approximate_string_matching#Problem_formulation_and_algorithms
+  title:  Pass-Join: A Partition based Method for Similarity Joins
+  tags:   text distance similarity levenshtein similarity-join
+  by:     Guoliang Li, Dong Deng, Jiannan Wang, Jianhua Feng
+  about:  As an essential operation in data cleaning, the similarity join has attracted considerable
+          attention from the database community. In this paper, we study string similarity joins with
+          edit-distance constraints, which find similar string pairs from two large sets of strings whose
+          edit distance is within a given threshold. Existing algorithms are efficient either for short
+          strings or for long strings, and there is no algorithm that can efficiently and adaptively support
+          both short strings and long strings. To address this problem, we propose a partition-based method
+          called Pass-Join. Pass-Join partitions a string into a set of segments and creates inverted
+          indices for the segments. Then for each string, Pass-Join selects some of its substrings and uses
+          the selected substrings to find candidate pairs using the inverted indices. We devise efficient
+          techniques to select the substrings and prove that our method can minimize the number of selected
+          substrings. We develop novel pruning techniques to efficiently verify the candidate pairs.
+          Experimental results show that our algorithms are efficient for both short strings and long
+          strings, and outperform state-of-the-art methods on real datasets.
+
 * url:    https://github.com/andychu/pratt-parsing-demo
   url:    http://www.oilshell.org/blog/2016/11/03.html
   title:  Pratt Parsing Without Prototypal Inheritance, Global Variables, Virtual Dispatch, or Java
@@ -570,10 +600,10 @@
   title:  Tools for rapid prototyping of DSL compilers
   tags:   parsing python pratt-parsing tdop
   about:  raddsl is a toolset for rapid prototyping of DSL compilers. It
-    consists of two combinator-based libraries (embedded DSLs) written in
-    Python: parse.py for lexical and syntax analysis (PEG, Pratt parser).
-    rewrite.py for AST transformations and code generation (strategic term
-    rewriting).
+          consists of two combinator-based libraries (embedded DSLs) written in
+          Python: parse.py for lexical and syntax analysis (PEG, Pratt parser).
+          rewrite.py for AST transformations and code generation (strategic term
+          rewriting).
 
 * url:    https://engineering.desmos.com/articles/pratt-parser/
   url:    https://github.com/desmosinc/pratt-parser-blog-code
@@ -1176,11 +1206,6 @@
   tags:   parsing racket::name
   about:  parsing with Racket
 
-* url:    https://github.com/StefH/SimMetrics.Net
-  url:    https://www.reddit.com/r/SQL/comments/ahvpl1/anyone_ever_done_fuzzy_matching_in_ms_sql/
-  url:    https://github.com/Simmetrics/simmetrics
-  about:  String similarity metrics
-
 * url:    http://www.cns.nyu.edu/~lcv/ssim/
   tags:   kleinbild similarity image-quality
 
@@ -1238,20 +1263,6 @@
   tags:   taskfile programming
   about:  simple bash pattern how to create taskfiles for repetitive
           application-centric console commands (think `./run server`)
-
-* url:    https://github.com/edsilv/key-codes/blob/master/src/KeyCodes.ts
-  url:    https://github.com/timoxley/keycode
-  url:    https://github.com/RobertWHurst/KeyboardJS
-  tags:   javascript keyboard keycodes programming
-
-* url:    https://github.com/mooz/xkeysnail
-  url:    https://pynput.readthedocs.io/en/latest/keyboard.html
-  url:    https://github.com/boppreh/keyboard/tree/master/examples
-  title:  Yet another keyboard remapping tool for X environment
-  tags:   keyboard keycodes programming python
-
-* url:    https://github.com/kernc/logkeys
-  about:  keylogger
 
 * url:    http://nipstr.com/#yesql
   url:    http://npms.io
@@ -1444,11 +1455,267 @@
 * url:    https://github.com/ytdl-org/youtube-dl/blob/master/README.md
   about:  CLI tool (written in Python) to download vides from youtube.com. *Many* options to fiddle with.
 
+* url:    http://www.kps-fonts.ch/
+  title:  KPS-Fonts - Computerschriften von Klaus-Peter Schäffel
+  about:  free (!!!) fonts by Klaus-Peter Schäffel
+
+          * Die KPS-Fonts sind eine Serie von 74 OpenType-Computerschriften mit PostScript-Konturen für PC
+            und Mac.
+          * Die KPS-Fonts kommen in vier Gruppen: Paläographische, Typografische, Interpretationen,
+            Erfindungen.
+          * Die KPS-Fonts sind leicht daran erkennbar, dass die Schriftnamen mit einer Jahreszahl beginnen.
+            Auf diese Weise wird die Serie im Schriftenverzeichnis des Computers ganz am Anfang angezeigt.
+          * Die KPS-Fonts enthalten zahlreiche historische Sonderformen wie z.B. das lange s und seine
+            Ligaturen.
+          * Die KPS-Fonts sind mit automatischen Ligaturen und anderen Sonderfunktionen ausgestattet. Diese
+            können in allen Programmen, die OpenType-Features unterstützen, verwendet werden.
+          * Die KPS-Fonts sind gratis.
+
+* url:    https://www.print-css.rocks/lesson/lesson-page-numbers
+  url:    https://print-css.com/
+  about:  Using CSS Paged Media to produce PDFs from HTML, CSS; includes many CSS, PDF samples,
+          solutions
+
+* url:    https://www.w3.org/TR/css-page-3/
+  url:    https://www.w3.org/TR/css-gcpm-3/
+  title:  CSS Paged Media Module Level 3; CSS Generated Content for Paged Media Module
+
+* url:    https://github.com/microsoft/playwright
+  title:  Node library to automate Chromium, Firefox and WebKit browsers
+
+  about:  Playwright is a Node library to automate the Chromium, WebKit and Firefox browsers. This includes
+          support for the new Microsoft Edge browser, which is based on Chromium.
+
+          Playwright is focused on enabling cross-browser web automation platform that is ever-green,
+          capable, reliable and fast. Our primary goal with Playwright is to improve automated UI testing by
+          eliminating flakiness, improving the speed of execution and offering insights into the browser
+          operation.
+
+          Q: How does Playwright relate to Puppeteer?
+
+          We are the same team that built Puppeteer. Puppeteer proved that there is a lot of interest in the
+          new generation of ever-green, capable and reliable automation drivers. With Playwright, we'd like
+          to take it one step further and offer the same functionality for all the popular rendering
+          engines. We'd like to see Playwright vendor-neutral and shared governed.
+
+* url:    https://github.com/postcss/postcss
+  url:    https://github.com/postcss/postcss/blob/master/docs/plugins.md
+  url:    http://postcss.parts/
+  title:  Transforming styles with JS plugins
+  about:  PostCSS is a tool for transforming styles with JS plugins. These plugins can lint your CSS,
+          support variables and mixins, transpile future CSS syntax, inline images, and more.
+
+          PostCSS takes a CSS file and provides an API to analyze and modify its rules (by transforming them
+          into an Abstract Syntax Tree). This API can then be used by plugins to do a lot of useful things,
+          e.g. to find errors automatically insert vendor prefixes.
+
+          Currently, PostCSS has more than 200 plugins.
+
+* url:    https://ishadeed.com/article/grid-area/?utm_campaign=CSS%2BLayout%2BNews&utm_medium=web&utm_source=CSS_Layout_News_234
+  url:    https://gridbyexample.com/
+  url:    https://www.smashingmagazine.com/2020/01/understanding-css-grid-container
+  tags:   css grid layout
+
+* url:    https://mykzilla.org/2017/03/15/introducing-qbrt/
+  about:  Web stack technologies (HTML, CSS, JS, ...) used to build desktop, mobile applications
+
+* url:    https://measurethat.net/Benchmarks
+  about:  JavaScript benchmarks
+
+* url:    https://www.axis-praxis.org/resources
+  tags:   typography web variable-font
+  about:  Axis-Praxis is a website for playing with OpenType Variable Fonts. Discover 30+ variable fonts.
+          Experiment with the typographic controls in the right panel on this default layout, or choose a
+          typeface specimen from the left column. Every textbox is fully editable: change font, font size,
+          alignment, line-spacing as well as the variation sliders. And type your own text, of course.
+
+          Includes some CJK variable fonts, history, resources, blog, playground
+
+* url:    https://v-fonts.com/
+  tags:   typography web variable-font
+  title:  Variable Fonts (beta)
+  about:  A simple resource for finding and trying variable fonts
+
+* url:    https://github.com/anvaka/ngraph
+  url:    https://github.com/anvaka/VivaGraphJS
+  url:    https://www.youtube.com/watch?v=Kp377p-NSFc
+  about:  graph rendering, algorithms in JS by anvaka
+
+* url:    https://anvaka.github.io/graph-drawing-libraries/#!/all#%2Fall
+  about:  JD graph rendering libraries
+
+* url:    http://rulezjs.com/
+  tags:   javascript svg on-screen-ruler
+  title:  Rulez.js is a javascript library for showing svg customizable rulers.
+
+* url:    https://robbbb.github.io/VectorRuler/
+  url:    https://github.com/Robbbb/VectorRuler
+  url:    https://github.com/efernandesng/jquery-ui.ruler
+  tags:   javascript svg on-screen-ruler
+
+* url:    https://www.oldbookillustrations.com
+  about:  thousands of illustrations from old books
+
+* url:    https://rbql.org/
+  title:  RBQL - Rainbow Query Language
+  about:  RBQL is a technology that provides SQL-like language for data-transformation and data-analysis
+          queries for structured data (like CSV or TSV files). RBQL query is executed using one of the
+          available general-purpose "backend" languages (currently Python or JavaScript). RBQL allows to use
+          non-SQL expressions inside SQL statements, e.g for JavaScript backend.
+
+* url:    https://volument.com/baretest
+  tags:   javascript guy-test::name unit-testing
+  title:  BARETEST — An extremely minimalistic alternative to Jest
+  about:  Baretest is a fast and simple JavaScript test runner. It offers near-instant performance and a
+          brainless API. It makes testing tolerable.
+
+* url:    https://labs.tomasino.org/gnu-recutils/
+  url:    https://www.gnu.org/software/recutils/manual/
+  url:    https://news.ycombinator.com/item?id=22153665
+  remark: consider reservations raised @ https://news.ycombinator.com/item?id=22155370
+  about:  GNU recutils is a set of tools and libraries to access human-editable, text-based databases called
+          recfiles. The data is stored as a sequence of records, each record containing an arbitrary number
+          of named fields. Advanced capabilities usually found in other data storage systems are supported:
+          data types, data integrity (keys, mandatory fields, etc.) as well as the ability of records to
+          refer to other records (sort of foreign keys). Despite its simplicity, recfiles can be used to
+          store medium-sized databases.
+
+          So, yet another data storage system? The mere existence of this package deserves an explanation.
+          There is a rich set of already available free data storage systems, covering a broad range of
+          requirements. Big systems having complex data storage requirements will probably make use of some
+          full-fledged relational system such as MySQL or PostgreSQL. Less demanding applications, or
+          applications with special deployment requirements, may find it more convenient to use a simpler
+          system such as SQLite, where the data is stored in a single binary file. XML files are often used
+          to store configuration settings for programs, and to encode data for transmission through
+          networks.
+
+* url:    https://github.com/dbohdan/structured-text-tools
+  about:  a list of text-based file formats and command line tools for manipulating each
+
+* url:    https://unilist.raphaelbastide.com/#arrows
+  about:  Unicode character tables
+
+* url:    https://tiny-helpers.dev/fonts/
+  about:  Repository with many links to programmer tools (fonts, Unicode, colors...)
+
+* url:    http://www.heropatterns.com/
+  about:  A collection of repeatable SVG background patterns for you to use on your web projects. Colors
+          can be adjusted; works with data URLs.
+
+* url:    https://github.com/edsilv/key-codes/blob/master/src/KeyCodes.ts
+  url:    https://github.com/timoxley/keycode
+  url:    https://github.com/RobertWHurst/KeyboardJS
+  tags:   javascript keyboard keycodes programming mingkwai-typewriter
+
+* url:    https://github.com/mooz/xkeysnail
+  url:    https://pynput.readthedocs.io/en/latest/keyboard.html
+  url:    https://github.com/boppreh/keyboard/tree/master/examples
+  title:  Yet another keyboard remapping tool for X environment
+  tags:   keyboard keycodes programming python mingkwai-typewriter
+
+* url:    https://github.com/kernc/logkeys
+  about:  keylogger
+
+* url:    https://github.com/alols/xcape
+  url:    https://www.youtube.com/watch?v=g-TlsNUx0RQ
+  tags:   mingkwai-typewriter keyboard keyboard-layout remapping
+
+* url:    https://pnpm.js.org/en/aliases
+  url:    https://medium.com/pnpm/flat-node-modules-is-not-the-only-way-d2e40f7296a3
+  tags:   guy::name guy-test::name build-tool
+  about:  towards a build tool by the name of Guy that allows to separate app code proper from tests and
+          benchmarks; here: dealing with dependencies, avoiding all the downsides of npm3's flat
+          `node_modules` hierarchy; instead, use pnpm that works with symlinks and hardlinks and centralized
+          package installs and prevents your app from `require`ing modules that are only transitive
+          dependencies as per `package.json`.
+
+* url:    https://www.nap.edu/read/2236/chapter/3#19
+  url:    https://www.cs.huji.ac.il/~feit/papers/exp05.pdf
+  tags:   experimental-computer-science ECSE::acronym
+
+* url:    https://ikern.com/k1/ikern/the-ikern-theory/
+  tags:   ikern::name typography kerning algorithmic-kerning
+
+* url:    https://www.quantamagazine.org/universal-method-to-sort-complex-information-found-20180813/
+  url:    https://www.npmjs.com/package/@agtabesh/lsh
+  url:    https://github.com/5app/lsh
+  url:    https://www.npmjs.com/package/minhash
+  url:    https://en.wikipedia.org/wiki/Locality-sensitive_hashing
+  url:    https://en.wikipedia.org/wiki/MinHash
+  title:  Universal Method to Sort Complex Information Found
+  about:  The nearest neighbor problem asks where a new point fits into an existing data set. A few
+          researchers set out to prove that there was no universal way to solve it. Instead, they found such
+          a way.
+
+          For higher-dimensional data, where each point can be defined by hundreds or thousands of values,
+          Voronoi diagrams become too computationally intensive. So instead, computer scientists draw
+          partitions using a technique called “locality sensitive hashing (LSH)” that was first defined by
+          Indyk and Rajeev Motwani in 1998. LSH algorithms draw partitions randomly. This makes them faster
+          to run but also less accurate — instead of finding a point’s exact nearest neighbor, they
+          guarantee you’ll find a point that’s within some fixed distance of the actual nearest neighbor.
+
+# Unsorted
+
+## Group
+
+* [List of Latin and Greek words commonly used in systematic names -
+  Wikipedia](https://en.wikipedia.org/wiki/List_of_Latin_and_Greek_words_commonly_used_in_systematic_names)
+
+## Group
+
+* [amake/cjk-decomp: Decomposition data for 75,000 CJK ideographs; fork (with fixes)
+  of](https://github.com/amake/cjk-decomp)
+* [skishore/makemeahanzi: Free, open-source Chinese character
+  data](https://github.com/skishore/makemeahanzi/)
+
+## Group
+
+* [Modern HTML to PDF conversion](https://www.paperplane.app/blog/modern-html-to-pdf-conversion-2019/)
+* [Rachel Andrew surveys the state of in-browser PDF creation – Paged
+  Media](https://www.pagedmedia.org/rachel-andrew-surveys-the-state-of-pdf-creation-via-web-app/)
+* [Watch Paged.JS development team member Julie Blanc’s presentation at DPUB Summit 2019 – Paged
+  Media](https://www.pagedmedia.org/watch-paged-js-development-team-member-julie-blancs-presentation-at-dpub-summit-2019/)
+* [How To Create A PDF From Your Web Application — Smashing
+  Magazine](https://www.smashingmagazine.com/2019/06/create-pdf-web-application/)
+* [pdfmake.org/playground.html](http://pdfmake.org/playground.html)
+* [Sheltonography](http://sheltonography.com/papers.php)
+
+## Group
 
 
+* [regexpu-core/property-escapes.md at master ·
+  mathiasbynens/regexpu-core](https://github.com/mathiasbynens/regexpu-core/blob/master/property-escapes.md)
+* [Unicode property escapes in JavaScript regular expressions · Mathias
+  Bynens](https://mathiasbynens.be/notes/es-unicode-property-escapes)
+* [https://unicode.org/Public/UNIDATA/PropertyValueAliases.txt](https://unicode.org/Public/UNIDATA/PropertyValueAliases.txt)
+* [https://unicode.org/Public/UNIDATA/PropertyAliases.txt](https://unicode.org/Public/UNIDATA/PropertyAliases.txt)
+* [UAX #24: Unicode Script Property](https://unicode.org/reports/tr24/#Script_Extensions)
+* [UTS #18: Unicode Regular Expressions](https://unicode.org/reports/tr18/#RL1.2)
+* [UAX #44: Unicode Character Database](https://unicode.org/reports/tr44/#Ideographic)
+* [Unicode Utilities:
+  UnicodeSet](https://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%5B:name=/CJK/:%5D-%5B:ideographic:%5D%5D)
 
+## Group
 
+* [Flowtime.js](https://marcolago.github.io/flowtime.js/#/section-7/page-1)
 
+## Group
 
+* [pkamenarsky/leerraum.js: A PDF typesetting library with exact positioning and hyphenated line
+  breaking](https://github.com/pkamenarsky/leerraum.js)
+
+## Group
+
+* [Rare Letterpress Publications and Manuals - Metal Type](http://metaltype.co.uk/wpress/library/)
+* [Die meistbesuchte deutsche Typografie-Website -
+  Typografie.info](https://www.typografie.info/3/startseite/)
+
+## Group
+
+* [Making JSTF better — TypeDrawers](https://typedrawers.com/discussion/3465/making-jstf-better)
+
+## Performance, Web CPU Cycles Benchmark
+
+* https://calendar.perfplanet.com/2019/javascript-component-level-cpu-costs/
 
 
