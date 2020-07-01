@@ -626,6 +626,7 @@
 
 * urls:   https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html
           https://matklad.github.io/2020/04/15/from-pratt-to-dijkstra.html
+          https://www.reddit.com/r/ProgrammingLanguages/comments/hdr0y0/operator_precedence_using_pratt_parsing_with/
   tags:   parsing rust::name pratt-parsing tdop
   title:  Simple but Powerful Pratt Parsing
   about:  The goals of this particular article are:
@@ -705,6 +706,13 @@
 * url:    https://github.com/erikbrinkman/d3-dag
   tags:   visualization programming/tree programming/dag
   title:  Layout algorithms for visualizing directed acylic graphs
+
+* urls:   http://penrose.ink/siggraph20
+          https://github.com/penrose/penrose
+          https://github.com/loveencounterflow/penrose
+          https://www.reddit.com/r/ProgrammingLanguages/comments/gv8dz4/penrose_from_mathematical_notation_to_beautiful/
+  tags:   visualization
+  title:  Create beautiful diagrams just by typing mathematical notation in plain text.
 
 * url:    http://logio.org/
   url:    https://github.com/NarrativeScience/Log.io
@@ -1930,16 +1938,20 @@
           threw errors (but then worked with `apt`)
   verdict:  do not use, buggy software
 
-* urls:   https://media.ccc.de/v/c4.openchaos.2016.01.restic
-          https://media.ccc.de/v/froscon2015-1515-a_solution_to_the_backup_inconvenience#t=38
-  tags:   backup
-  pro:    works great
-  pro:    looks mature, well written
-  con:    encryption not optional
-  con:    always must provide password to access repo
-  con:    archived and metadata only available through use of `restic` command
-  con:    archives not in a standard format
+* urls:     https://media.ccc.de/v/c4.openchaos.2016.01.restic
+            https://media.ccc.de/v/froscon2015-1515-a_solution_to_the_backup_inconvenience#t=38
+  tags:     backup
+  pro:      works great
+  pro:      looks mature, well written
+  con:      encryption not optional
+  con:      always must provide password to access repo
+  con:      archived and metadata only available through use of `restic` command
+  con:      archives not in a standard format
   verdict:  do not use for backups (no generic repo format), maybe OK for other uses
+
+* urls:     https://freefilesync.org/
+  tags:     backup
+  pro:      friend's recommendation
 
 * urls:     http://npm.broofa.com/?q=cupofjoe
             http://npm.anvaka.com/#/view/2d/cupofjoe
@@ -1958,6 +1970,60 @@
   tags:     utopia-planitia(software)
   about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
             wraparound option)" (Utopia Planitia, UP)
+
+* urls:     https://github.com/team-video/tragopan
+  tags:     utopia-planitia(software)
+  about:    Tragopan uses native browser scrolling as its implementation for panning (left/right/up/down),
+            and transform/scale for zooming (in/out). In our testing, we found that native scrolling was far
+            more efficient than using transform for panning. As an extra bonus, if your DOM is structured so
+            that your viewport element can be your document body, some browsers appear to do even more
+            optimization for that special case.
+
+* urls:     http://htwins.net/scale2/
+            https://www.reddit.com/r/dataisbeautiful/comments/hhm2q2/oc_scale_of_the_universe_2_website_that/
+            https://www.pixijs.com/
+  tags:     utopia-planitia(software)
+
+* urls:     https://www.pixijs.com/
+  tags:     utopia-planitia(software)
+  title:    The HTML5 Creation Engine
+  about:    Create beautiful digital content with the fastest, most flexible 2D WebGL renderer.
+
+            * **MULTI-PLATFORM SUPPORT**—Interactive, visually compelling content on desktop, mobile and
+              beyond, all reached with a single codebase to deliver transferable experiences.
+
+            * **TINTING & BLENDING MODES**—Designers and clients will be thrilled by Photoshop quality
+              blending and colour modes.
+
+            * **SPRITE SHEET SUPPORT**—Pixi caters for a range of sprite sheet formats and includes advanced
+              support for features like trimming and rotational packing.
+
+            * **ASSET LOADER**—Sprite-sheets, graphics, fonts, animation data (soon to have Adobe Animate
+              support). All your incoming assets can be loaded and handled by PixiJS.
+
+            * **EASY API**—Designed to be intuitive and easy to pick up. Developers old and new will find
+              themselves right at home with its simple yet powerful API.
+
+            * **WEBGL FILTERS**—Use and create your own spectacular WebGL filters and shaders to give your
+              projects next-level visual fidelity and performance.
+
+            * **ADVANCED TEXT RENDERING**—Beautiful anti-aliased text at native and retina resolutions means
+              that Pixi copy is as easy on the eye as it is on any other delivery method.
+
+            * **FULL SCENE GRAPH**—Organise your objects in hierarchical trees, with parent-child
+              relationships.
+
+            * **RENDERER AUTO-DETECT**—Certain, older platforms may not be able to use WebGL. Not a problem
+              with Pixi as Canvas fallback is seamless and automated.
+
+            * **DEPLOY INTO APPS**—Use technologies such as Cordova to rapidly deploy your Pixi project as
+              an App. Superb for both concepting and full delivery.
+
+            * **ACCESSIBILITY**—Pixi is an inclusive technology and all content can be made to be screen
+              reader accessible with ease. The only WebGL renderer out there that does.
+
+            * **MULTI TOUCH INTERACTIVITY**—True multi-touch input and tracking means that you can create
+              interactions such as pinch-to-scale that give audiences native feeling experiences.
 
 * urls:     https://marcolago.github.io/flowtime.js/#/section-7/page-1
             https://github.com/marcolago/flowtime.js
@@ -1984,9 +2050,7 @@
 * urls:     http://lea.verou.me/2020/04/lch-colors-in-css-what-why-and-how
   tags:     css color/space css4 css5
   title:    LCH colors in CSS: what, why, and how?
-  about:
-
-            LCH is a color space that has several advantages over the RGB/HSL colors we’re familiar with in CSS. In fact, I’d go as far as to call it a game-changer, and here’s why.
+  about:    LCH is a color space that has several advantages over the RGB/HSL colors we’re familiar with in CSS. In fact, I’d go as far as to call it a game-changer, and here’s why.
 
             1. We actually get access to about 50% more colors.
             2. LCH (and Lab) is perceptually uniform
@@ -1997,6 +2061,190 @@
             The hue angles don’t fully correspond to HSL’s hues. E.g. 0 is not red, but more of a magenta and 180 is not turquoise but more of a bluish green, and is exactly complementary.
 
             In HSL, saturation is a neat 0-100 percentage, since it’s a simple transformation of RGB into polar coordinates. In LCH however, Chroma is theoretically unbounded. LCH (like Lab) is designed to be able to represent the entire spectrum of human vision, and not all of these colors can be displayed by a screen, even a P3 screen. Not only is the maximum chroma different depending on screen gamut, it’s actually different per color.
+
+* urls:     https://dba.stackexchange.com/questions/97779/postgresql-result-of-range-difference-would-not-be-contiguous
+            https://dba.stackexchange.com/a/97783
+            https://dba.stackexchange.com/a/97822
+            https://dba.stackexchange.com/a/141025
+            https://github.com/loveencounterflow/interlap
+  see:      mojikura3-model/db/140-fmt-2-ranges.sql
+  tags:     sql postgresql ranges range/arithmetic subtract difference-of-ranges
+  about:    Although PostgreSQL has `range` datatypes, there is no obvious way to get the difference
+            of two ranges when the result would be non-contiguous.
+
+            **Note:** the above URLs all link to the same page; all three answers should be considered.
+
+* urls:     https://dba.stackexchange.com/a/101010/126933
+  tags:     sql postgresql ranges range/arithmetic subtract difference-of-ranges
+
+* urls:     https://github.com/thecodrr/fdir
+  tags:     nodejs filesystem glob-matching
+
+* urls:     https://www.typography.com/blog/text-for-proofing-fonts
+  title:    Text for Proofing Fonts: A farewell to The Quick Brown Fox.
+  author:   Jonathan Hoefler
+  about:    Pangrams and other, more helpful texts for font-proofing.
+
+* urls:     https://demo.themesberg.com/neumorphism-ui/#top
+  tags:     ui ui/design css html
+  about:    Minimalist yet subtly 3Dish web design that goes a little further than Google Material in that
+            it uses positive and negative gradients—lights and shadows—to indicate both upsteps and
+            downsteps on the design plane, thereby allowing for clear, visible 'popup' and 'pushdown'
+            effects without becoming overfraught with effects. An interesting question would be how to
+            distinguish a depressed button (such as needed for feedback on click, or to denote a feature is
+            in 'on' state) from text fields in forms (the default being to use sunken elements for text
+            fields and raised ones for buttons).
+
+* urls:     http://xahlee.info/comp/comp_lang_array_index_start_0_or_1.html
+  tags:     one-based-or-zero-based
+  title:    Language Design: Should Array Index Start at 0 or 1?
+  author:   Xah Lee
+
+* urls:     http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html
+  tags:     one-based-or-zero-based
+  title:    Why numbering should start at zero
+  author:   Edgar Dijkstra
+
+* urls:     http://exple.tive.org/blarg/2013/10/22/citation-needed/
+  tags:     one-based-or-zero-based
+  title:    Citation Needed
+  author:   mhoye
+  about:    The fact of it is this: before pointers, structs, C and Unix existed, at a time when other
+            languages with a lot of resources and (by the standard of the day) user populations behind them
+            were one- or arbitrarily-indexed, somebody decided that the right thing was for arrays to start
+            at zero.
+
+            So I found that person and asked him.
+
+* urls:     https://www.aivosto.com/articles/control-characters.html
+  tags:     ASCII unicode control-characters
+
+* urls:     https://github.com/finos/perspective
+  title:    Perspective: Streaming pivot visualization via WebAssembly https://perspective.finos.org/
+  about:    Perspective is an interactive visualization component for large, real-time datasets. Originally
+            developed for J.P. Morgan's trading business, Perspective makes it simple to build real-time &
+            user configurable analytics entirely in the browser, or in concert with Python and/or
+            Jupyterlab. Use it to create reports, dashboards, notebooks and applications, with static data
+            or streaming updates via Apache Arrow.
+
+            * A fast, memory efficient streaming query engine, written in C++ and compiled to WebAssembly,
+              with read/write/stream support for Apache Arrow.
+
+            * A framework-agnostic query configuration UI component, based on Web Components, and a
+              WebWorker and/or WebSocket data engine host for stable interactivity at high frequency.
+
+            * A customizable HTML Data Grid plugin, and a Chart plugin built on D3FC.
+
+            * Integration with Jupyterlab, both natively in a Python kernel, and as a notebook Widget.
+
+            * Cross-language streaming and/or virtualization to the browser via Apache Arrow.
+
+            * Runtimes for the browser, Python, and Node.js.
+
+* urls:     https://jawj.github.io/zapatos/index.html
+  title:    Zapatos: Zero-Abstraction Postgres for TypeScript
+  about:    Postgres and TypeScript are each, individually, fabulous.
+
+            Zapatos aims to make them work beautifully together. No abstractions, no distractions: just your
+            database, with type safety.
+
+            To achieve this aim, Zapatos does these five things:
+
+            * **Typescript schema**—A command-line tool speaks to your Postgres database and writes up a
+              detailed TypeScript schema for every table. This is just a means to an end: it enables the
+              next three things in this list.
+
+            * **Arbitrary SQL**—Simple building blocks help you write arbitrary SQL using tagged templates,
+              and manually apply the right types to what goes in and what comes back.
+
+            * **Everyday CRUD**—Shortcut functions produce everyday CRUD queries with no fuss and no
+              surprises, fully and automatically typed.
+
+            * **JOINs as nested JSON**—Nested shortcut calls generate LATERAL JOIN queries, resulting in
+              arbitrarily complex nested JSON structures, still fully and automatically typed.
+
+            * **Transactions**—A transaction function helps with managing and retrying transactions. Show me
+
+* urls:     https://increment.com/frontend/a-users-guide-to-css-variables
+  about:    Guide to CSS variables, CSS feature requests
+
+            * Creating color palettes
+            * CSS variables are reactive
+            * CSS variables facilitate style encapsulation
+            * CSS variables facilitate true separation of behavior and style
+            * CSS variables in a nutshell
+            * Cycles make CSS variables invalid at computed value time
+            * Dynamic instead of lexical scoping
+            * How do CSS variables differ from preprocessor variables?
+            * Preventing inheritance
+            * The magical future of CSS custom properties
+            * What about browser support?
+            * When fallback values don’t cut it
+
+* urls:     https://fontfaceobserver.com/
+  author:   Bram Stein
+  tags:     css fonts fontfaceobserver::name
+
+* urls:     https://shopify.github.io/draggable/
+            https://shopify.github.io/draggable/examples/
+  tags:     javascript draggable drag-and-drop ui ux html dom
+  about:    a lightweight, responsive, modern drag & drop library
+
+* urls:     https://jsgrids.io/
+  tags:     javascript html browser spreadsheet overview datagrids
+  about:    list of dozens of in-browser spreadsheet apps, allows to select by features
+
+* urls:     https://github.com/spieglt/whatfiles
+  name:     whatfiles
+  about:    Whatfiles is a Linux utility that logs what files other programs read/write/create/delete on
+            your system. It traces any new processes and threads that are created as well.
+
+* urls:     https://de.wikipedia.org/wiki/Library_Genesis
+            https://en.wikipedia.org/wiki/Library_Genesis
+            93.174.95.27
+            93.174.95.87
+            gen.lib.rus.ec
+            libgen.io
+            libgen.is
+            libgen.lc
+            libgen.me
+            libgen.pw
+  name:     Library Genesis (Libgen)
+  about:    Library Genesis (Libgen) is a file-sharing website for scholarly journal articles, academic and
+            general-interest books, images, comics, and magazines. In part, the site enables free access to
+            content that is otherwise paywalled or not digitized elsewhere. Libgen describes itself as a
+            "links aggregator" providing a searchable database of articles, books, and images "collected
+            from publicly available public Internet resources", as well as uploaded "items from users".
+            Controversy surrounds the copyright status of many works accessible through this website.
+
+* urls:     http://www.corvelsoftware.co.uk/crowbar/
+            https://typedrawers.com/discussion/3686/crowbar-a-text-shaping-debugger
+            https://github.com/simoncozens/crowbar
+  tags:     fonts fonts/metrics interplot::name fontmirror::name
+
+* urls:     https://github.com/aristocratos/bashtop
+  tags:     terminal gui kannwas
+  about:    htop-like utlity with very fast and painless installation, over-the-top eye candy using
+            TrueColors in the terminal.
+
+* urls:     https://www.youtube.com/watch?v=IYzDFHx6QPY
+  title:    The lazy programmer's guide to writing thousands of tests - Scott Wlaschin
+  tags:     test-driven-development property-based-testing programming
+  about:    We are all familiar with example-based testing, as typified by TDD and BDD, where each test is
+            hand-crafted.
+
+            But there's another approach to writing tests. In the "property-based testing" approach, a
+            single test is run hundreds of times with randomly generated inputs. Property-based testing is a
+            great way to find edge cases, and also helps you to understand and document the behavior of your
+            code under all conditions.
+
+            This talk will introduce property-based testing, show you how it works, and demonstrate why you
+            should consider adding this powerful technique to your toolbelt.
+
+* urls:     https://github.com/dubzzz/fast-check
+  title:    Property based testing framework for JavaScript/TypeScript
+  tags:     test-driven-development property-based-testing programming nodejs
+
 
 # Unsorted
 
