@@ -2245,6 +2245,44 @@
   title:    Property based testing framework for JavaScript/TypeScript
   tags:     test-driven-development property-based-testing programming nodejs
 
+* urls:     https://github.com/cybertec-postgresql/pg_timetable
+            https://www.cybertec-postgresql.com/en/pg_timetable-start-up-improvements/
+  tags:     postgresql job-scheduler
+  about:    pg_timetable is an advanced job scheduler for PostgreSQL, offering many advantages over
+            traditional schedulers such as cron and others. It is completely database driven and provides a
+            couple of advanced concepts.
+
+* urls:     https://github.com/lukeed/sade
+  tags:     nodejs command-line-parser
+
+* urls:     https://caporal.io
+  tags:     nodejs command-line-parser
+
+* urls:     https://github.com/mxmlnkn/ratarmount
+  tags:     filesystem archive files-as-folders
+  title:    Random Access Read-Only Tar Mount (Ratarmount)
+  about:    Combines the random access indexing idea from tarindexer and then mounts the TAR using fusepy
+            for easy read-only access just like archivemount. It also will mount TARs inside TARs inside
+            TARs, ... recursively into folders of the same name, which is useful for the ImageNet data set.
+            Furthermore, it now has support for BZip2 compressed TAR archives provided by indexed_bzip2, a
+            refactored and extended version of bzcat from toybox, and support for Gzip compressed TAR
+            archives provided by the indexed_gzip dependency.
+
+* urls:     https://bitbucket.org/agalanin/fuse-zip/wiki/Home
+            https://github.com/loveencounterflow/fuse-zip-git
+  tags:     fuse files-as-folders
+  about:    `fuse-zip` is a FUSE file system to navigate, extract, create and modify ZIP and ZIP64 archives
+            based on libzip implemented in C++. With fuse-zip you really can work with ZIP archives as real
+            directories. Unlike KIO or Gnome VFS, it can be used in any application without modifications.
+
+
+
+
+* urls:     https://github.com/frej/fast-export
+  tags:     version-control-system DVCS git mercurial hg
+  title:    hg-fast-export
+  about     hg-fast-export.(sh|py) - mercurial to git converter using git-fast-import
+
 
 # Unsorted
 
