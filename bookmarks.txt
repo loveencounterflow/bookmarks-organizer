@@ -2275,14 +2275,65 @@
             based on libzip implemented in C++. With fuse-zip you really can work with ZIP archives as real
             directories. Unlike KIO or Gnome VFS, it can be used in any application without modifications.
 
-
-
+* urls:     https://pypi.org/project/PyHyphen/
+            https://bitbucket.org/fhaxbox66/pyhyphen
+  tags:     python line-breaking hyphenation
+  about:    PyHyphen is a pythonic interface to the hyphenation C library used in software such as
+            LibreOffice and the Mozilla suite. It comes with tools to download, install and uninstall
+            hyphenation dictionaries from LibreOffice's Git repository. PyHyphen provides the 'hyphen' and
+            'textwrap2' packages as well as wraptext.py, a script which wraps a text-file with hyphenation
+            given a specified width. See the code example under "Quick start" above.
 
 * urls:     https://github.com/frej/fast-export
   tags:     version-control-system DVCS git mercurial hg
   title:    hg-fast-export
   about     hg-fast-export.(sh|py) - mercurial to git converter using git-fast-import
 
+* urls:     https://github.com/joshuarli/ydiff
+  tags:     diff programming
+  about:    This is ydiff, distilled down to the very core.
+
+            It's been heavily modified and stripped down to a very specific feature subset:
+
+            * py3.6+
+            * assumes utf-8
+            * only read git unified diffs from stdin
+            * only side-by-side rendering
+            * And, modified to be visually less noisy.
+
+* urls:     https://github.com/ldo/harfpy
+  about:    HarfPy is a Python 3 binding for
+            [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/). It is meant to be used in
+            conjunction with my Python wrappers for other major parts of the Linux typography stack:
+
+            * Qahirah ([GitLab](https://gitlab.com/ldo/qahirah),
+              [GitHub](https://github.com/ldo/qahirah)) -- my binding for the
+              [Cairo](https://www.cairographics.org/) graphics library
+            * python_freetype ([GitLab](https://gitlab.com/ldo/python_freetype),
+              [GitHub](https://github.com/ldo/python_freetype)) -- my binding for
+              [FreeType](https://www.freetype.org/)
+            * PyBidi ([GitLab](https://gitlab.com/ldo/pybidi),
+              [GitHub](https://github.com/ldo/pybidi)) -- my binding for
+              [FriBidi](https://fribidi.org/)
+
+            The basic steps in doing a piece of high-quality text rendering on Linux are:
+
+            * Make sure all text is encoded in Unicode. (This should go without saying...)
+            * Use FriBidi to reorder a string of unicode-encoded text from logical (reading) order to
+              visual (rendering) order. (This step can be skipped in cases where you do not mix text
+              of different directions.)
+            * Use FreeType to load a suitable font.
+            * Use HarfBuzz to choose and lay out suitable glyphs for the specified text, controlled by
+              appropriate features selected from the specified font.
+            * Use Cairo to draw the actual glyphs, as laid out by HarfBuzz, with that font.
+
+* urls:     https://github.com/harfbuzz/uharfbuzz
+  title:    uharfbuzz
+  about:    Streamlined Cython bindings for the HarfBuzz shaping engine.
+
+* urls:     http://gitpop2.herokuapp.com/bramstein/typeset
+  title:    GitPop2
+  about:    Find the most popular fork on GitHub (like Stargazer's Forks)
 
 # Unsorted
 
