@@ -1148,10 +1148,11 @@
           fun again when you combine components, that can even be dynamic or load data, with the simplicity
           of Markdown for long-form content.
 
-* url:    https://github.com/jaroslov/knuth-plass-thoughts/blob/master/plass.md
-  url:    https://github.com/bramstein/typeset
-  url:    https://xxyxyz.org/line-breaking/
-  url:    https://www.unicode.org/reports/tr14/
+* urls:   https://github.com/jaroslov/knuth-plass-thoughts/blob/master/plass.md
+          https://github.com/bramstein/typeset
+          https://github.com/robertknight/tex-linebreak
+          https://xxyxyz.org/line-breaking/
+          https://www.unicode.org/reports/tr14/
   tags:   mkts html css line-breaking slugs knuth-plass-algorithm
 
 * url:    https://www.paperplane.app/blog/modern-html-to-pdf-conversion-2019/
@@ -2331,7 +2332,7 @@
   title:    uharfbuzz
   about:    Streamlined Cython bindings for the HarfBuzz shaping engine.
 
-* urls:     http://gitpop2.herokuapp.com/bramstein/typeset
+* urls:     http://gitpop2.herokuapp.com
   title:    GitPop2
   about:    Find the most popular fork on GitHub (like Stargazer's Forks)
 
