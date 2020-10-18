@@ -578,8 +578,10 @@
   tags:   text distance similarity levenshtein
   about:  String similarity metrics
 
-* url:    https://people.csail.mit.edu/dongdeng/projects/passjoin/index.html
-  url:    https://en.wikipedia.org/wiki/Approximate_string_matching#Problem_formulation_and_algorithms
+* urls:   https://people.csail.mit.edu/dongdeng/projects/passjoin/index.html
+          http://dbgroup.cs.tsinghua.edu.cn/dd/papers/vldb2012-passjoin.pdf
+          http://people.csail.mit.edu/dongdeng/papers/passjoin-tr.pdf
+          https://en.wikipedia.org/wiki/Approximate_string_matching#Problem_formulation_and_algorithms
   title:  Pass-Join: A Partition based Method for Similarity Joins
   tags:   text distance similarity levenshtein similarity-join
   by:     Guoliang Li, Dong Deng, Jiannan Wang, Jianhua Feng
@@ -1154,6 +1156,10 @@
           https://xxyxyz.org/line-breaking/
           https://www.unicode.org/reports/tr14/
   tags:   mkts html css line-breaking slugs knuth-plass-algorithm
+
+* urls:   https://github.com/robertknight/tex-linebreak/blob/master/src/layout.ts
+          https://github.com/bramstein/typeset
+  tags:   javascript line-breaking knuth-plass-algorithm
 
 * url:    https://www.paperplane.app/blog/modern-html-to-pdf-conversion-2019/
   tags:   mkts html css pdf paged-html
@@ -1972,6 +1978,10 @@
   about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
             wraparound option)" (Utopia Planitia, UP)
 
+* urls:     http://zoom.it/
+            https://github.com/zoomhub/zoomhub
+  tags:     utopia-planitia(software)
+
 * urls:     https://github.com/team-video/tragopan
   tags:     utopia-planitia(software)
   about:    Tragopan uses native browser scrolling as its implementation for panning (left/right/up/down),
@@ -1981,7 +1991,6 @@
             optimization for that special case.
 
 * urls:     http://htwins.net/scale2/
-            https://www.reddit.com/r/dataisbeautiful/comments/hhm2q2/oc_scale_of_the_universe_2_website_that/
             https://www.pixijs.com/
   tags:     utopia-planitia(software)
 
@@ -2335,6 +2344,320 @@
 * urls:     http://gitpop2.herokuapp.com
   title:    GitPop2
   about:    Find the most popular fork on GitHub (like Stargazer's Forks)
+
+* urls:     https://www.wordlab.app/catalogue/youtube/chinese.html#lang-list
+  title:    YouTube channels to learn Chinese
+  about:    listing of YouTube channels to learn lots and lots of languages,
+            Chinese, Japanese, Korean among them
+
+* urls:     https://www.sharingebook.com
+  title:    Sharing eBook
+  tags:     library literature pdf download ebooks
+  about:    Many titles as scanned PDFs. Topics include Philosophy, Novels, Self-Help, History, Travel and
+            places, Occultism, Psychology, Biography, Art, Teach yourself, Business, Science, Languages
+            learning, Health and Fitness, Religions, Classic books, Poltical, Learn English, Editor's Picks
+
+* urls:     https://www.kanjipedia.jp/kanji/0007398500
+  title:    漢字ペディア
+  tags:     kanji cjk chinese-characters dictionary japanese
+
+* urls:     https://c3d.github.io/xl/
+  title:    XL: An extensible programming language
+  about:    XL is an extensible programming language, designed to accomodate a variety of programming needs
+            with ease.
+
+            Being extensible means that the language is designed to make it very easy for programmers to
+            adapt the language to suit their needs, for example by adding new programming constructs. In XL,
+            extending the language is a routine operation, much like adding a function or creating a class
+            in more traditional programming languages. This extensibility is demonstrated by the fact that
+            operations that are built-in in other programming languages, such as integer arithmetic, basic
+            types or loops, are part of the standard library in XL.
+
+* urls:     https://github.com/cybertec-postgresql/pg_timetable
+  title:    pg_timetable: Advanced scheduling for PostgreSQL
+  about:    pg_timetable is an advanced job scheduler for PostgreSQL, offering many advantages over
+            traditional schedulers such as cron and others. It is completely database driven and provides a
+            couple of advanced concepts.
+
+            * Tasks can be arranged in chains
+            * A chain can consist of SQL and executables
+            * Parameters can be passed to chains
+            * Missed tasks (possibly due to downtime) can be retried automatically
+            * Support for configurable repetitions
+            * Builtin tasks such as sending emails, etc.
+            * Fully database driven configuration
+            * Full support for database driven logging
+            * Cron-style scheduling
+            * Optional concurrency protection
+
+* urls:     https://en.wiktionary.org/wiki/Appendix:Easily_confused_Chinese_characters
+  tags:     cjk chinese-characters confusables
+  title:    Easily confused Chinese characters
+  about:    Some distinct Chinese characters are easily confused, because they differ in subtle respects. On
+            Wiktionary, graphically similar characters are listed at the top of entry pages, and are
+            collected here for reference.
+
+            This page discusses characters or components which may be confused with each other, yielding the
+            wrong character or an invalid character, not characters which are complicated but unlikely to be
+            confused with other characters.
+
+            This page does not treat variant forms or simplifications, subtle or otherwise, such as 殼 to 殻,
+            as these are very numerous and are more correctly incorrect forms or simply errors, rather than
+            confusions. Variant forms are listed at individual characters. An exception is made when such a
+            variation illustrates a more general distinction, such as 鄉 versus 郷, which illustrates 良 vs. 艮.
+
+* urls:     https://github.com/sustrik/uxy
+  title:    UXY: Adding structure to the UNIX tools
+  about:    Treating everything as a string is the way through which the great power and versatility of UNIX
+            tools is achieved. However, sometimes the constant parsing of strings gets a bit cumbersome.
+
+            UXY is a tool to manipulate UXY format, which is basically a two-dimensional table that's both
+            human- and machine-readable.
+
+            The format is deliberately designed to be as similar to the output of standard tools, such as ls
+            or ps, as possible.
+
+            UXY tool also wraps some common UNIX tools and exports their output in UXY format. Along with
+            converters from/to other common data formats (e.g. JSON) it is meant to allow for quick and
+            painless access to the data.
+
+* urls:     https://github.com/HinTak/Font-Validator
+  title:    Font-Validator
+  about:    Font Validator is a tool for testing fonts prior to release. It was initially developed by
+            Microsoft, to ensure that fonts meet Microsoft's high quality standards and perform
+            exceptionally well on Microsoft's platform.
+
+            FontVal.exe is the GUI, and FontValidator.exe shows usage and example if run without arguments;
+            both should be self-explanatory. We provide all-in-one native command-line binaries,
+            FontValidator, for Mac OS X and Linux, as of Release 2.1.1. Georg Seifert contributed a friendly
+            GUI wrapper for Mac around the command-line tool.
+
+* urls:     https://freefilesync.org/
+  title:    FreeFileSync
+  about:    FreeFileSync is a folder comparison and synchronization software that creates and manages backup
+            copies of all your important files. Instead of copying every file every time, FreeFileSync
+            determines the differences between a source and a target folder and transfers only the minimum
+            amount of data needed. FreeFileSync is Open Source software, available for Windows, macOS, and
+            Linux.
+
+* urls:     https://abandonedwig.info/blog/2020/07/03/css-painting-order.html
+  title:    CSS Painting Order
+  tags:     css html painting-order stacking-context
+  about:    How does a browser determine what order to paint content in? A first guess might be that
+            browsers will paint content in the order that it is specified in the DOM, which for an HTML page
+            is the order it appears in the source code of the page.
+
+* urls:     https://github.com/extrabacon/python-shell
+  title:    python-shell
+  tags:     nodejs python ipc node-python-bridge
+  about:    A simple way to run Python scripts from Node.js with basic but efficient inter-process
+            communication and better error handling.
+            * Reliably spawn Python scripts in a child process
+            * Built-in text, JSON and binary modes
+            * Custom parsers and formatters
+            * Simple and efficient data transfers through stdin and stdout streams
+            * Extended stack traces when an error is thrown
+            * Installation
+
+* urls:     https://github.com/Submersible/node-python-bridge
+  title:    python-bridge
+  tags:     nodejs python ipc node-python-bridge
+  about:    Most robust and simple Python bridge.
+            * Does not affect Python's stdin, stdout, or stderr pipes.
+            * Exception stack traces forwarded to Node for easy debugging.
+            * Python 2 & 3 support, end-to-end tested.
+            * Windows support, end-to-end tested.
+            * Command queueing, with promises.
+            * Long running Python sessions.
+            * ES6 template tags for easy interpolation & multiline code.
+
+* urls:     https://github.com/denisidoro/remacro
+  title:    remacro
+  tags:     markdown mkts
+  about:    With this tool it's possible to generate a superset of markdown, so that you don't want to
+            repeat yourself. It also works for any plain-text content, so it's able to expand source code as
+            well.
+
+* urls:     https://sparanoid.com/lab/opentype-features
+  title:    The Complete CSS Demo for OpenType Features
+  tags:     css typesetting opentype-features
+  about:    This project is a comprehensive CSS font-feature-settings demo for OpenType features, a refined
+            version of Syntax for OpenType features in CSS by Adobe, licensed under CC BY-NC-SA 3.0.
+
+* urls:     https://www.typotheque.com/articles/opentype_features_in_css
+  title:    OpenType features in CSS
+  tags:     css typesetting opentype-features
+  author:   Gustavo Ferreira
+  about:    Overview and sample code for accessing OpenType features in CSS.
+
+* urls:     https://wakamaifondue.com/
+  title:    Wakamai Fondue
+  tags:     css typesetting opentype-features
+  about:    A webpage to drag-n-drop Opentype font files to see a listing of all features and glyphs that
+            font contains
+
+* urls:     https://strokeorder.com.tw/凹.html
+  title:    筆順字典
+  tags:     CJK strokeorder
+
+* urls:     https://www.hillelwayne.com/post/frink/
+  tags:     programming units
+
+* urls:     https://daybrush.com/moveable/
+  tags:     javascript gui ux draggable
+
+* urls:     https://github.com/gpujs/gpu.js
+  tags:     javascript gpu
+  title:    GPU Accelerated JavaScript
+  about:    GPU.js is a JavaScript Acceleration library for GPGPU (General purpose computing on GPUs) in
+            JavaScript for Web and Node. GPU.js automatically transpiles simple JavaScript functions into
+            shader language and compiles them so they run on your GPU. In case a GPU is not available, the
+            functions will still run in regular JavaScript. For some more quick concepts, see Quick Concepts
+            on the wiki.
+
+* urls:     https://www.lcdf.org/type/index.html
+  about:    The LCDF Typetools package contains several command-line programs for manipulating PostScript
+            Type 1 and PostScript-flavored OpenType fonts.
+
+            Cfftot1 translates a Compact Font Format (CFF) font, or a PostScript-flavored OpenType font,
+            into PostScript Type 1 format. It correctly handles subroutines and hints.
+
+            Mmafm and mmpfb create instances of multiple-master fonts: mmafm creates the AFM file (font
+            metrics) for an instance, given the AMFM and AFM files distributed with the multiple master;
+            mmpfb creates a normal, single-master font for an instance, given the multiple master font
+            itself. These tools help multiple master fonts work with UNIX programs for single-master fonts,
+            like afm2tfm, ps2pk, GhostScript ps2pdf, and the X11 Type 1 font server. Mmafm and mmpfb were
+            previously distributed in their own package, mminstance.
+
+            Otfinfo reports information about OpenType fonts, such as the features they support and the
+            contents of their 'size' optical size features.
+
+* urls:     https://github.com/petruisfan/node-supervisor/
+  tags:     javascript nodejs process-manager
+  comment:  last updated years ago but seems to work
+  about:    A little supervisor script for nodejs. It runs your program, and watches for code changes, so
+            you can have hot-code reloading-ish behavior, without worrying about memory leaks and making
+            sure you clean up all the inter-module references, and without a whole new require system.
+
+* urls:     https://github.com/wasmerio/postgres-ext-wasm
+            https://github.com/wasmerio/wasmer-postgres
+  tags:     wasm postgresql-extension
+  about:    wasm is a Postgres extension for executing WebAssembly binaries. It's an original way to extend
+            your favorite database capabilities. So far, the extension works on Postgres 10 only.
+
+            wasmer-postgres is a complete and mature WebAssembly runtime for Postgres based on [Wasmer].
+            It's an original way to extend your favorite database capabilities.
+
+            [So far, the extension works on Postgres 10
+            only](https://github.com/bluejekyll/pg-extend-rs/issues/49)
+
+* urls:     https://github.com/jeff-davis/postgres-extension.rs
+  tags:     rust postgresql-extension
+  about:    Write PostgreSQL extensions in pure rust
+
+* urls:     https://github.com/bluejekyll/pg-extend-rs
+            https://www.pgcon.org/2019/schedule/events/1322.en.html
+  tags:     rust postgresql-extension
+
+* urls:     https://github.com/zombodb/pgx
+            https://news.ycombinator.com/item?id=23821112
+  tags:     rust postgresql-extension
+  about:    Build Postgres Extensions with Rust!
+
+            pgx is a framework for developing PostgreSQL extensions in Rust and strives to be as idiomatic
+            and safe as possible.
+
+            pgx supports Postgres v10, v11, and v12.
+
+* urls:     https://github.com/jirutka/smlar
+            git://sigaev.ru/smlar.git
+            http://sigaev.ru/git/gitweb.cgi?p=smlar.git
+            https://www.pgcon.org/2012/schedule/track/Hacking/443.en.htm
+  tags:     postgresql similarity
+  about:    PostgreSQL extension for an effective similarity search || mirror of git://sigaev.ru/smlar.git
+            || see https://www.pgcon.org/2012/schedule/track/Hacking/443.en.htm
+
+* urls:     https://github.com/eulerto/pg_similarity
+  tags:     postgresql similarity text-processing levenshtein
+  about:    pg_similarity is an extension to support similarity queries on PostgreSQL. The implementation is
+            tightly integrated in the RDBMS in the sense that it defines operators so instead of the
+            traditional operators (= and <>) you can use ~~~ and ! (any of these operators represents a
+            similarity function). Supports:
+
+            * L1 Distance (as known as City Block or Manhattan Distance);
+            * Cosine Distance;
+            * Dice Coefficient;
+            * Euclidean Distance;
+            * Hamming Distance;
+            * Jaccard Coefficient;
+            * Jaro Distance;
+            * Jaro-Winkler Distance;
+            * Levenshtein Distance;
+            * Matching Coefficient;
+            * Monge-Elkan Coefficient;
+            * Needleman-Wunsch Coefficient;
+            * Overlap Coefficient;
+            * Q-Gram Distance;
+            * Smith-Waterman Coefficient;
+            * Smith-Waterman-Gotoh Coefficient;
+            * Soundex Distance.
+
+* urls:     https://cjkv-dict.com/
+  tags:     cjkv dictionary cjk/characters
+  about:    CJKV Dict (中日韓越辭典) is a smart multilingual dictionary for learners of Chinese, Japanese, Korean
+            and Vietnamese. It returns results in Chinese characters (漢字, called "Hànzì" in Mandarin
+            Chinese, "Kanji" in Japanese, "Hanja" in Korean and "Hán tự" in Vietnamese) in all four
+            languages, and automatically converts simplified Chinese characters and simplified Kanji
+            (Shinjitai) to traditional Chinese characters.
+
+* urls:     https://rescript-lang.org/
+  tags:     javascript programming-language languages-that-compile-to-js performance asm
+  about:    ReScript The JavaScript-like language you've been waiting for. Previously BuckleScript & Reason.
+
+            JavaScript's been aggressively optimized by talented engineers over a long span. Unfortunately,
+            even for seasoned JS devs, it can be hard to know how to properly leverage JS's performance.
+            **ReScript's type system and compiler naturally guides you toward writing code that's very often
+            performant by default, with good leverage of various Just-In-Time optimizations (hidden classes,
+            inline caching, avoiding deopts, etc).**
+
+            A widespread adage to write fast JavaScript code is to write as if there's a type system (in
+            order to trigger JS engines' good optimization heuristics); ReScript gives you a real one and
+            generates code that's friendly to optimizations by default.
+
+
+* urls:     https://blog.mattbierner.com/persistent-hash-tries-in-javavascript/
+            https://github.com/mattbierner/hamt
+            https://github.com/mattbierner/hamt_plus
+            https://github.com/mattbierner/hashtrie
+            http://en.wikipedia.org/wiki/Hash_array_mapped_trie
+  tags:     javascript data-types trie
+  about:    The Hash Array Mapped Tries (HAMTs) is a persistent map data structure with good lookup and
+            update performance. This library provides an immutable map with an API that resembles ES6's Map.
+
+            Benchmarks show that this library performs well, even as the size of the map becomes very large.
+            Check out Hamt+ if you want support for additional features such as custom key types and
+            transient mutation.
+
+* urls:     https://qaz.wtf/u/convert.cgi?text=intertext
+            https://en.wikipedia.org/wiki/Homoglyph
+  tags:     unicode homoglyphs transcription
+  about:    𝕿𝖗𝖆𝖓𝖘𝖈𝖗𝖎𝖇𝖊 𝖆𝖓𝖞 𝕷𝖆𝖙𝖎𝖓 𝖙𝖊𝖝𝖙 𝖎𝖓𝖙𝖔 𝕳𝖔𝖒𝖔𝕲𝖑𝖞𝖕𝖍𝖘 /
+            𝕋𝕣𝕒𝕟𝕤𝕔𝕣𝕚𝕓𝕖 𝕒𝕟𝕪 𝕃𝕒𝕥𝕚𝕟 𝕥𝕖𝕩𝕥 𝕚𝕟𝕥𝕠 ℍ𝕠𝕞𝕠𝔾𝕝𝕪𝕡𝕙𝕤 /
+            Ⓣⓡⓐⓝⓢⓒⓡⓘⓑⓔ ⓐⓝⓨ Ⓛⓐⓣⓘⓝ ⓣⓔⓧⓣ ⓘⓝⓣⓞ ⒽⓞⓜⓞⒼⓛⓨⓟⓗⓢ
+
+* urls:     https://www.pgconfig.org
+            https://docs.pgconfig.org/
+  title:    PGConfig
+  about:    PostgreSQL configuration builder
+
+* urls:     https://pgtune.leopard.in.ua
+  title:    PGTune
+  about:    PostgreSQL configuration builder
+
+* urls:     https://mojiportal.nabunken.go.jp/?c=search&moji=蘭
+            https://wcd-ihp.ascdc.sinica.edu.tw/union/en/index.php?c=search&moji=蘭
+  tags:     CJK calligraphy character-variants
+  title:    史的文字データベース連携検索システム
 
 # Unsorted
 
