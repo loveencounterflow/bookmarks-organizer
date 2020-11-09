@@ -2659,6 +2659,26 @@
   tags:     CJK calligraphy character-variants
   title:    史的文字データベース連携検索システム
 
+* urls:     https://github.com/anishathalye/periscope
+  tags:     filesystem duplicate
+  title:    Periscope
+  about:    Periscope gives you "duplicate vision" to help you organize and de-duplicate your files without
+            losing data
+
+* urls:     https://www.skypack.dev/
+            https://www.skypack.dev/blog/2020/10/introducing-skypack-discover/
+  tags:     JavaScript package search-engine
+  about:    [Skypack] Discover combines human-reviewed package recommendations with a quality-focused search
+            algorithm to help you find the best JavaScript packages, faster than ever.
+
+* urls:     https://stackoverflow.com/questions/14208673/how-to-draw-grid-using-html5-and-canvas-or-svg
+            https://iros.github.io/patternfills/
+            http://thenewcode.com/245/SVG-Backgrounds-CrossHatching-and-Grids
+            https://lorefnon.tech/2019/01/12/using-an-svg-grid-background-for-aligning-elements-in-web-page/
+            https://www.heropatterns.com/
+  tags:     css html svg svg/grids svg/patterns svg/backgrounds
+
+
 # Unsorted
 
 ## Group
