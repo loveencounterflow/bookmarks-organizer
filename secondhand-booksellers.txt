@@ -1,0 +1,242 @@
+
+# Second Hand Book Dealers
+
+
+* urls:           https://www.google.com/maps/place/Antiquariat+Gothow+%26+Motzke/@52.5311303,13.3893406,16z/data=!4m8!1m2!2m1!1santiquariat!3m4!1s0x0:0x2a81dd515dc8aee4!8m2!3d52.4890719!4d13.4274495?hl=en
+  title:          Google Maps Antiquarians in Berlin Nordbahnhof
+  tags:           map Berlin
+
+
+* urls:           https://antiquariateinberlin.de/antiquariat-gothow-motzke/
+  name:           Antiquariat Gothow & Motzke
+  specialties:
+    * Sprachwissenschaften
+    * Orientwissenschaften
+    * Völkerkunde
+    * Vor- und Frühgeschichte
+    * Russischsprachige Literatur aller Gebiete
+  opening hours:  Mo, Mi, Fr 14.00 – 16.00
+  address:        Antiquariat Gothow & Motzke, Friedelstraße 52, 12047 Berlin
+  transport:      U: Hermannplatz, Bus: M29, M41, 167, 171
+  fon:            030 – 613 039 90
+  email:          Antiquariat.Gothow@t-online.de
+
+* urls:           https://antiquariat-gleim.de/
+                  https://www.buchfreund.de/de/vk/antiquariat-fuer-fachliteratur
+                  https://www.facebook.com/324477091094079/
+  fon:            030-61 50 73 64
+  email:          info@antiquariat-gleim.de
+  name:           Antiquariat für Fachliteratur Matthias Gleim
+  about:          Das Antiquariat für Fachliteratur besteht seit 2007 als Versandantiquariat in einer
+                  Fabriketage in Berlin-Kreuzberg. Der Bestand umfasst mehr als 20.000 Monographien
+                  überwiegend wissenschaftlicher Literatur aus allen Themenbereichen.
+
+                  Gerne kaufen wir Ihre alten und auch neueren Fachbücher aus den meisten Fachgebieten an.
+                  Ab einer Anzahl von 100 Titeln kommen wir innerhalb Berlins unverbindlich vorbei und
+                  nehmen die Bücher gegebenenfalls gleich mit.
+
+                  Bei Ankäufen außerhalb Berlins würden wir gerne per Telefon oder über eine Bestandsliste
+                  mehr über Ihre Bücher erfahren. Der Transport kann dann per Postpaket oder bei größeren
+                  Mengen per LKW abgewickelt werden.
+
+                  Leider können Sie bei uns nicht stöbern, da die Bücher in unserem Versandantiquariat nicht
+                  thematisch sortiert sind. Im Katalog gefundene Titel können Sie nach Terminabsprache bei
+                  uns einsehen und abholen.
+
+  address:        Antiquariat für Fachliteratur, Matthias Gleim, Waldemarstr. 38, 10999 Berlin
+  specialties:
+                  * Afrikaans-Literatur-Sprache (5)
+                  * Anthropologie (19)
+                  * Archäologie (96)
+                  * Architektur (150)
+                  * Astronomie (16)
+                  * Bauwesen (199)
+                  * Bergbau (55)
+                  * Bildungswesen (64)
+                  * Biologie-allgemein (171)
+                  * Biologie-Botanik (27)
+                  * Biologie-Zoologie (95)
+                  * Buchwesen (20)
+                  * Chemie (174)
+                  * Eisenbahn (185)
+                  * Elektrotechnik (172)
+                  * Esoterik / Mystik / Grenzwissenschaften (16)
+                  * Ethnologie (3)
+                  * Fotografie (27)
+                  * Geographie (46)
+                  * Geowissenschaften (172)
+                  * Geschichte (78)
+                  * Geschichte-20. Jh. (211)
+                  * Geschichte-Altertum (30)
+                  * Geschichte-Mittelalter (16)
+                  * Geschichte-Neuzeit (110)
+                  * Gesetze / Amtsblätter / Verhandlungen (33)
+                  * Informatik (113)
+                  * Judaica (33)
+                  * Kinder- und Jugendbuch (27)
+                  * Klassische Philologie (32)
+                  * Kulturwissenschaft (218)
+                  * Kunst (364)
+                  * Kunst-Glaskunst (1)
+                  * Landeskunde-Afrika (29)
+                  * Landeskunde-Australien (4)
+                  * Landeskunde-Benelux (6)
+                  * Landeskunde-China (43)
+                  * Landeskunde-Deutschland (185)
+                  * Landeskunde-Deutschland-Berlin (95)
+                  * Landeskunde-Frankreich (9)
+                  * Landeskunde-Griechenland (2)
+                  * Landeskunde-Großbritannien-Irland (7)
+                  * Landeskunde-Italien (9)
+                  * Landeskunde-Lateinamerika (29)
+                  * Landeskunde-Nordeuropa (22)
+                  * Landeskunde-Osteuropa (69)
+                  * Landeskunde-Russland (16)
+                  * Landeskunde-Schweiz-Österreich (31)
+                  * Landeskunde-Spanien-Portugal (4)
+                  * Landeskunde-Türkei (9)
+                  * Landeskunde-übriges Asien (51)
+                  * Landeskunde-USA-Kanada (20)
+                  * Landwirtschaft und Lebensmittel (78)
+                  * Literatur-andere Sprachen (22)
+                  * Literatur-deutsch (178)
+                  * Literatur-englisch (10)
+                  * Literatur-französisch-spanisch (69)
+                  * Literaturwissenschaft (227)
+                  * Literaturwissenschaft-Joost van den Von… (1)
+                  * Lyrik (50)
+                  * Mathematik (343)
+                  * Medien (20)
+                  * Medizin / Pharmazie (4702)
+                  * Medizin-Geschichte (822)
+                  * Medizin-Zahnmedizin (293)
+                  * Militaria (22)
+                  * Musik (57)
+                  * Nationalsozialismus (151)
+                  * Naturwissenschaften (150)
+                  * Pädagogik (116)
+                  * Philosophie (511)
+                  * Philosophie - Martin Heidegger (31)
+                  * Physik (283)
+                  * Physik-Optik (17)
+                  * Politik (909)
+                  * Psychologie (327)
+                  * Recht (539)
+                  * Reiseliteratur (50)
+                  * Religion (52)
+                  * Second World War - English (1)
+                  * Soziologie (614)
+                  * Sport (9)
+                  * Sprachen-Wörterbücher-Spracherwerb (115)
+                  * Sprachwissenschaft-allgemein (369)
+                  * Sprachwissenschaft-Deutsch (131)
+                  * Sprachwissenschaft-Englisch (67)
+                  * Technik (683)
+                  * Technik-Feuerwehr (2)
+                  * Technik-Glas (2)
+                  * Technik-Holz (1)
+                  * Technik-Luftfahrt (10)
+                  * Technik-Metall (74)
+                  * Theaterwissenschaft (11)
+                  * Theologie (231)
+                  * Umwelt (184)
+                  * Varia (16)
+                  * Verkehrswesen (16)
+                  * Völkerrecht / International Law (536)
+                  * Wirtschaft (724)
+
+* urls:           http://antiquariat-wiederhold.de/
+                  https://antiquariateinberlin.de/antiquariat-wiederhold/
+                  https://www.antiquariat.de/navigation/sg_aqtreffer3.jsp;jsessionid=6B31F339A36554BCB936C9AC44D1B5D5?aq=9113
+  name:           Antiquariat Wiederhold
+  address:        Antiquariat Wiederhold, Ackerstr. 18, 10115 Berlin
+  transport:      U: Rosenthaler Platz, S: Nordbahnhof, Tram: M8, M12 Pappelplatz, M1 Rosenthaler Platz
+  fon:            030 – 280 74 08
+  email:          antiquariat.wiederhold@gmx.de
+  opening hours:  Mo & Fr 11.30 – 19.00; Di, Mi, Do  11.00 – 18.00; Sa 11.00 – 16.00
+  specialties:
+                  * Afrikanistik    1
+                  * Altphilologie / Antike    28
+                  * Amerikanistik   8
+                  * Arabische Sprache   5
+                  * Archäologie   13
+                  * Architektur   8
+                  * Berlin    43
+                  * Bertolt Brecht    4
+                  * Biographie / Autobiographie   50
+                  * Briefe, Briefwechsel    2
+                  * Buch- und Verlagswesen    10
+                  * Bücher diverser Sprachen    6
+                  * Bulgarische Sprache   3
+                  * China: Geschichte, Kultur, Sprache    12
+                  * Christentum / Theologie   7
+                  * DDR   1
+                  * Design    11
+                  * Diverse asiatische Sprachen   2
+                  * Editionen / Werkausgaben    71
+                  * Einstein    27
+                  * Englische Sprache   6
+                  * Englischsprachige Bücher    12
+                  * Esoterik    3
+                  * Ethnologie    32
+                  * Exil    3
+                  * Fachwörterbücher / Fachsprachen   67
+                  * Film / Filmwissenschaft   42
+                  * Fotografie    29
+                  * Französische Sprache    6
+                  * Französischsprachige Bücher   129
+                  * Germanistik   56
+                  * Geschichte    129
+                  * Goethe / Klassisches Weimar   10
+                  * Handwerk - Kunsthandwerk    2
+                  * Hörbücher   1
+                  * Italienische Sprache    5
+                  * Italienischsprachige Bücher   5
+                  * Judaica   17
+                  * Jurisprudenz / Kriminalistik / Kriminologie   9
+                  * Kulturgeschichte    21
+                  * Kulturwissenschaft    27
+                  * Kunst/Kunstgeschichte   93
+                  * Landeskunde   57
+                  * Lingusitik / Sprachwissenschaft   87
+                  * Literatur   152
+                  * Literaturwissenschaft   359
+                  * Lyrik   16
+                  * Maschinenbau    1
+                  * Mathematik    2
+                  * Mediävistik   222
+                  * gefunden: 83   Seite: 2/2 Zurück Zurück
+                  * Sachgebiete   Anzahl
+                  * Medien    1
+                  * Mode    3
+                  * Musik   97
+                  * Naturwissenschaft   11
+                  * Noten   12
+                  * Orientalistik/Islamwissenschaften   5
+                  * Pädagogik / Erziehungswissenschaft    7
+                  * Philosophie   34
+                  * Politik / Politikwissenschaft   162
+                  * Portugiesische Sprache    1
+                  * Psychologie - Psychoanalyse   16
+                  * Reiseliteratur / Reisebeschreibungen    10
+                  * Religion / Religionswissenschaft    12
+                  * Russische Sprache   26
+                  * Russischsprachige Bücher/Russian Books    19
+                  * Schlesien   38
+                  * Schwedische Sprache   2
+                  * Schwedischsprachige Bücher    2
+                  * Serbokroatisch u.a. südslawische Sprachen   26
+                  * Shakespeare   10
+                  * Slawistik   175
+                  * Soziologie / Sozialwissenschaften   9
+                  * Spanische Sprache   3
+                  * Spanischsprachige Bücher    4
+                  * Sport / Sportwissenschaft   4
+                  * Tanz    1
+                  * Theaterstücke   16
+                  * Theaterwissenschaft   58
+                  * Tschechische Sprache    6
+                  * Varia   126
+                  * Vitrine   74
+                  * Wörterbücher und Lehrwerke diverser Sprachen    15
+                  * Zernack   340
