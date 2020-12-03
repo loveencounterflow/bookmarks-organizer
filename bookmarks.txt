@@ -1386,7 +1386,32 @@
 * url:    https://beyondgrep.com/feature-comparison/
   url:    https://github.com/BurntSushi/ripgrep
   url:    https://phiresky.github.io/blog/2019/rga--ripgrep-for-zip-targz-docx-odt-epub-jpg/
+  tags:   grep regex code-search information-retrieval
   about:  Pattern matching, code search, search in archives, PDFs etc.
+
+* url:    https://learnbyexample.github.io/learn_gnugrep_ripgrep/ripgrep.html
+  tags:   grep regex code-search information-retrieval
+  title:  GNU GREP and RIPGREP
+  about:  ripgrep is definitely becoming a popular alternative (if not the most popular) to grep command.
+          Editors like Visual Studio Code and Atom are using ripgrep to power their search offerings. The
+          major selling point is its default behavior for recursive search and speed. The project doesn't
+          aim to be compatible with POSIX and behavior varies with respect to GNU grep in terms of features,
+          option names, output style, regular expressions, etc.
+
+* urls:   https://www.reddit.com/r/commandline/comments/k5ekzz/rga_ripgrep_but_also_search_in_pdfs_ebooks_office/
+          https://github.com/phiresky/ripgrep-all
+          https://phiresky.github.io/blog/2019/rga--ripgrep-for-zip-targz-docx-odt-epub-jpg/
+  title:  Rga: Ripgrep, but also search in PDFs, E-Books, Office documents, zip, tar.gz
+  about:  rga is a line-oriented search tool that allows you to look for a regex in a multitude of file
+          types. rga wraps the awesome ripgrep and enables it to search in pdf, docx, sqlite, jpg, movie
+          subtitles (mkv, mp4), etc.
+
+          rga will recursively descend into archives and match text in every file type it knows.
+
+* url:    https://www.opensemanticsearch.org/doc/desktop_search
+  url:    https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
+  url:    https://beyondgrep.com/feature-comparison/
+  tags:   desktop-search-engine
 
 * url:    https://tug.org/FontCatalogue/docs.html
   about:  TeX LaTeX fonts, downloads, font catalogs
@@ -1510,11 +1535,6 @@
   url:    https://github.com/zorbash/opus
   tags:   railway-oriented-programming railroad-oriented-programming "Scott Wlashin"::name pipestreaming
   title:  Railway Oriented Programming in Elixir
-
-* url:    https://www.opensemanticsearch.org/doc/desktop_search
-  url:    https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
-  url:    https://beyondgrep.com/feature-comparison/
-  tags:   desktop-search-engine
 
 * url:    https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf
   title:  Programming Paradigms for Dummies: What Every Programmer Should Know
@@ -2677,6 +2697,104 @@
             https://lorefnon.tech/2019/01/12/using-an-svg-grid-background-for-aligning-elements-in-web-page/
             https://www.heropatterns.com/
   tags:     css html svg svg/grids svg/patterns svg/backgrounds
+
+* urls:     https://tablericons.com/
+            https://www.freepik.com/popular-icons
+  tags:     svg/icons
+
+* urls:     https://justine.storage.googleapis.com/memzoom/index.html
+            https://justine.storage.googleapis.com/memzoom/download.html
+            https://www.reddit.com/r/commandline/comments/jr6bat/memzoom_renders_procpidmem_in_terminal_with/
+  tags:     live ram viewer
+  about:    Memzoom: Renders /proc/pid/mem in terminal with space-filling curves
+
+* urls:     https://github.com/psb1558/Junicode-New
+            https://github.com/loveencounterflow/Junicode-New
+  tags:     unicode font serif
+  about:    A new version of the Junicode font (previously hosted on Sourceforge) featuring full compliance
+            with the Medieval Unicode Font Initiative specification (version 4.0) and including all medieval
+            characters added to Unicode since MUFI 4.0. The font:
+
+            * is made with the Glyphs font editor;
+            * has the same character set in all faces;
+            * has five weights (Light, Regular, Medium, Semibold, Bold)
+            * and three widths (Regular, SemiCondensed, Condensed);
+            * includes a variable font version;
+            * has improved outlines,
+            * an expanded collection of small caps (covering all case-paired characters),
+            * a more comprehensive set of anchors for mark positioning,
+            * and an expanded collection of OpenType features—carefully chosen and organized to promote the
+              display of accessible text.
+
+* urls:     https://gitlab.com/interception/linux/tools
+            https://askubuntu.com/questions/979359/how-do-i-install-caps2esc
+            https://blog.brujordet.no/post/productivity/unlocking-my-keyboard/
+  tags:     keyboard linux keyboard/IME linux/evdev linux/udev linux/input-devices
+  about:    intercept's purpose is to capture input from a given device (optionally grabbing it) and write
+            such raw input to stdout. uinput does the reverse, it receives raw input from stdin and write it
+            to a virtual uinput device created by cloning characteristics of real devices, from YAML
+            configuration, or both.
+
+            So, assuming $DEVNODE as the path of the device, something like `/dev/input/by-id/some-kbd-id`,
+            the following results in a no-op:
+
+            `intercept -g $DEVNODE | uinput -d $DEVNODE`
+
+            In this case using `-g` is important so that the target device is grabbed for exclusive access,
+            allowing the new virtual device created by uinput to substitute it completely: we grab it and
+            others can grab the clone. Now additional processing can be added in the middle easily.
+
+* urls:     https://github.com/MerlijnWajer/uinput-mapper/
+            https://github.com/holizz/joy2chord
+            http://welz.org.za/projects/mxk
+  tags:     keyboard linux keyboard/IME linux/evdev linux/udev linux/input-devices
+
+* urls:     https://github.com/loveencounterflow/postgresqlfs
+            https://github.com/petere/postgresqlfs
+  tags:     fuse fs sql db rdbms
+  title:    postgresqlfs
+  about:    postgresqlfs is a FUSE driver to access PostgreSQL databases as a file system. It exposes the
+            object structure of a PostgreSQL database instance as directories and files that you can operate
+            on using file system tools.
+
+            The idea is that you can use this together with Midnight Commander to browse and edit a database
+            in text mode in situations where psql would be to cumbersome but pgAdmin or phpPgAdmin are not
+            available.
+
+* urls:     https://metacpan.org/pod/Fuse::DBI
+  tags:     fuse fs sql db rdbms perl
+  title:    Fuse::DBI - mount your database as filesystem and use it
+  about:    This module will use Fuse module, part of FUSE (Filesystem in USErspace) available at
+            http://fuse.sourceforge.net/ to mount your database as file system.
+
+            That will give you possibility to use normal file-system tools (cat, grep, vi) to manipulate
+            data in database.
+
+            It's actually opposite of Oracle's intention to put everything into database.
+
+* urls:     https://metacpan.org/pod/distribution/sqlfs-perl/bin/sqlfs.pl
+  tags:     fuse fs sql db rdbms perl
+  title:    sqlfs.pl - Mount Fuse filesystem on a SQL database
+  about:    This script will create a userspace filesystem stored entirely in a SQL database. Only the
+            MySQL, SQLite and PostgreSQL database engines are currently supported. Most functionality is
+            supported, including hard and symbolic links, seek() and tell(), binary data, sparse files, and
+            the ability to unlink a file while there is still a filehandle open on it.
+
+            This is a front end to the DBI::Filesystem module, which creates a fully-functioning userspace
+            filesystem on top of a relational database. Unlike other filesystem-to-DBM mappings, such as
+            Fuse::DBI, this one creates and manages a specific schema designed to support filesystem
+            operations. If you wish to mount a filesystem on an arbitrary DBM schema, you want Fuse::DBI,
+            not this.
+
+            Most filesystem functionality is implemented, including hard and soft links, sparse files,
+            ownership and access modes, UNIX permission checking and random access to binary files. Very
+            large files (up to multiple gigabytes) are supported without performance degradation.
+
+            Why would you use this? The main reason is that it allows you to use DBMs functionality such as
+            accessibility over the network, database replication, failover, etc. In addition, the underlying
+            DBI::Filesystem module can be extended via subclassing to allow additional functionality such as
+            arbitrary access control rules, searchable file and directory metadata, full-text indexing of
+            file contents, etc.
 
 
 # Unsorted
