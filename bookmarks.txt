@@ -1050,9 +1050,6 @@
   tags:   postgresql profiler profiling
   about:  using plpgsql-check as a *line-by-line* profiler for PostgreSQL
 
-* url:    http://npm.anvaka.com/#/view/2d/intershop
-  about:  Draws a graphical dependency tree for a given module
-
 * bash:   `npm ls $module_name`
   about:  When executed in an NPM module directory, will list all dependency subtrees
           that the cause that `$module_name` is part of the project
@@ -1200,7 +1197,7 @@
   about:  draw (linguistic) trees; maybe an option to display CJK character decompositions
 
 * url:
-  titel:  l3experimental – Experimental LaTeX3 concepts
+  title:  l3experimental – Experimental LaTeX3 concepts
 
   about:  The l3­ex­per­i­men­tal pack­ages are a col­lec­tion of
           ex­per­i­men­tal im­ple­men­ta­tions for as­pects of the LaTeX3
@@ -1634,14 +1631,6 @@
   title:  Variable Fonts (beta)
   about:  A simple resource for finding and trying variable fonts
 
-* url:    https://github.com/anvaka/ngraph
-  url:    https://github.com/anvaka/VivaGraphJS
-  url:    https://www.youtube.com/watch?v=Kp377p-NSFc
-  about:  graph rendering, algorithms in JS by anvaka
-
-* url:    https://anvaka.github.io/graph-drawing-libraries/#!/all#%2Fall
-  about:  JD graph rendering libraries
-
 * url:    http://rulezjs.com/
   tags:   javascript svg on-screen-ruler
   title:  Rulez.js is a javascript library for showing svg customizable rulers.
@@ -1980,6 +1969,14 @@
   tags:     backup
   pro:      friend's recommendation
 
+* url:      https://github.com/anvaka/ngraph
+  url:      https://github.com/anvaka/VivaGraphJS
+  url:      https://www.youtube.com/watch?v=Kp377p-NSFc
+  about:    graph rendering, algorithms in JS by anvaka
+
+* url:      https://anvaka.github.io/graph-drawing-libraries/#!/all#%2Fall
+  about:    JD graph rendering libraries
+
 * urls:     http://npm.broofa.com/?q=cupofjoe
             http://npm.anvaka.com/#/view/2d/cupofjoe
   tags:     visualization npm/dependencies
@@ -1991,6 +1988,10 @@
             * Outdegree - packages with highest number of dependencies.
             * Pagerank - rough estimate of package importance, based on number of dependents/dependencies.
             * Hubs and Authorities - alternative importance classification, also based on number of edges.
+
+* urls:     https://moiva.io/?compare=cnd+intertype+mixa+multimix
+  tags:     visualization npm-packages pagerank
+  title:    Measure and compare JavaScript libraries
 
 * urls:     https://anvaka.github.io/panzoom/demo/attach-via-script.html
             https://github.com/anvaka/panzoom
@@ -2795,6 +2796,210 @@
             DBI::Filesystem module can be extended via subclassing to allow additional functionality such as
             arbitrary access control rules, searchable file and directory metadata, full-text indexing of
             file contents, etc.
+
+* urls:     https://anvaka.github.io/city-roads
+  title:    city roads
+  about:    Visualization of all roads within any city
+
+            The data is fetched from OpenStreetMap using [overpass API](http://overpass-turbo.eu/). While
+            that API is free (as long as you follow ODbL licenses), it can be rate-limited and sometimes it
+            is slow. After all we are downloading thousands of roads within an area!
+
+            To improve the performance of download, I indexed ~3,000 cities with population larger than
+            100,000 people and stored into a [very
+            simple](https://github.com/anvaka/index-large-cities/blob/master/proto/place.proto) protobuf
+            format. The cities are stored into a cache in this github
+            [repository](https://github.com/anvaka/index-large-cities).
+
+            The name resolution is done by [nominatim](https://nominatim.openstreetmap.org/) - for any query
+            that you type into the search box it returns list of area ids. I check for the area id in my
+            list of cached cities first, and fallback to overpass if area is not present in cache.
+
+            Behind simple UI software engineers would also find scripting capabilities. You can develop
+            programs on top of the city-roads. A few examples are available in
+            [city-script](https://github.com/anvaka/city-script). Scene API is documented here:
+            https://github.com/anvaka/city-roads/blob/master/API.md
+
+* urls:     https://github.com/sindresorhus/ora
+  title:    ora, an elegant terminal spinner
+  tags:     nodejs JavaScript console spinner activity
+
+* urls:     https://github.com/trekhleb/javascript-algorithms
+  title:    JavaScript Algorithms and Data Structures
+  about:    This repository contains JavaScript based examples of many popular algorithms and data
+            structures.
+
+            Each algorithm and data structure has its own separate README with related explanations and
+            links for further reading (including ones to YouTube videos).
+
+            Excerpt: Levenshtein Distance - minimum edit distance between two sequences; Longest Common
+            Subsequence (LCS); Longest Common Substring; Longest Increasing Subsequence; Shortest Common
+            Supersequence; 0/1 Knapsack Problem; Integer Partition
+
+* urls:     https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/
+  title:    Make Offline Mirror of a Site using `wget`
+  about:    Sometimes you want to create an offline copy of a site that you can take and view even without
+            internet access. Using wget you can make such copy easily:
+
+            ```bash
+            wget --mirror --convert-links --adjust-extension --page-requisites --no-parent http://example.org
+            ```
+
+* urls:     https://in-the-sky.org/satmap_worldmap.php
+            https://www.n2yo.com/
+  tags:     satellites astronomy
+  about:    sites with real-time satellite observation data
+
+* urls:     https://james.darpinian.com/satellites/
+  tags:     satellites astronomy
+  about:    sites with real-time satellite observation data; uses Google Street View
+
+* urls:     https://github.com/lambda2/text-roller
+            https://github.com/Gamerbit/odometer
+            https://github.hubspot.com/odometer/docs/welcome/
+            https://github.com/HubSpot/odometer
+  tags:     jquery JavaScript web odometer number display
+
+* urls:     https://partiql.org
+            https://partiql.org/tutorial.html#testing-the-partiql-repl
+            https://community.partiql.org/
+  about:    SQL-compatible access to relational, semi-structured, and nested data.
+
+            **First Class Nested Data**: PartiQL’s extensions to SQL are easy to understand, treat nested
+            data as first class citizens and compose seamlessly with each other and SQL. This enables
+            intuitive filtering, joining and aggregation on the combination of structured, semistructured
+            and nested datasets.
+
+            **Data Storage Independence**: PartiQL enables unified query access across multiple data stores
+            and data formats by separating the syntax and semantics of a query from the underlying format of
+            the data or the data store that is being accessed. It enables users to interact with data with
+            or without regular schema.
+
+            **Open Source**: PartiQL syntax, semantics, the embeddable reference interpreter, CLI, test
+            framework, and tests are licensed under the Apache License, version 2.0, allowing you to freely
+            use, copy, and distribute your changes under the terms of your choice.
+
+* urls:     https://www.academia.edu
+            https://www.academia.edu/Documents/in/Chinese_Characters
+            https://www.academia.edu/search?utf8=%E2%9C%93&q=%E6%BC%A2%E5%AD%97
+  tags:     pdf science papers download free CJK sinology Chinese Japanese chinese-characters
+
+* urls:     https://www.highgo.ca/2020/12/08/bulk-loading-into-postgresql-options-and-comparison/
+  tags:     tesseratua postgresql bulkloading
+  title:    Bulk loading into PostgreSQL: Options and comparison
+  about:    You have a file, possibly a huge CSV, and you want to import its content into your database.
+            There are lots of options to do this but how would you decide which one to use. More often than
+            not the question is how much time would the bulk load would take. I found my self doing the same
+            few days back when I wanted to design a data ingestion process for PostgreSQL where we needed to
+            bulk load around 250GB of data from CSV files every 24 hours.
+
+            Goto solution for bulk loading into PostgreSQL is the native copy command. But one limitation
+            with the copy command is that it requires the CSV file to be placed on the server. So I decided
+            to do a simple comparison of bulk loading options and techniques.
+
+            In short I wanted to see the performance difference of loading the data into standard vs
+            unlogged tables and want to compare the loading time difference between loading into table that
+            has an index vs drop-index->load->recreate-index option.
+
+            Moreover, I wanted to see the performance difference of COPY command, client-side copy command,
+            loading through file_fdw, and pg_bulkload for each of the above options.
+
+* urls:     https://www.compart.com/en/unicode/
+  tags:     unicode codepoints codepoint-catalog
+
+* urls:     https://github.com/phiresky/ripgrep-all
+            https://phiresky.github.io/blog/2019/rga--ripgrep-for-zip-targz-docx-odt-epub-jpg/
+  title:    rga: ripgrep, but also search in PDFs, E-Books, Office documents, zip, tar.gz, etc.
+  about:    rga is a line-oriented search tool that allows you to look for a regex in a multitude of file
+            types. rga wraps the awesome ripgrep and enables it to search in pdf, docx, sqlite, jpg, movie
+            subtitles (mkv, mp4), etc.
+
+            Adapters:
+
+            * ffmpeg Uses ffmpeg to extract video metadata/chapters and subtitles
+              * Extensions: .mkv, .mp4, .avi
+            * pandoc Uses pandoc to convert binary/unreadable text documents to plain markdown-like text
+              * Extensions: .epub, .odt, .docx, .fb2, .ipynb
+            * poppler Uses pdftotext (from poppler-utils) to extract plain text from PDF files
+              * Extensions: .pdf
+              * Mime Types: application/pdf
+            * zip Reads a zip file as a stream and recurses down into its contents
+              * Extensions: .zip
+              * Mime Types: application/zip
+            * decompress Reads compressed file as a stream and runs a different extractor on the contents.
+              * Extensions: .tgz, .tbz, .tbz2, .gz, .bz2, .xz, .zst
+              * Mime Types: application/gzip, application/x-bzip, application/x-xz, application/zstd
+            * tar Reads a tar file as a stream and recurses down into its contents
+              * Extensions: .tar
+            * sqlite Uses sqlite bindings to convert sqlite databases into a simple plain text format
+              * Extensions: .db, .db3, .sqlite, .sqlite3
+              * Mime Types: application/x-sqlite3 The following adapters are disabled by default, and can be
+                enabled using '--rga-adapters=+pdfpages,tesseract':
+            * pdfpages Converts a pdf to its individual pages as png files. Only useful in combination with
+              tesseract
+              * Extensions: .pdf
+              * Mime Types: application/pdf
+            * tesseract Uses tesseract to run OCR on images to make them searchable. May need -j1 to prevent
+              overloading the system. Make sure you have tesseract installed.
+              * Extensions: .jpg, .png
+
+* urls:     https://github.com/loveencounterflow/find-in-apt-history
+  title:    find-in-apt-history
+  about:    Short bash script that searches for installed / deleted /upgraded packages in `/var/log/dpkg*`
+            (including `*.gz` archives)
+
+            * Output is sorted oldest to newest.
+            * Only lines containing one of install, remove, or upgrade are shown.
+            * Plain-text logs and `*.gz` archived logs are searched.
+            * System updates as well as manually installed packages are included.
+            * May use either `find-in-apt-history 'blah'` or `find-in-apt-history | grep 'blah'` to narrow
+              down results.
+            * Package names are always terminated with a `:` (colon) so that's a good way to restrict
+              matches.
+
+* urls:     https://redfin.engineering/node-modules-at-war-why-commonjs-and-es-modules-cant-get-along-9617135eeca1
+  title:    Node Modules at War: Why CommonJS and ES Modules Can’t Get Along: Interop between them is
+            possible, but it’s a hassle
+  about:    In Node 14, there are now two kinds of scripts: there are old-style CommonJS (CJS) scripts and
+            new-style ESM scripts (aka MJS). CJS scripts use require() and module.exports; ESM scripts use
+            import and export.
+
+            I’ll conclude with three guidelines for library authors to follow:
+            * Provide a CJS version of your library
+            * Provide a thin ESM wrapper for your CJS named exports
+            * Add an exports map to your package.json
+
+* urls:     https://omar.website/tabfs/
+            https://github.com/osnr/TabFS
+  title:    Mount your browser tabs as a filesystem
+  tags:     fuse browser-tabs-as-files javascript
+  author:   Omar Rizwan
+  about:    TabFS is a browser extension that mounts your browser tabs as a filesystem on your computer.
+            Out of the box, it supports Chrome and (to a lesser extent1) Firefox, on macOS and Linux.2
+            Each of your open tabs is mapped to a folder.
+
+* urls:     https://geoffreylitt.github.io/wildcard/#/quickstart
+            https://www.geoffreylitt.com/wildcard/
+  tags:     browser javascript
+  title:    Wildcard
+  about:    Wildcard is a browser extension that empowers anyone to modify websites to meet their own
+            specific needs, using a familiar spreadsheet view. It’s a research project as part of my PhD at
+            MIT, with my advisor Daniel Jackson.
+
+* urls:     https://mdsvex.com/docs
+            https://alexxnb.github.io/svelte-preprocess-markdown
+  tags:     svelte markdown preprocessor
+  title:    MarkDown Preprocessors for Svelte so content can be authored without HTML
+
+* urls:     https://luciopaiva.com/witchcraft/
+  title:    Witchcraft
+  about:    Think Greasemonkey for developers.
+
+            Witchcraft is a Google Chrome extension for loading custom Javascript and CSS directly from a
+            folder in your file system, injecting them into pages that match their files names.
+
+            It works by matching the current page domain against script file names available in the scripts
+            folder.
 
 
 # Unsorted
