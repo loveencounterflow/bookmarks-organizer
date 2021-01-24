@@ -493,7 +493,16 @@
 * url:    https://github.com/devsnek/fused
   url:    https://github.com/mafintosh/fuse-bindings
   url:    https://www.npmjs.com/package/fuseql
-  tags:   nodejs programming/filesystem/fuse::name
+  url:    https://github.com/fuse-friends/fuse-native
+  tags:   nodejs fuse::name filesystem
+  about:  Multithreaded FUSE bindings for Node JS.
+
+          * N-API support means we ship prebuilds and in general works on new Node.js releases.
+          * Multithreading support means multiple calls to FUSE can run in parallel.
+          * Close to feature complete in terms of the the FUSE API.
+          * Embedded shared library support means users do not have to install FUSE from a 3rd party.
+          * API support for initial FUSE kernel extension configuration so you can control the user
+            experience.
 
 * urls:   https://bcachefs.org/
   tags:   filesystem
@@ -1262,7 +1271,7 @@
 
 
 * url:    https://www.onux.com/jspp/
-  tags:   languages-that-compile-to-js typed-languages
+  tags:   languages-that-compile-to/javascript typed-languages
 
 * url:    http://www.natubunko.net/kotoba03.html
   title:  漢字部首名一覧
@@ -2632,7 +2641,7 @@
             (Shinjitai) to traditional Chinese characters.
 
 * urls:     https://rescript-lang.org/
-  tags:     javascript programming-language languages-that-compile-to-js performance asm
+  tags:     javascript programming-language languages-that-compile-to/javascript performance asm
   about:    ReScript The JavaScript-like language you've been waiting for. Previously BuckleScript & Reason.
 
             JavaScript's been aggressively optimized by talented engineers over a long span. Unfortunately,
@@ -3001,6 +3010,37 @@
             It works by matching the current page domain against script file names available in the scripts
             folder.
 
+* urls:     https://preql.readthedocs.io/en/latest/language.html
+            https://www.reddit.com/r/ProgrammingLanguages/comments/kuh899/i_wrote_a_new_programming_language_that_compiles/
+  tags:     programming-language languages-that-compile-to/sql
+  title:    Preql, a language that compiles to SQL
+
+* urls:     https://www.geeksforgeeks.org/css-conic-gradient-function/
+            https://developer.mozilla.org/en-US/docs/Web/CSS/repeating-conic-gradient()
+            https://love2dev.com/blog/css-background-stripes/
+            https://css-tricks.com/a-complete-guide-to-css-gradients/
+  tags:     barbershop-current-flow rotating-conical-stripes css
+  about:    How to create a background with star-shaped stripes that converge in a point; when these are
+            rotated and an overlay is added that leaves only small pathsways open, moving 'currents' can be
+            seen as in some lightboxes used for advertisements and teaching that were fashionable in the
+            1970s.
+
+* urls:     https://github.com/lukeed/nestie
+            https://github.com/lukeed/flattie
+  tags:     javascript nested object flatten
+  about:    A tiny (211B) and fast utility to expand a flattened object
+
+            This module expands an Object whose keys are delimited/condensed representatives of multiple
+            levels. By default, the . character is used as a delimiter. This is customizable. Keys are split
+            using the delimiter, each signifying a new level/depth.
+
+* urls:     https://sql.lspgn.workers.dev/?hn
+            https://github.com/lspgn/edge-sql
+            https://github.com/simonw/datasette
+            https://datasette.io/
+            https://github.com/TomasHubelbauer/sqlite-javascript
+            https://news.ycombinator.com/item?id=25842999
+  tags:     sql rdbms sqlite sqlite-javascript
 
 # Unsorted
 
@@ -3118,4 +3158,36 @@
             A new type of shell. The goal of this project is to take the Unix philosophy of shells, where
             pipes connect simple commands together, and bring it to the modern style of development.
 
+  * name:   V
+    urls:   https://vlang.io/
+            https://github.com/vlang/awesome-v
+    remark: compiles to C
 
+            Simple, fast, safe, compiled. For developing maintainable software.
+
+            Simple language for building maintainable programs
+
+            You can learn the entire language by going through the documentation in an hour, and in most
+            cases there's only one way to do something.
+
+            This results in simple, readable, and maintainable code.
+
+            Despite being simple, V gives a lot of power to the developer and can be used in pretty much
+            every field, including systems programming, webdev, gamedev, GUI, mobile (wip), science,
+            embedded, tooling, etc.
+
+            V is very similar to Go. If you know Go, you already know ≈80% of V. Things V improves on Go:
+            vlang.io/compare#go.
+
+            * No null
+            * No global variables
+            * No undefined values
+            * No undefined behavior
+            * No variable shadowing
+            * Bounds checking
+            * Immutable variables by default
+            * Pure functions by default
+            * Immutable structs by default
+            * Option/Result and mandatory error checks
+            * Sum types
+            * Generics
