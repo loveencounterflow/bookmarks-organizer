@@ -3064,6 +3064,10 @@
             provides a lot of high level constructs and niceties for developer productivity, making it a
             very suitable choice for writing performant add-ons to your NodeJS code.
 
+* url:      https://github.com/aceakash/string-similarity
+  tags:     javascript string-similarity similarity
+  about:    Finds degree of similarity between two strings, based on Dice's Coefficient, which is mostly
+            better than Levenshtein distance.
 
 
 # Unsorted
