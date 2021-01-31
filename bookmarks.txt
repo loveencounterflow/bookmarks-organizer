@@ -3042,6 +3042,30 @@
             https://news.ycombinator.com/item?id=25842999
   tags:     sql rdbms sqlite sqlite-javascript
 
+* urls:     https://patents.google.com/patent/US6510441B1/en
+  title:    Optimal line break determination
+  about:    Method and apparatus divide a paragraph of text into lines. The invention determines possible
+            line breaks for multiple lines from a portion of the paragraph and selects an optimal line break
+            that produces an ideal set of line breaks for the multiple lines from the possible line breaks.
+
+* urls:     https://github.com/dalibo/pg_activity
+  title:    pg_activity
+  tags:     postgresql monitoring
+  about:    pg_activity is a top like application for PostgreSQL server activity monitoring.
+
+* urls:     https://github.com/andi23rosca/napi-nim#write-nodejs-native-extensions-in-nim
+  title:    Write NodeJS native extensions in Nim
+  tags:     javascript nim-lang native
+  about:    If you don't like the verbosity of C code and feel that C++ is too complex, then try to improve
+            the performance of your NodeJS apps with napi-nim.
+
+            The new n-api which is now part of NodeJS lets you interface with JavaScript code from any
+            language that supports the C ABI. Nim is a language that values efficiency above all else, but
+            provides a lot of high level constructs and niceties for developer productivity, making it a
+            very suitable choice for writing performant add-ons to your NodeJS code.
+
+
+
 # Unsorted
 
 ## Group
