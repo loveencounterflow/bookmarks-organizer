@@ -115,6 +115,7 @@
     sql                             < programming/language programming/database
     sql                             = SQL
     pipestreaming                   = streampiping
+    content-dependent-chunking      = cdc
     tex                             < typesetting
     text-rendering-on-gpu           < webgl opengl
     xelatex                         < latex
@@ -494,6 +495,11 @@
   url:    https://www.npmjs.com/package/fuseql
   tags:   nodejs programming/filesystem/fuse::name
 
+* urls:   https://bcachefs.org/
+  tags:   filesystem
+
+* urls:   https://www.nayuki.io/page/designing-better-file-organization-around-tags-not-hierarchies
+  tags:   tags filesystem tagged-filesystem
 
 * url:    https://github.com/eventbrite/cartogram
   tags:   kannwas::name webgl threejs::name
@@ -614,6 +620,22 @@
   title:  Parsing Expressions by Recursive Descent by Theodore Norvell (C) 1999 with updates later on.
   tags:   parsing python pratt-parsing tdop
 
+* url:    https://www.oilshell.org/blog/2017/03/31.html
+  tags:   parsing pratt-parsing tdop
+  title:  Pratt Parsing Index and Updates
+
+* urls:   https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html
+          https://matklad.github.io/2020/04/15/from-pratt-to-dijkstra.html
+  tags:   parsing rust::name pratt-parsing tdop
+  title:  Simple but Powerful Pratt Parsing
+  about:  The goals of this particular article are:
+          * Raising an issue that the so-called left-recursion problem is overstated.
+          * Complaining about inadequacy of BNF for represeting infix expressions.
+          * Providing a description and implementation of Pratt parsing algorithm which sticks to the core
+            and doesn’t introduce a DSL-y abstraction.
+          * Understanding the algorithm myself for hopefully the last time. I’ve implemented a
+            production-grade Pratt parser once, but I no longer immediately understand that code :-)
+
 * url:    http://daniel-holden.com/page/you-could-have-invented-parser-combinators
   url:    https://www.youtube.com/watch?v=6oQLRhw5Ah0
   tags:   parsing parser-combinators
@@ -622,6 +644,21 @@
   url:    https://github.com/davisjam/vuln-regex-detector
   title:  Detect vulnerable regexes in your project. REDOS, catastrophic backtracking.
   tags:   programming/security regexes/catastrophic-backtracking regexes/redos
+  about:  Do not use this. It's full of bad ideas. One of them is that it needs to have an environment
+          variable defined before it can run (instead of using the CWD). The next bad idea is that it only
+          runs on Ubuntu, so not on Mint (wha?). After commenting out that senseless check, the configure
+          script proceeded with `sudo apt-get install -y zip unzip make git wget vim ocaml default-jdk maven
+          nodejs php-cli ruby cargo golang-go` which is... NOT a good idea. Yes, that's right: in order to
+          check for sane RegExes this software thinks it needs all of Java, NodeJS, OCaml, Vim (???), PHP,
+          Ruby, and Go. And Zip and Git on top of it. DO NOT USE.
+
+* url:    http://www.pcre.org/current/doc/html/pcre2test.html
+  url:    http://www.pcre.org/
+  url:    https://github.com/superhuman/rxxr2
+  url:    https://github.com/NicolaasWeideman/RegexStaticAnalysis
+  url:    http://www.rexegg.com/pcregrep-pcretest.html
+  url:    https://blog.r2c.dev/posts/finding-python-redos-bugs-at-scale-using-dlint-and-r2c/
+  url:    https://www.owasp.org/images/2/23/OWASP_IL_2009_ReDoS.pdf
 
 * url:    https://github.com/uhop/node-re2/
   title:  node.js bindings for RE2: fast, safe alternative to backtracking regular expression engines.
@@ -794,8 +831,8 @@
 * url:    https://stackoverflow.com/a/32435735/7568091
   tags:   develop Atom::name
   about:  Essential workflow to develop packages with Atom:
-          * Clone your package from GitHub using apm develop <package-name>. This will clone the package's
-            repo to your local ~/.atom/dev/packages/<package-name>
+          * Clone your package from GitHub using `apm develop <package-name>`. This will clone the package's
+            repo to your local `~/.atom/dev/packages/<package-name>`
           * `cd` into this directory;
           * Start Atom in this directory using `atom -d .`
 
@@ -1078,6 +1115,31 @@
   tags:   mkts html css pdf paged-html
   about:  Projects similar to mingkwai-typesetter
 
+  url:    https://mdxjs.com/
+  tags:   mkts html css pdf paged-html
+  author: Guillermo Rauch &al.
+  about:  Project similar to mingkwai-typesetter
+
+          * ❤️ Powerful: MDX blends markdown and JSX syntax to fit perfectly in JSX-based projects.
+
+          * 💻 Everything is a component: Import JSX components and render them directly in your MDX
+            document.
+
+          * 🔧 Customizable: Decide which component is rendered for each markdown element.
+
+          * 📚 Markdown-based: The simplicity and elegance of Markdown remains, you interleave JSX only when
+            you want to.
+
+          * 🔥 Blazingly blazing fast: MDX has no runtime, all compilation occurs during the build stage.
+
+          Before MDX, some of the benefits of writing Markdown were lost when integrating with JSX.
+          Implementations were often template string-based which required lots of escaping and cumbersome
+          syntax.
+
+          MDX seeks to make writing with Markdown and JSX simpler while being more expressive. Writing is
+          fun again when you combine components, that can even be dynamic or load data, with the simplicity
+          of Markdown for long-form content.
+
 * url:    https://github.com/jaroslov/knuth-plass-thoughts/blob/master/plass.md
   url:    https://github.com/bramstein/typeset
   url:    https://xxyxyz.org/line-breaking/
@@ -1161,6 +1223,7 @@
   url:    https://st.suckless.org/
   url:    https://github.com/LukeSmithxyz/st
   url:    https://wiki.archlinux.org/index.php/Rxvt-unicode
+  tags:   terminal
   about:  Suckless Terminal
 
 * url:    https://rsms.me/inter/
@@ -1654,6 +1717,287 @@
           to run but also less accurate — instead of finding a point’s exact nearest neighbor, they
           guarantee you’ll find a point that’s within some fixed distance of the actual nearest neighbor.
 
+* url:    https://habr.com/en/company/postgrespro/blog/490228/
+  title:  On recursive queries
+  author: Egor Rogov
+  tags:   postgresql sql databases
+  about:  This article deals with writing recursive queries. This topic was brought up routinely, but the
+          discussion was usually limited to simple cases related to trees: to descend from a vertex to the
+          leaves and to ascend from a vertex to the root. We will address a more complicated case of an
+          arbitrary graph.
+
+* url:    https://github.com/SAP/chevrotain/blob/master/examples/grammars/xml/xml_lexer.js
+  tags:   regex patterns xml xml_lexer
+  about:  patterns for XML lexers
+
+* url:    https://bbs.archlinux.org/viewtopic.php?id=193570
+  url:    https://askubuntu.com/questions/990363/how-to-load-iwlwifi-driver
+  url:    https://duckduckgo.com/?q=install+a+testing+version+of+iwlwifi&t=opera&ia=web
+  tags:   wifi enceladus problem
+  about:  "Hopefully they update the Intel wireless driver. I just got a new Dell laptop and getting any
+          Linux distro going reliably has been perilous. First Ubuntu 19.10 would boot fine from the live
+          USB, connect to WiFi when in the live environment, download updates just fine during the install,
+          but after rebooting into the installed system no WiFi. no network device detected. try to find
+          support in their community and they tell you you need to use another (nonexistent) network
+          connection to install a testing version of iwlwifi. Why does it work on the live
+          USB?"—https://arstechnica.com/gadgets/2020/03/ubuntu-20-04s-zsys-adds-zfs-snapshots-to-package-management/?comments=1&post=38705651
+
+* url:    https://gmpreussner.com/research/dimensional-analysis-in-programming-languages
+  title:  Dimensional Analysis in Programming Languages
+  about:  A survey of existing designs and implementations for automatic conversion and verification of
+          units of measurement in computer programs.
+
+* url:    https://pancake-charts.surge.sh/
+  url:    https://svelte.dev/repl/2a8acd2328ff4a5398def8b8c8252904?version=3.19.2
+  tags:   svelte::name charts treemap
+  about:  interactive charts (lines, bars, treemaps) with Svelte
+
+* url:    https://github.com/kentcdodds/match-sorter
+  about:  This follows a simple and sensible (user friendly) algorithm that makes it easy for you to filter
+          and sort a list of items based on given input. Items are ranked based on sensible criteria that
+          result in a better user experience.
+
+          To explain the ranking system, I'll use countries as an example:
+
+          * CASE SENSITIVE EQUALS: Case-sensitive equality trumps all. These will be first. (ex. France
+            would match France, but not france)
+          * EQUALS: Case-insensitive equality (ex. France would match france)
+          * STARTS WITH: If the item starts with the given value (ex. Sou would match South Korea or South
+            Africa)
+          * WORD STARTS WITH: If the item has multiple words, then if one of those words starts with the
+            given value (ex. Repub would match Dominican Republic)
+          * CASE STARTS WITH: If the item has a defined case (camelCase, PascalCase, snake_case or
+            kebab-case), then if one of the parts starts with the given value (ex. kingdom would match
+            unitedKingdom or united_kingdom)
+          * CASE ACRONYM If the item's case matches the synonym (ex. uk would match united-kingdom or
+            UnitedKingdom)
+          * CONTAINS: If the item contains the given value (ex. ham would match Bahamas)
+          * ACRONYM: If the item's acronym is the given value (ex. us would match United States)
+          * SIMPLE MATCH: If the item has letters in the same order as the letters of the given value (ex.
+            iw would match Zimbabwe, but not Kuwait because it must be in the same order). Furthermore, if
+            the item is a closer match, it will rank higher (ex. ua matches Uruguay more closely than United
+            States of America, therefore Uruguay will be ordered before United States of America)
+
+          This ranking seems to make sense in people's minds.
+
+* url:    https://babelmark.github.io/
+  url:    https://github.com/lunet-io/markdig
+  url:    https://spec.commonmark.org/0.29/#lazy-continuation-line
+  url:    https://johnmacfarlane.net/babelmark2/?text=%23+foo%0A%0A%60%60%60coffee%0Abar+%3D+42%0A%60%60%60%0A%0A*+oh%0A
+  url:    http://www.vfmd.org/differences/#including-raw-html
+  url:    https://github.com/vfmd/vfmd-spec/wiki/commonmark-vs-vfmd
+  url:    https://github.com/commonmark/commonmark-spec
+  url:    https://www.markdownguide.org/tools/typora/
+  tags:   markdown
+  about:  CommonMark, validation, comparison of MD implementations
+
+* urls:   https://yaytext.com/
+  tags:   Unicode fancy-text
+  about:  YayText! Super cool unicode text magic. Use s̶t̶r̶i̶k̶e̶t̶h̶r̶o̶u̶g̶h̶, 𝐛𝐨𝐥𝐝, 𝒊𝒕𝒂𝒍𝒊𝒄𝒔, and 🅜🅞🅡🅔
+          🄲🅁🄰🅉🅈 ʷlͤoͥoͬkͩing fonts on F̶a̶c̶e̶b̶o̶o̶k̶,̶ ̶T̶w̶i̶t̶t̶e̶r̶, and everywhere else.
+
+* urls:   https://www.chenhuijing.com/blog/css-for-i18n/
+  title:  CSS for internationalisation by Chen Hui Jing
+  about:  Covers horizontal vs vertical, East-Asian character substitution, writing direction etc. Covers
+          `discretionary-ligatures`, `font-feature-settings`, `font-variant-east-asian`,
+          `font-variant-ligatures`, `historical-ligatures`, `list-style-type`, `sideways-lr`, `sideways-rl`,
+          `text-combine-upright`, `text-decoration-skip`, `text-emphasis-color`, `text-emphasis-position`,
+          `text-emphasis-style`, `text-emphasis`, `text-orientation`, `vertical-lr`, `vertical-rl`,
+          `writing-mode`.
+
+* urls:   http://www.haskellforall.com/2016/05/a-command-line-benchmark-tool.html
+  title:  A command-line benchmark tool
+  tags:   benchmark performance diagnostics
+  about:  I wrote a small program named bench that lets you benchmark other programs from the command line.
+          Think of this as a much nicer alternative to the time command.
+
+* urls:   https://github.com/fd0/rabin-cdc
+          https://github.com/ronomon/deduplication
+  tags:   content-dependent-chunking rolling-hash deduplication string-searching
+
+* urls:   https://github.com/ronomon/deduplication
+  tags:   content-dependent-chunking rolling-hash deduplication string-searching
+  about:  Fast multi-threaded content-dependent chunking deduplication for Buffers in C++ with a reference
+          implementation in Javascript. Ships with extensive tests, a fuzz test and a benchmark.
+
+          Compared to fixed size chunking, which fails to detect most of the same chunk cut-points when file
+          content is shifted slightly, variable size content-dependent chunking can find most chunk
+          cut-points no matter how the chunks move around. You can tune the absolute minimum and maximum
+          chunk sizes required, as well as the expected average chunk size required.
+
+          While content-dependent chunking is more CPU-intensive than fixed size chunking, the chunking
+          algorithm of @ronomon/deduplication can detect chunks at a rate of more than 1.5 GB per second per
+          CPU core. This is significantly faster than the SHA-256 hashing algorithm, which is 2.5× slower by
+          way of contrast. @ronomon/deduplication achieves chunking speeds comparable to FastCDC.
+
+* urls:   https://en.wikipedia.org/wiki/Rabin–Karp_algorithm
+  tags:   content-dependent-chunking rolling-hash deduplication string-searching
+
+          The Rabin–Karp algorithm or Karp–Rabin algorithm is a string-searching algorithm created by
+          Richard M. Karp and Michael O. Rabin (1987) that uses hashing to find an exact match of a pattern
+          string in a text. It uses a rolling hash to quickly filter out positions of the text that cannot
+          match the pattern, and then checks for a match at the remaining positions. Generalizations of the
+          same idea can be used to find more than one match of a single pattern, or to find matches for more
+          than one pattern.
+
+          A practical application of the algorithm is detecting plagiarism. Given source material, the
+          algorithm can rapidly search through a paper for instances of sentences from the source material,
+          ignoring details such as case and punctuation. Because of the abundance of the sought strings,
+          single-string searching algorithms are impractical.
+
+
+* urls:   https://github.com/cytopia/linux-timemachine
+  tags:   backup/hard-link-based rsync
+  see:    rsync
+  see:    https://wiki.ubuntuusers.de/rsnapshot/
+  about:  Rsync-based OSX-like time machine for Linux, MacOS and BSD for atomic and resumable local and
+          remote backups
+
+          timemachine is a tiny and stable KISS driven and POSIX compliant script that mimics the behavior
+          of OSX's timemachine. It uses rsync to incrementally back up your data to a different directory,
+          hard disk or remote server via SSH. All operations are incremental, atomic and automatically
+          resumable.
+
+          Backups are always done incrementally using rsync's ability to hardlink to previous backup
+          directories (using `rsync --link-dest=$DIR`, hardlink to files in `$DIR` when unchanged). You can
+          nevertheless always see the full backup on the file system of any incrementally made backup
+          without having to generate it. This will also be true when deleting any of the previously created
+          backup directories.
+
+          Executable is 1 bash script.
+  pro:    fast
+  pro:    looks mature
+  con:    no GUI
+  note:   so far no tools to check for repo link status (what are duplicate, what are new files)
+  verdict:  may be used to simplify backups using `rsync` with `--link-dest`, so yes
+
+* urls:   http://rsnapshot.org/rsnapshot/docs/docbook/rest.html
+          https://wiki.ubuntuusers.de/rsnapshot/
+          https://github.com/rsnapshot/rsnapshot
+  see:    https://github.com/cytopia/linux-timemachine
+
+          rsnapshot is a filesystem snapshot utility. It can take incremental snapshots of local and remote
+          filesystems for any number of machines.
+
+          Local filesystem snapshots are handled with rsync(1). Secure remote connections are handled with
+          rsync over ssh(1), while anonymous rsync connections simply use an rsync server. Both remote and
+          local transfers depend on rsync.
+
+          rsnapshot saves much more disk space than you might imagine. The amount of space required is
+          roughly the size of one full backup, plus a copy of each additional file that is changed.
+          rsnapshot makes extensive use of hard links, so if the file doesn't change, the next snapshot is
+          simply a hard link to the exact same file.
+
+          rsnapshot will typically be invoked as root by a cron job, or series of cron jobs. It is possible,
+          however, to run as any arbitrary user with an alternate configuration file.
+
+          All important options are specified in a configuration file, which is located by default at
+          /etc/rsnapshot.conf. An alternate file can be specified on the command line. There are also
+          additional options which can be passed on the command line.
+  pro:    works
+  pro:    looks mature
+  pro:    uses rsync, hard links, so human-readable
+  pro:    documentation
+  pro:    many, many options
+  pro:    can configure how many copies to keep per level
+  pro:    can configure target location per source location
+  con:    configuration is not easy
+  con:    in a test, reported thousands of new files (as expected), but I was unable to find where they
+          were actually stored, so not good
+  verdict:  rather use linux-timemachine at this point
+
+* urls:   https://www.tecmint.com/rdiff-backup-remote-incremental-backup-for-linux/
+          https://www.thomas-krenn.com/de/wiki/Backup_unter_Linux_mit_rdiff-backup
+  tags:   backup/diff-based rsync
+  title:  Backup unter Linux mit rdiff-backup
+  about:  rdiff-backup ermöglicht einfache und platz-effiziente Backups unter Linux. Der Datenbestand des
+          letzten Backups ist direkt über das Dateisystem zugänglich. Für ältere Backup-Versionen einer
+          Datei legt rdiff-backup nur die Änderungen ab - diese älteren Versionen können über das
+          rdiff-backup Tool wiederhergestellt werden.
+  pro:    works
+  pro:    backup of latest directly readable (1:1)
+  con:    does not keep backup data and metadata apart
+  con:    diffs not human readable
+  con:    diffs not in a standard format
+  verdict:  do not use, use git or similar instead
+
+* urls:   https://github.com/bit-team/backintime
+  tags:   backup
+  con:    errors on first run
+  con:    installing package `backintime-qt5` results in executable `backintime-qt` that in fact needs
+          PyQt5 which it doesn't find although it is installed; alternative packages like `backintime-gnome`
+          and `backintime-kde` all need same pakcage that doesn't work; trying to remove via `synaptic`
+          threw errors (but then worked with `apt`)
+  verdict:  do not use, buggy software
+
+* urls:   https://media.ccc.de/v/c4.openchaos.2016.01.restic
+          https://media.ccc.de/v/froscon2015-1515-a_solution_to_the_backup_inconvenience#t=38
+  tags:   backup
+  pro:    works great
+  pro:    looks mature, well written
+  con:    encryption not optional
+  con:    always must provide password to access repo
+  con:    archived and metadata only available through use of `restic` command
+  con:    archives not in a standard format
+  verdict:  do not use for backups (no generic repo format), maybe OK for other uses
+
+* urls:     http://npm.broofa.com/?q=cupofjoe
+            http://npm.anvaka.com/#/view/2d/cupofjoe
+  tags:     visualization npm/dependencies
+
+* urls:     https://github.com/anvaka/npmrank
+  tags:     visualization npm/dependencies npm-packages pagerank
+  about:    sorts npm search results by the following metrics:
+            * Indegree - most dependent upon packages.
+            * Outdegree - packages with highest number of dependencies.
+            * Pagerank - rough estimate of package importance, based on number of dependents/dependencies.
+            * Hubs and Authorities - alternative importance classification, also based on number of edges.
+
+* urls:     https://anvaka.github.io/panzoom/demo/attach-via-script.html
+            https://github.com/anvaka/panzoom
+  tags:     utopia-planitia(software)
+  about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
+            wraparound option)" (Utopia Planitia, UP)
+
+* urls:     https://marcolago.github.io/flowtime.js/#/section-7/page-1
+            https://github.com/marcolago/flowtime.js
+  tags:     utopia-planitia(software) presentation software
+  about:    Flowtime.js HTML5/CSS3/JS Websites and Presentation Framework
+
+            Full Page Fluid Layout Boilerplate. Flowtime.js is designed to perfectly fit your viewport and
+            is based on a solid display: inline-block; foundation. This framework doesn’t style your
+            presentations or sites for you but it takes care of all the annoying things like navigation and
+            deep-linking, so you are free to style every single element of your design as you like. But for
+            the ones who need a ready-to-use tool it comes with a default theme that you can edit or you can
+            add new themes just by linking your css files.
+
+            Alternate Horizontal Layout The default layout has sections arranged side by side horizontally
+            and pages stacked vertically in each section. You can use the alternate layout with sections
+            stacked vertically and pages arranged horizontally by adding the class ft-cross to the Flowtime
+            element in the HTML document. See How to Build the Markup section for an example.
+
+            Multiple Controls Navigation. You can navigate through pages via links, keyboard, mouse,
+            gestures or deep-linking. Links are managed using the href value targeting a formatted hash
+            destination; see the demo's source code for more examples. Keyboard navigation is based on arrow
+            keys with the Shift key as a modifier to jump over fragments or sections.
+
+* urls:     http://lea.verou.me/2020/04/lch-colors-in-css-what-why-and-how
+  tags:     css color/space css4 css5
+  title:    LCH colors in CSS: what, why, and how?
+  about:
+
+            LCH is a color space that has several advantages over the RGB/HSL colors we’re familiar with in CSS. In fact, I’d go as far as to call it a game-changer, and here’s why.
+
+            1. We actually get access to about 50% more colors.
+            2. LCH (and Lab) is perceptually uniform
+            3. LCH lightness actually means something
+
+            LCH stands for “Lightness Chroma Hue”. The parameters loosely correspond to HSL’s, however there are a few crucial differences:
+
+            The hue angles don’t fully correspond to HSL’s hues. E.g. 0 is not red, but more of a magenta and 180 is not turquoise but more of a bluish green, and is exactly complementary.
+
+            In HSL, saturation is a neat 0-100 percentage, since it’s a simple transformation of RGB into polar coordinates. In LCH however, Chroma is theoretically unbounded. LCH (like Lab) is designed to be able to represent the entire spectrum of human vision, and not all of these colors can be displayed by a screen, even a P3 screen. Not only is the maximum chroma different depending on screen gamut, it’s actually different per color.
+
 # Unsorted
 
 ## Group
@@ -1717,5 +2061,57 @@
 ## Performance, Web CPU Cycles Benchmark
 
 * https://calendar.perfplanet.com/2019/javascript-component-level-cpu-costs/
+
+
+## Programming Languages
+
+* tags: programming-language
+
+  * name:   MANOOL
+    urls:   https://manool.org/blog/2020-01-07/manool-practical-language-with-universal-syntax-and-only-library-level-features
+
+            Practical Language with Universal Syntax and Only Library-Level Features (Except One)
+
+  * name:   Nim
+    urls:   https://nim-by-example.github.io/getting_started/
+            https://nim-lang.org/
+            https://github.com/nim-lang/Nim
+    tags:   macros
+
+            Nim is a compiled, garbage-collected systems programming language with a design that focuses on
+            efficiency, expressiveness, and elegance (in that order of priority).
+
+  * name:   Nemerle
+    urls:   http://nemerle.org
+    tags:   macros
+
+            Nemerle is a general-purpose, multi-paradigm programming language for the .Net platform. It is
+            as easy to learn and use as C# or VB.NET but Nemerle is by far more powerful. One may start
+            using it as an advanced C# and then, as learning goes on, employ a range of cool features
+            enabling metaprogramming and functional programming. The metaprogramming is based on macros
+            bearing some similarity to Lisp.
+
+  * name:   crush
+    urls:   https://github.com/liljencrantz/crush/
+    tags:   command-line structured-piped-data tabular-data
+    remark: shell with its own command line language
+
+            Crush is an attempt to make a command line shell that is also a powerful modern programming
+            language. It has the features one would expect from a modern programming language like a type
+            system, closures and lexical scoping, but with a syntax geared toward both batch and interactive
+            shell usage.
+
+            Many Crush commands operate on streams of tabular data. Command output is not sent over a unix
+            pipe but over a Rush channel. It is not understood by the command as a series of bytes, but as a
+            table of rows, and Crush provides you with SQL-like commands to sort, filter, aggregate and
+            group rows of data.
+
+  * name:   Nushell
+    urls:   https://www.nushell.sh/
+    tags:   command-line structured-piped-data tabular-data shell
+    remark: shell with its own command line language
+
+            A new type of shell. The goal of this project is to take the Unix philosophy of shells, where
+            pipes connect simple commands together, and bring it to the modern style of development.
 
 
