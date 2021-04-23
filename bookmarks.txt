@@ -493,8 +493,20 @@
 * url:    https://github.com/devsnek/fused
   url:    https://github.com/mafintosh/fuse-bindings
   url:    https://www.npmjs.com/package/fuseql
-  tags:   nodejs programming/filesystem/fuse::name
+  url:    https://github.com/fuse-friends/fuse-native
+  tags:   nodejs fuse::name filesystem
+  about:  Multithreaded FUSE bindings for Node JS.
 
+<<<<<<< HEAD
+=======
+          * N-API support means we ship prebuilds and in general works on new Node.js releases.
+          * Multithreading support means multiple calls to FUSE can run in parallel.
+          * Close to feature complete in terms of the the FUSE API.
+          * Embedded shared library support means users do not have to install FUSE from a 3rd party.
+          * API support for initial FUSE kernel extension configuration so you can control the user
+            experience.
+
+>>>>>>> 4a7baeebb74e8a173090d31c498d1f59a1932775
 * urls:   https://bcachefs.org/
   tags:   filesystem
 
@@ -578,8 +590,10 @@
   tags:   text distance similarity levenshtein
   about:  String similarity metrics
 
-* url:    https://people.csail.mit.edu/dongdeng/projects/passjoin/index.html
-  url:    https://en.wikipedia.org/wiki/Approximate_string_matching#Problem_formulation_and_algorithms
+* urls:   https://people.csail.mit.edu/dongdeng/projects/passjoin/index.html
+          http://dbgroup.cs.tsinghua.edu.cn/dd/papers/vldb2012-passjoin.pdf
+          http://people.csail.mit.edu/dongdeng/papers/passjoin-tr.pdf
+          https://en.wikipedia.org/wiki/Approximate_string_matching#Problem_formulation_and_algorithms
   title:  Pass-Join: A Partition based Method for Similarity Joins
   tags:   text distance similarity levenshtein similarity-join
   by:     Guoliang Li, Dong Deng, Jiannan Wang, Jianhua Feng
@@ -626,6 +640,10 @@
 
 * urls:   https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html
           https://matklad.github.io/2020/04/15/from-pratt-to-dijkstra.html
+<<<<<<< HEAD
+=======
+          https://www.reddit.com/r/ProgrammingLanguages/comments/hdr0y0/operator_precedence_using_pratt_parsing_with/
+>>>>>>> 4a7baeebb74e8a173090d31c498d1f59a1932775
   tags:   parsing rust::name pratt-parsing tdop
   title:  Simple but Powerful Pratt Parsing
   about:  The goals of this particular article are:
@@ -705,6 +723,13 @@
 * url:    https://github.com/erikbrinkman/d3-dag
   tags:   visualization programming/tree programming/dag
   title:  Layout algorithms for visualizing directed acylic graphs
+
+* urls:   http://penrose.ink/siggraph20
+          https://github.com/penrose/penrose
+          https://github.com/loveencounterflow/penrose
+          https://www.reddit.com/r/ProgrammingLanguages/comments/gv8dz4/penrose_from_mathematical_notation_to_beautiful/
+  tags:   visualization
+  title:  Create beautiful diagrams just by typing mathematical notation in plain text.
 
 * url:    http://logio.org/
   url:    https://github.com/NarrativeScience/Log.io
@@ -1040,9 +1065,6 @@
   tags:   postgresql profiler profiling
   about:  using plpgsql-check as a *line-by-line* profiler for PostgreSQL
 
-* url:    http://npm.anvaka.com/#/view/2d/intershop
-  about:  Draws a graphical dependency tree for a given module
-
 * bash:   `npm ls $module_name`
   about:  When executed in an NPM module directory, will list all dependency subtrees
           that the cause that `$module_name` is part of the project
@@ -1140,11 +1162,23 @@
           fun again when you combine components, that can even be dynamic or load data, with the simplicity
           of Markdown for long-form content.
 
+<<<<<<< HEAD
 * url:    https://github.com/jaroslov/knuth-plass-thoughts/blob/master/plass.md
   url:    https://github.com/bramstein/typeset
   url:    https://xxyxyz.org/line-breaking/
   url:    https://www.unicode.org/reports/tr14/
+=======
+* urls:   https://github.com/jaroslov/knuth-plass-thoughts/blob/master/plass.md
+          https://github.com/bramstein/typeset
+          https://github.com/robertknight/tex-linebreak
+          https://xxyxyz.org/line-breaking/
+          https://www.unicode.org/reports/tr14/
+>>>>>>> 4a7baeebb74e8a173090d31c498d1f59a1932775
   tags:   mkts html css line-breaking slugs knuth-plass-algorithm
+
+* urls:   https://github.com/robertknight/tex-linebreak/blob/master/src/layout.ts
+          https://github.com/bramstein/typeset
+  tags:   javascript line-breaking knuth-plass-algorithm
 
 * url:    https://www.paperplane.app/blog/modern-html-to-pdf-conversion-2019/
   tags:   mkts html css pdf paged-html
@@ -1185,7 +1219,7 @@
   about:  draw (linguistic) trees; maybe an option to display CJK character decompositions
 
 * url:
-  titel:  l3experimental – Experimental LaTeX3 concepts
+  title:  l3experimental – Experimental LaTeX3 concepts
 
   about:  The l3­ex­per­i­men­tal pack­ages are a col­lec­tion of
           ex­per­i­men­tal im­ple­men­ta­tions for as­pects of the LaTeX3
@@ -1250,7 +1284,7 @@
 
 
 * url:    https://www.onux.com/jspp/
-  tags:   languages-that-compile-to-js typed-languages
+  tags:   languages-that-compile-to/javascript typed-languages
 
 * url:    http://www.natubunko.net/kotoba03.html
   title:  漢字部首名一覧
@@ -1371,7 +1405,32 @@
 * url:    https://beyondgrep.com/feature-comparison/
   url:    https://github.com/BurntSushi/ripgrep
   url:    https://phiresky.github.io/blog/2019/rga--ripgrep-for-zip-targz-docx-odt-epub-jpg/
+  tags:   grep regex code-search information-retrieval
   about:  Pattern matching, code search, search in archives, PDFs etc.
+
+* url:    https://learnbyexample.github.io/learn_gnugrep_ripgrep/ripgrep.html
+  tags:   grep regex code-search information-retrieval
+  title:  GNU GREP and RIPGREP
+  about:  ripgrep is definitely becoming a popular alternative (if not the most popular) to grep command.
+          Editors like Visual Studio Code and Atom are using ripgrep to power their search offerings. The
+          major selling point is its default behavior for recursive search and speed. The project doesn't
+          aim to be compatible with POSIX and behavior varies with respect to GNU grep in terms of features,
+          option names, output style, regular expressions, etc.
+
+* urls:   https://www.reddit.com/r/commandline/comments/k5ekzz/rga_ripgrep_but_also_search_in_pdfs_ebooks_office/
+          https://github.com/phiresky/ripgrep-all
+          https://phiresky.github.io/blog/2019/rga--ripgrep-for-zip-targz-docx-odt-epub-jpg/
+  title:  Rga: Ripgrep, but also search in PDFs, E-Books, Office documents, zip, tar.gz
+  about:  rga is a line-oriented search tool that allows you to look for a regex in a multitude of file
+          types. rga wraps the awesome ripgrep and enables it to search in pdf, docx, sqlite, jpg, movie
+          subtitles (mkv, mp4), etc.
+
+          rga will recursively descend into archives and match text in every file type it knows.
+
+* url:    https://www.opensemanticsearch.org/doc/desktop_search
+  url:    https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
+  url:    https://beyondgrep.com/feature-comparison/
+  tags:   desktop-search-engine
 
 * url:    https://tug.org/FontCatalogue/docs.html
   about:  TeX LaTeX fonts, downloads, font catalogs
@@ -1496,11 +1555,6 @@
   tags:   railway-oriented-programming railroad-oriented-programming "Scott Wlashin"::name pipestreaming
   title:  Railway Oriented Programming in Elixir
 
-* url:    https://www.opensemanticsearch.org/doc/desktop_search
-  url:    https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
-  url:    https://beyondgrep.com/feature-comparison/
-  tags:   desktop-search-engine
-
 * url:    https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf
   title:  Programming Paradigms for Dummies: What Every Programmer Should Know
   author: Peter Van Roy
@@ -1598,14 +1652,6 @@
   tags:   typography web variable-font
   title:  Variable Fonts (beta)
   about:  A simple resource for finding and trying variable fonts
-
-* url:    https://github.com/anvaka/ngraph
-  url:    https://github.com/anvaka/VivaGraphJS
-  url:    https://www.youtube.com/watch?v=Kp377p-NSFc
-  about:  graph rendering, algorithms in JS by anvaka
-
-* url:    https://anvaka.github.io/graph-drawing-libraries/#!/all#%2Fall
-  about:  JD graph rendering libraries
 
 * url:    http://rulezjs.com/
   tags:   javascript svg on-screen-ruler
@@ -1930,6 +1976,7 @@
           threw errors (but then worked with `apt`)
   verdict:  do not use, buggy software
 
+<<<<<<< HEAD
 * urls:   https://media.ccc.de/v/c4.openchaos.2016.01.restic
           https://media.ccc.de/v/froscon2015-1515-a_solution_to_the_backup_inconvenience#t=38
   tags:   backup
@@ -1941,6 +1988,31 @@
   con:    archives not in a standard format
   verdict:  do not use for backups (no generic repo format), maybe OK for other uses
 
+=======
+* urls:     https://media.ccc.de/v/c4.openchaos.2016.01.restic
+            https://media.ccc.de/v/froscon2015-1515-a_solution_to_the_backup_inconvenience#t=38
+  tags:     backup
+  pro:      works great
+  pro:      looks mature, well written
+  con:      encryption not optional
+  con:      always must provide password to access repo
+  con:      archived and metadata only available through use of `restic` command
+  con:      archives not in a standard format
+  verdict:  do not use for backups (no generic repo format), maybe OK for other uses
+
+* urls:     https://freefilesync.org/
+  tags:     backup
+  pro:      friend's recommendation
+
+* url:      https://github.com/anvaka/ngraph
+  url:      https://github.com/anvaka/VivaGraphJS
+  url:      https://www.youtube.com/watch?v=Kp377p-NSFc
+  about:    graph rendering, algorithms in JS by anvaka
+
+* url:      https://anvaka.github.io/graph-drawing-libraries/#!/all#%2Fall
+  about:    JD graph rendering libraries
+
+>>>>>>> 4a7baeebb74e8a173090d31c498d1f59a1932775
 * urls:     http://npm.broofa.com/?q=cupofjoe
             http://npm.anvaka.com/#/view/2d/cupofjoe
   tags:     visualization npm/dependencies
@@ -1953,12 +2025,83 @@
             * Pagerank - rough estimate of package importance, based on number of dependents/dependencies.
             * Hubs and Authorities - alternative importance classification, also based on number of edges.
 
+<<<<<<< HEAD
+=======
+* urls:     https://moiva.io/?compare=cnd+intertype+mixa+multimix
+  tags:     visualization npm-packages pagerank
+  title:    Measure and compare JavaScript libraries
+
+>>>>>>> 4a7baeebb74e8a173090d31c498d1f59a1932775
 * urls:     https://anvaka.github.io/panzoom/demo/attach-via-script.html
             https://github.com/anvaka/panzoom
   tags:     utopia-planitia(software)
   about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
             wraparound option)" (Utopia Planitia, UP)
 
+<<<<<<< HEAD
+=======
+* urls:     https://www.endlesspaper.app/
+  tags:     utopia-planitia(software)
+  about:    EndlessPaper is a note-taking app with infinite zoom for iOS
+
+* urls:     http://zoom.it/
+            https://github.com/zoomhub/zoomhub
+  tags:     utopia-planitia(software)
+
+* urls:     https://github.com/team-video/tragopan
+  tags:     utopia-planitia(software)
+  about:    Tragopan uses native browser scrolling as its implementation for panning (left/right/up/down),
+            and transform/scale for zooming (in/out). In our testing, we found that native scrolling was far
+            more efficient than using transform for panning. As an extra bonus, if your DOM is structured so
+            that your viewport element can be your document body, some browsers appear to do even more
+            optimization for that special case.
+
+* urls:     http://htwins.net/scale2/
+            https://www.pixijs.com/
+  tags:     utopia-planitia(software)
+
+* urls:     https://www.pixijs.com/
+  tags:     utopia-planitia(software)
+  title:    The HTML5 Creation Engine
+  about:    Create beautiful digital content with the fastest, most flexible 2D WebGL renderer.
+
+            * **MULTI-PLATFORM SUPPORT**—Interactive, visually compelling content on desktop, mobile and
+              beyond, all reached with a single codebase to deliver transferable experiences.
+
+            * **TINTING & BLENDING MODES**—Designers and clients will be thrilled by Photoshop quality
+              blending and colour modes.
+
+            * **SPRITE SHEET SUPPORT**—Pixi caters for a range of sprite sheet formats and includes advanced
+              support for features like trimming and rotational packing.
+
+            * **ASSET LOADER**—Sprite-sheets, graphics, fonts, animation data (soon to have Adobe Animate
+              support). All your incoming assets can be loaded and handled by PixiJS.
+
+            * **EASY API**—Designed to be intuitive and easy to pick up. Developers old and new will find
+              themselves right at home with its simple yet powerful API.
+
+            * **WEBGL FILTERS**—Use and create your own spectacular WebGL filters and shaders to give your
+              projects next-level visual fidelity and performance.
+
+            * **ADVANCED TEXT RENDERING**—Beautiful anti-aliased text at native and retina resolutions means
+              that Pixi copy is as easy on the eye as it is on any other delivery method.
+
+            * **FULL SCENE GRAPH**—Organise your objects in hierarchical trees, with parent-child
+              relationships.
+
+            * **RENDERER AUTO-DETECT**—Certain, older platforms may not be able to use WebGL. Not a problem
+              with Pixi as Canvas fallback is seamless and automated.
+
+            * **DEPLOY INTO APPS**—Use technologies such as Cordova to rapidly deploy your Pixi project as
+              an App. Superb for both concepting and full delivery.
+
+            * **ACCESSIBILITY**—Pixi is an inclusive technology and all content can be made to be screen
+              reader accessible with ease. The only WebGL renderer out there that does.
+
+            * **MULTI TOUCH INTERACTIVITY**—True multi-touch input and tracking means that you can create
+              interactions such as pinch-to-scale that give audiences native feeling experiences.
+
+>>>>>>> 4a7baeebb74e8a173090d31c498d1f59a1932775
 * urls:     https://marcolago.github.io/flowtime.js/#/section-7/page-1
             https://github.com/marcolago/flowtime.js
   tags:     utopia-planitia(software) presentation software
@@ -1984,9 +2127,13 @@
 * urls:     http://lea.verou.me/2020/04/lch-colors-in-css-what-why-and-how
   tags:     css color/space css4 css5
   title:    LCH colors in CSS: what, why, and how?
+<<<<<<< HEAD
   about:
 
             LCH is a color space that has several advantages over the RGB/HSL colors we’re familiar with in CSS. In fact, I’d go as far as to call it a game-changer, and here’s why.
+=======
+  about:    LCH is a color space that has several advantages over the RGB/HSL colors we’re familiar with in CSS. In fact, I’d go as far as to call it a game-changer, and here’s why.
+>>>>>>> 4a7baeebb74e8a173090d31c498d1f59a1932775
 
             1. We actually get access to about 50% more colors.
             2. LCH (and Lab) is perceptually uniform
@@ -1997,6 +2144,1157 @@
             The hue angles don’t fully correspond to HSL’s hues. E.g. 0 is not red, but more of a magenta and 180 is not turquoise but more of a bluish green, and is exactly complementary.
 
             In HSL, saturation is a neat 0-100 percentage, since it’s a simple transformation of RGB into polar coordinates. In LCH however, Chroma is theoretically unbounded. LCH (like Lab) is designed to be able to represent the entire spectrum of human vision, and not all of these colors can be displayed by a screen, even a P3 screen. Not only is the maximum chroma different depending on screen gamut, it’s actually different per color.
+
+<<<<<<< HEAD
+=======
+* urls:     https://dba.stackexchange.com/questions/97779/postgresql-result-of-range-difference-would-not-be-contiguous
+            https://dba.stackexchange.com/a/97783
+            https://dba.stackexchange.com/a/97822
+            https://dba.stackexchange.com/a/141025
+            https://github.com/loveencounterflow/interlap
+  see:      mojikura3-model/db/140-fmt-2-ranges.sql
+  tags:     sql postgresql ranges range/arithmetic subtract difference-of-ranges
+  about:    Although PostgreSQL has `range` datatypes, there is no obvious way to get the difference
+            of two ranges when the result would be non-contiguous.
+
+            **Note:** the above URLs all link to the same page; all three answers should be considered.
+
+* urls:     https://dba.stackexchange.com/a/101010/126933
+  tags:     sql postgresql ranges range/arithmetic subtract difference-of-ranges
+
+* urls:     https://github.com/thecodrr/fdir
+  tags:     nodejs filesystem glob-matching
+
+* urls:     https://www.typography.com/blog/text-for-proofing-fonts
+  title:    Text for Proofing Fonts: A farewell to The Quick Brown Fox.
+  author:   Jonathan Hoefler
+  about:    Pangrams and other, more helpful texts for font-proofing.
+
+* urls:     https://demo.themesberg.com/neumorphism-ui/#top
+  tags:     ui ui/design css html
+  about:    Minimalist yet subtly 3Dish web design that goes a little further than Google Material in that
+            it uses positive and negative gradients—lights and shadows—to indicate both upsteps and
+            downsteps on the design plane, thereby allowing for clear, visible 'popup' and 'pushdown'
+            effects without becoming overfraught with effects. An interesting question would be how to
+            distinguish a depressed button (such as needed for feedback on click, or to denote a feature is
+            in 'on' state) from text fields in forms (the default being to use sunken elements for text
+            fields and raised ones for buttons).
+
+* urls:     http://xahlee.info/comp/comp_lang_array_index_start_0_or_1.html
+  tags:     one-based-or-zero-based
+  title:    Language Design: Should Array Index Start at 0 or 1?
+  author:   Xah Lee
+
+* urls:     http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html
+  tags:     one-based-or-zero-based
+  title:    Why numbering should start at zero
+  author:   Edgar Dijkstra
+
+* urls:     http://exple.tive.org/blarg/2013/10/22/citation-needed/
+  tags:     one-based-or-zero-based
+  title:    Citation Needed
+  author:   mhoye
+  about:    The fact of it is this: before pointers, structs, C and Unix existed, at a time when other
+            languages with a lot of resources and (by the standard of the day) user populations behind them
+            were one- or arbitrarily-indexed, somebody decided that the right thing was for arrays to start
+            at zero.
+
+            So I found that person and asked him.
+
+* urls:     https://www.aivosto.com/articles/control-characters.html
+  tags:     ASCII unicode control-characters
+
+* urls:     https://github.com/finos/perspective
+  title:    Perspective: Streaming pivot visualization via WebAssembly https://perspective.finos.org/
+  about:    Perspective is an interactive visualization component for large, real-time datasets. Originally
+            developed for J.P. Morgan's trading business, Perspective makes it simple to build real-time &
+            user configurable analytics entirely in the browser, or in concert with Python and/or
+            Jupyterlab. Use it to create reports, dashboards, notebooks and applications, with static data
+            or streaming updates via Apache Arrow.
+
+            * A fast, memory efficient streaming query engine, written in C++ and compiled to WebAssembly,
+              with read/write/stream support for Apache Arrow.
+
+            * A framework-agnostic query configuration UI component, based on Web Components, and a
+              WebWorker and/or WebSocket data engine host for stable interactivity at high frequency.
+
+            * A customizable HTML Data Grid plugin, and a Chart plugin built on D3FC.
+
+            * Integration with Jupyterlab, both natively in a Python kernel, and as a notebook Widget.
+
+            * Cross-language streaming and/or virtualization to the browser via Apache Arrow.
+
+            * Runtimes for the browser, Python, and Node.js.
+
+* urls:     https://jawj.github.io/zapatos/index.html
+  title:    Zapatos: Zero-Abstraction Postgres for TypeScript
+  about:    Postgres and TypeScript are each, individually, fabulous.
+
+            Zapatos aims to make them work beautifully together. No abstractions, no distractions: just your
+            database, with type safety.
+
+            To achieve this aim, Zapatos does these five things:
+
+            * **Typescript schema**—A command-line tool speaks to your Postgres database and writes up a
+              detailed TypeScript schema for every table. This is just a means to an end: it enables the
+              next three things in this list.
+
+            * **Arbitrary SQL**—Simple building blocks help you write arbitrary SQL using tagged templates,
+              and manually apply the right types to what goes in and what comes back.
+
+            * **Everyday CRUD**—Shortcut functions produce everyday CRUD queries with no fuss and no
+              surprises, fully and automatically typed.
+
+            * **JOINs as nested JSON**—Nested shortcut calls generate LATERAL JOIN queries, resulting in
+              arbitrarily complex nested JSON structures, still fully and automatically typed.
+
+            * **Transactions**—A transaction function helps with managing and retrying transactions. Show me
+
+* urls:     https://increment.com/frontend/a-users-guide-to-css-variables
+  about:    Guide to CSS variables, CSS feature requests
+
+            * Creating color palettes
+            * CSS variables are reactive
+            * CSS variables facilitate style encapsulation
+            * CSS variables facilitate true separation of behavior and style
+            * CSS variables in a nutshell
+            * Cycles make CSS variables invalid at computed value time
+            * Dynamic instead of lexical scoping
+            * How do CSS variables differ from preprocessor variables?
+            * Preventing inheritance
+            * The magical future of CSS custom properties
+            * What about browser support?
+            * When fallback values don’t cut it
+
+* urls:     https://fontfaceobserver.com/
+  author:   Bram Stein
+  tags:     css fonts fontfaceobserver::name
+
+* urls:     https://shopify.github.io/draggable/
+            https://shopify.github.io/draggable/examples/
+  tags:     javascript draggable drag-and-drop ui ux html dom
+  about:    a lightweight, responsive, modern drag & drop library
+
+* urls:     https://jsgrids.io/
+  tags:     javascript html browser spreadsheet overview datagrids
+  about:    list of dozens of in-browser spreadsheet apps, allows to select by features
+
+* urls:     https://github.com/spieglt/whatfiles
+  name:     whatfiles
+  about:    Whatfiles is a Linux utility that logs what files other programs read/write/create/delete on
+            your system. It traces any new processes and threads that are created as well.
+
+* urls:     https://de.wikipedia.org/wiki/Library_Genesis
+            https://en.wikipedia.org/wiki/Library_Genesis
+            93.174.95.27
+            93.174.95.87
+            gen.lib.rus.ec
+            libgen.io
+            libgen.is
+            libgen.lc
+            libgen.me
+            libgen.pw
+  name:     Library Genesis (Libgen)
+  about:    Library Genesis (Libgen) is a file-sharing website for scholarly journal articles, academic and
+            general-interest books, images, comics, and magazines. In part, the site enables free access to
+            content that is otherwise paywalled or not digitized elsewhere. Libgen describes itself as a
+            "links aggregator" providing a searchable database of articles, books, and images "collected
+            from publicly available public Internet resources", as well as uploaded "items from users".
+            Controversy surrounds the copyright status of many works accessible through this website.
+
+* urls:     http://www.corvelsoftware.co.uk/crowbar/
+            https://typedrawers.com/discussion/3686/crowbar-a-text-shaping-debugger
+            https://github.com/simoncozens/crowbar
+  tags:     fonts fonts/metrics interplot::name fontmirror::name
+
+* urls:     https://github.com/aristocratos/bashtop
+  tags:     terminal gui kannwas
+  about:    htop-like utlity with very fast and painless installation, over-the-top eye candy using
+            TrueColors in the terminal.
+
+* urls:     https://www.youtube.com/watch?v=IYzDFHx6QPY
+  title:    The lazy programmer's guide to writing thousands of tests - Scott Wlaschin
+  tags:     test-driven-development property-based-testing programming
+  about:    We are all familiar with example-based testing, as typified by TDD and BDD, where each test is
+            hand-crafted.
+
+            But there's another approach to writing tests. In the "property-based testing" approach, a
+            single test is run hundreds of times with randomly generated inputs. Property-based testing is a
+            great way to find edge cases, and also helps you to understand and document the behavior of your
+            code under all conditions.
+
+            This talk will introduce property-based testing, show you how it works, and demonstrate why you
+            should consider adding this powerful technique to your toolbelt.
+
+* urls:     https://github.com/dubzzz/fast-check
+  title:    Property based testing framework for JavaScript/TypeScript
+  tags:     test-driven-development property-based-testing programming nodejs
+
+* urls:     https://github.com/cybertec-postgresql/pg_timetable
+            https://www.cybertec-postgresql.com/en/pg_timetable-start-up-improvements/
+  tags:     postgresql job-scheduler
+  about:    pg_timetable is an advanced job scheduler for PostgreSQL, offering many advantages over
+            traditional schedulers such as cron and others. It is completely database driven and provides a
+            couple of advanced concepts.
+
+* urls:     https://github.com/lukeed/sade
+  tags:     nodejs command-line-parser
+
+* urls:     https://caporal.io
+  tags:     nodejs command-line-parser
+
+* urls:     https://github.com/mxmlnkn/ratarmount
+  tags:     filesystem archive files-as-folders
+  title:    Random Access Read-Only Tar Mount (Ratarmount)
+  about:    Combines the random access indexing idea from tarindexer and then mounts the TAR using fusepy
+            for easy read-only access just like archivemount. It also will mount TARs inside TARs inside
+            TARs, ... recursively into folders of the same name, which is useful for the ImageNet data set.
+            Furthermore, it now has support for BZip2 compressed TAR archives provided by indexed_bzip2, a
+            refactored and extended version of bzcat from toybox, and support for Gzip compressed TAR
+            archives provided by the indexed_gzip dependency.
+
+* urls:     https://bitbucket.org/agalanin/fuse-zip/wiki/Home
+            https://github.com/loveencounterflow/fuse-zip-git
+  tags:     fuse files-as-folders
+  about:    `fuse-zip` is a FUSE file system to navigate, extract, create and modify ZIP and ZIP64 archives
+            based on libzip implemented in C++. With fuse-zip you really can work with ZIP archives as real
+            directories. Unlike KIO or Gnome VFS, it can be used in any application without modifications.
+
+* urls:     https://pypi.org/project/PyHyphen/
+            https://bitbucket.org/fhaxbox66/pyhyphen
+  tags:     python line-breaking hyphenation
+  about:    PyHyphen is a pythonic interface to the hyphenation C library used in software such as
+            LibreOffice and the Mozilla suite. It comes with tools to download, install and uninstall
+            hyphenation dictionaries from LibreOffice's Git repository. PyHyphen provides the 'hyphen' and
+            'textwrap2' packages as well as wraptext.py, a script which wraps a text-file with hyphenation
+            given a specified width. See the code example under "Quick start" above.
+
+* urls:     https://github.com/frej/fast-export
+  tags:     version-control-system DVCS git mercurial hg
+  title:    hg-fast-export
+  about     hg-fast-export.(sh|py) - mercurial to git converter using git-fast-import
+
+* urls:     https://github.com/joshuarli/ydiff
+  tags:     diff programming
+  about:    This is ydiff, distilled down to the very core.
+
+            It's been heavily modified and stripped down to a very specific feature subset:
+
+            * py3.6+
+            * assumes utf-8
+            * only read git unified diffs from stdin
+            * only side-by-side rendering
+            * And, modified to be visually less noisy.
+
+* urls:     https://github.com/ldo/harfpy
+  about:    HarfPy is a Python 3 binding for
+            [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/). It is meant to be used in
+            conjunction with my Python wrappers for other major parts of the Linux typography stack:
+
+            * Qahirah ([GitLab](https://gitlab.com/ldo/qahirah),
+              [GitHub](https://github.com/ldo/qahirah)) -- my binding for the
+              [Cairo](https://www.cairographics.org/) graphics library
+            * python_freetype ([GitLab](https://gitlab.com/ldo/python_freetype),
+              [GitHub](https://github.com/ldo/python_freetype)) -- my binding for
+              [FreeType](https://www.freetype.org/)
+            * PyBidi ([GitLab](https://gitlab.com/ldo/pybidi),
+              [GitHub](https://github.com/ldo/pybidi)) -- my binding for
+              [FriBidi](https://fribidi.org/)
+
+            The basic steps in doing a piece of high-quality text rendering on Linux are:
+
+            * Make sure all text is encoded in Unicode. (This should go without saying...)
+            * Use FriBidi to reorder a string of unicode-encoded text from logical (reading) order to
+              visual (rendering) order. (This step can be skipped in cases where you do not mix text
+              of different directions.)
+            * Use FreeType to load a suitable font.
+            * Use HarfBuzz to choose and lay out suitable glyphs for the specified text, controlled by
+              appropriate features selected from the specified font.
+            * Use Cairo to draw the actual glyphs, as laid out by HarfBuzz, with that font.
+
+* urls:     https://github.com/harfbuzz/uharfbuzz
+  title:    uharfbuzz
+  about:    Streamlined Cython bindings for the HarfBuzz shaping engine.
+
+* urls:     http://gitpop2.herokuapp.com
+  title:    GitPop2
+  about:    Find the most popular fork on GitHub (like Stargazer's Forks)
+
+* urls:     https://www.wordlab.app/catalogue/youtube/chinese.html#lang-list
+  title:    YouTube channels to learn Chinese
+  about:    listing of YouTube channels to learn lots and lots of languages,
+            Chinese, Japanese, Korean among them
+
+* urls:     https://www.sharingebook.com
+  title:    Sharing eBook
+  tags:     library literature pdf download ebooks
+  about:    Many titles as scanned PDFs. Topics include Philosophy, Novels, Self-Help, History, Travel and
+            places, Occultism, Psychology, Biography, Art, Teach yourself, Business, Science, Languages
+            learning, Health and Fitness, Religions, Classic books, Poltical, Learn English, Editor's Picks
+
+* urls:     https://www.kanjipedia.jp/kanji/0007398500
+  title:    漢字ペディア
+  tags:     kanji cjk chinese-characters dictionary japanese
+
+* urls:     https://c3d.github.io/xl/
+  title:    XL: An extensible programming language
+  about:    XL is an extensible programming language, designed to accomodate a variety of programming needs
+            with ease.
+
+            Being extensible means that the language is designed to make it very easy for programmers to
+            adapt the language to suit their needs, for example by adding new programming constructs. In XL,
+            extending the language is a routine operation, much like adding a function or creating a class
+            in more traditional programming languages. This extensibility is demonstrated by the fact that
+            operations that are built-in in other programming languages, such as integer arithmetic, basic
+            types or loops, are part of the standard library in XL.
+
+* urls:     https://github.com/cybertec-postgresql/pg_timetable
+  title:    pg_timetable: Advanced scheduling for PostgreSQL
+  about:    pg_timetable is an advanced job scheduler for PostgreSQL, offering many advantages over
+            traditional schedulers such as cron and others. It is completely database driven and provides a
+            couple of advanced concepts.
+
+            * Tasks can be arranged in chains
+            * A chain can consist of SQL and executables
+            * Parameters can be passed to chains
+            * Missed tasks (possibly due to downtime) can be retried automatically
+            * Support for configurable repetitions
+            * Builtin tasks such as sending emails, etc.
+            * Fully database driven configuration
+            * Full support for database driven logging
+            * Cron-style scheduling
+            * Optional concurrency protection
+
+* urls:     https://en.wiktionary.org/wiki/Appendix:Easily_confused_Chinese_characters
+  tags:     cjk chinese-characters confusables
+  title:    Easily confused Chinese characters
+  about:    Some distinct Chinese characters are easily confused, because they differ in subtle respects. On
+            Wiktionary, graphically similar characters are listed at the top of entry pages, and are
+            collected here for reference.
+
+            This page discusses characters or components which may be confused with each other, yielding the
+            wrong character or an invalid character, not characters which are complicated but unlikely to be
+            confused with other characters.
+
+            This page does not treat variant forms or simplifications, subtle or otherwise, such as 殼 to 殻,
+            as these are very numerous and are more correctly incorrect forms or simply errors, rather than
+            confusions. Variant forms are listed at individual characters. An exception is made when such a
+            variation illustrates a more general distinction, such as 鄉 versus 郷, which illustrates 良 vs. 艮.
+
+* urls:     https://github.com/sustrik/uxy
+  title:    UXY: Adding structure to the UNIX tools
+  about:    Treating everything as a string is the way through which the great power and versatility of UNIX
+            tools is achieved. However, sometimes the constant parsing of strings gets a bit cumbersome.
+
+            UXY is a tool to manipulate UXY format, which is basically a two-dimensional table that's both
+            human- and machine-readable.
+
+            The format is deliberately designed to be as similar to the output of standard tools, such as ls
+            or ps, as possible.
+
+            UXY tool also wraps some common UNIX tools and exports their output in UXY format. Along with
+            converters from/to other common data formats (e.g. JSON) it is meant to allow for quick and
+            painless access to the data.
+
+* urls:     https://github.com/HinTak/Font-Validator
+  title:    Font-Validator
+  about:    Font Validator is a tool for testing fonts prior to release. It was initially developed by
+            Microsoft, to ensure that fonts meet Microsoft's high quality standards and perform
+            exceptionally well on Microsoft's platform.
+
+            FontVal.exe is the GUI, and FontValidator.exe shows usage and example if run without arguments;
+            both should be self-explanatory. We provide all-in-one native command-line binaries,
+            FontValidator, for Mac OS X and Linux, as of Release 2.1.1. Georg Seifert contributed a friendly
+            GUI wrapper for Mac around the command-line tool.
+
+* urls:     https://freefilesync.org/
+  title:    FreeFileSync
+  about:    FreeFileSync is a folder comparison and synchronization software that creates and manages backup
+            copies of all your important files. Instead of copying every file every time, FreeFileSync
+            determines the differences between a source and a target folder and transfers only the minimum
+            amount of data needed. FreeFileSync is Open Source software, available for Windows, macOS, and
+            Linux.
+
+* urls:     https://abandonedwig.info/blog/2020/07/03/css-painting-order.html
+  title:    CSS Painting Order
+  tags:     css html painting-order stacking-context
+  about:    How does a browser determine what order to paint content in? A first guess might be that
+            browsers will paint content in the order that it is specified in the DOM, which for an HTML page
+            is the order it appears in the source code of the page.
+
+* urls:     https://github.com/extrabacon/python-shell
+  title:    python-shell
+  tags:     nodejs python ipc node-python-bridge
+  about:    A simple way to run Python scripts from Node.js with basic but efficient inter-process
+            communication and better error handling.
+            * Reliably spawn Python scripts in a child process
+            * Built-in text, JSON and binary modes
+            * Custom parsers and formatters
+            * Simple and efficient data transfers through stdin and stdout streams
+            * Extended stack traces when an error is thrown
+            * Installation
+
+* urls:     https://github.com/Submersible/node-python-bridge
+  title:    python-bridge
+  tags:     nodejs python ipc node-python-bridge
+  about:    Most robust and simple Python bridge.
+            * Does not affect Python's stdin, stdout, or stderr pipes.
+            * Exception stack traces forwarded to Node for easy debugging.
+            * Python 2 & 3 support, end-to-end tested.
+            * Windows support, end-to-end tested.
+            * Command queueing, with promises.
+            * Long running Python sessions.
+            * ES6 template tags for easy interpolation & multiline code.
+
+* urls:     https://github.com/denisidoro/remacro
+  title:    remacro
+  tags:     markdown mkts
+  about:    With this tool it's possible to generate a superset of markdown, so that you don't want to
+            repeat yourself. It also works for any plain-text content, so it's able to expand source code as
+            well.
+
+* urls:     https://sparanoid.com/lab/opentype-features
+  title:    The Complete CSS Demo for OpenType Features
+  tags:     css typesetting opentype-features
+  about:    This project is a comprehensive CSS font-feature-settings demo for OpenType features, a refined
+            version of Syntax for OpenType features in CSS by Adobe, licensed under CC BY-NC-SA 3.0.
+
+* urls:     https://www.typotheque.com/articles/opentype_features_in_css
+  title:    OpenType features in CSS
+  tags:     css typesetting opentype-features
+  author:   Gustavo Ferreira
+  about:    Overview and sample code for accessing OpenType features in CSS.
+
+* urls:     https://wakamaifondue.com/
+  title:    Wakamai Fondue
+  tags:     css typesetting opentype-features
+  about:    A webpage to drag-n-drop Opentype font files to see a listing of all features and glyphs that
+            font contains
+
+* urls:     https://strokeorder.com.tw/凹.html
+  title:    筆順字典
+  tags:     CJK strokeorder
+
+* urls:     https://www.hillelwayne.com/post/frink/
+  tags:     programming units
+
+* urls:     https://daybrush.com/moveable/
+  tags:     javascript gui ux draggable
+
+* urls:     https://github.com/gpujs/gpu.js
+  tags:     javascript gpu
+  title:    GPU Accelerated JavaScript
+  about:    GPU.js is a JavaScript Acceleration library for GPGPU (General purpose computing on GPUs) in
+            JavaScript for Web and Node. GPU.js automatically transpiles simple JavaScript functions into
+            shader language and compiles them so they run on your GPU. In case a GPU is not available, the
+            functions will still run in regular JavaScript. For some more quick concepts, see Quick Concepts
+            on the wiki.
+
+* urls:     https://www.lcdf.org/type/index.html
+  about:    The LCDF Typetools package contains several command-line programs for manipulating PostScript
+            Type 1 and PostScript-flavored OpenType fonts.
+
+            Cfftot1 translates a Compact Font Format (CFF) font, or a PostScript-flavored OpenType font,
+            into PostScript Type 1 format. It correctly handles subroutines and hints.
+
+            Mmafm and mmpfb create instances of multiple-master fonts: mmafm creates the AFM file (font
+            metrics) for an instance, given the AMFM and AFM files distributed with the multiple master;
+            mmpfb creates a normal, single-master font for an instance, given the multiple master font
+            itself. These tools help multiple master fonts work with UNIX programs for single-master fonts,
+            like afm2tfm, ps2pk, GhostScript ps2pdf, and the X11 Type 1 font server. Mmafm and mmpfb were
+            previously distributed in their own package, mminstance.
+
+            Otfinfo reports information about OpenType fonts, such as the features they support and the
+            contents of their 'size' optical size features.
+
+* urls:     https://github.com/petruisfan/node-supervisor/
+  tags:     javascript nodejs process-manager
+  comment:  last updated years ago but seems to work
+  about:    A little supervisor script for nodejs. It runs your program, and watches for code changes, so
+            you can have hot-code reloading-ish behavior, without worrying about memory leaks and making
+            sure you clean up all the inter-module references, and without a whole new require system.
+
+* urls:     https://github.com/wasmerio/postgres-ext-wasm
+            https://github.com/wasmerio/wasmer-postgres
+  tags:     wasm postgresql-extension
+  about:    wasm is a Postgres extension for executing WebAssembly binaries. It's an original way to extend
+            your favorite database capabilities. So far, the extension works on Postgres 10 only.
+
+            wasmer-postgres is a complete and mature WebAssembly runtime for Postgres based on [Wasmer].
+            It's an original way to extend your favorite database capabilities.
+
+            [So far, the extension works on Postgres 10
+            only](https://github.com/bluejekyll/pg-extend-rs/issues/49)
+
+* urls:     https://github.com/jeff-davis/postgres-extension.rs
+  tags:     rust postgresql-extension
+  about:    Write PostgreSQL extensions in pure rust
+
+* urls:     https://github.com/bluejekyll/pg-extend-rs
+            https://www.pgcon.org/2019/schedule/events/1322.en.html
+  tags:     rust postgresql-extension
+
+* urls:     https://github.com/zombodb/pgx
+            https://news.ycombinator.com/item?id=23821112
+  tags:     rust postgresql-extension
+  about:    Build Postgres Extensions with Rust!
+
+            pgx is a framework for developing PostgreSQL extensions in Rust and strives to be as idiomatic
+            and safe as possible.
+
+            pgx supports Postgres v10, v11, and v12.
+
+* urls:     https://github.com/jirutka/smlar
+            git://sigaev.ru/smlar.git
+            http://sigaev.ru/git/gitweb.cgi?p=smlar.git
+            https://www.pgcon.org/2012/schedule/track/Hacking/443.en.htm
+  tags:     postgresql similarity
+  about:    PostgreSQL extension for an effective similarity search || mirror of git://sigaev.ru/smlar.git
+            || see https://www.pgcon.org/2012/schedule/track/Hacking/443.en.htm
+
+* urls:     https://github.com/eulerto/pg_similarity
+  tags:     postgresql similarity text-processing levenshtein
+  about:    pg_similarity is an extension to support similarity queries on PostgreSQL. The implementation is
+            tightly integrated in the RDBMS in the sense that it defines operators so instead of the
+            traditional operators (= and <>) you can use ~~~ and ! (any of these operators represents a
+            similarity function). Supports:
+
+            * L1 Distance (as known as City Block or Manhattan Distance);
+            * Cosine Distance;
+            * Dice Coefficient;
+            * Euclidean Distance;
+            * Hamming Distance;
+            * Jaccard Coefficient;
+            * Jaro Distance;
+            * Jaro-Winkler Distance;
+            * Levenshtein Distance;
+            * Matching Coefficient;
+            * Monge-Elkan Coefficient;
+            * Needleman-Wunsch Coefficient;
+            * Overlap Coefficient;
+            * Q-Gram Distance;
+            * Smith-Waterman Coefficient;
+            * Smith-Waterman-Gotoh Coefficient;
+            * Soundex Distance.
+
+* urls:     https://cjkv-dict.com/
+  tags:     cjkv dictionary cjk/characters
+  about:    CJKV Dict (中日韓越辭典) is a smart multilingual dictionary for learners of Chinese, Japanese, Korean
+            and Vietnamese. It returns results in Chinese characters (漢字, called "Hànzì" in Mandarin
+            Chinese, "Kanji" in Japanese, "Hanja" in Korean and "Hán tự" in Vietnamese) in all four
+            languages, and automatically converts simplified Chinese characters and simplified Kanji
+            (Shinjitai) to traditional Chinese characters.
+
+* urls:     https://rescript-lang.org/
+  tags:     javascript programming-language languages-that-compile-to/javascript performance asm
+  about:    ReScript The JavaScript-like language you've been waiting for. Previously BuckleScript & Reason.
+
+            JavaScript's been aggressively optimized by talented engineers over a long span. Unfortunately,
+            even for seasoned JS devs, it can be hard to know how to properly leverage JS's performance.
+            **ReScript's type system and compiler naturally guides you toward writing code that's very often
+            performant by default, with good leverage of various Just-In-Time optimizations (hidden classes,
+            inline caching, avoiding deopts, etc).**
+
+            A widespread adage to write fast JavaScript code is to write as if there's a type system (in
+            order to trigger JS engines' good optimization heuristics); ReScript gives you a real one and
+            generates code that's friendly to optimizations by default.
+
+
+* urls:     https://blog.mattbierner.com/persistent-hash-tries-in-javavascript/
+            https://github.com/mattbierner/hamt
+            https://github.com/mattbierner/hamt_plus
+            https://github.com/mattbierner/hashtrie
+            http://en.wikipedia.org/wiki/Hash_array_mapped_trie
+  tags:     javascript data-types trie
+  about:    The Hash Array Mapped Tries (HAMTs) is a persistent map data structure with good lookup and
+            update performance. This library provides an immutable map with an API that resembles ES6's Map.
+
+            Benchmarks show that this library performs well, even as the size of the map becomes very large.
+            Check out Hamt+ if you want support for additional features such as custom key types and
+            transient mutation.
+
+* urls:     https://qaz.wtf/u/convert.cgi?text=intertext
+            https://en.wikipedia.org/wiki/Homoglyph
+  tags:     unicode homoglyphs transcription
+  about:    𝕿𝖗𝖆𝖓𝖘𝖈𝖗𝖎𝖇𝖊 𝖆𝖓𝖞 𝕷𝖆𝖙𝖎𝖓 𝖙𝖊𝖝𝖙 𝖎𝖓𝖙𝖔 𝕳𝖔𝖒𝖔𝕲𝖑𝖞𝖕𝖍𝖘 /
+            𝕋𝕣𝕒𝕟𝕤𝕔𝕣𝕚𝕓𝕖 𝕒𝕟𝕪 𝕃𝕒𝕥𝕚𝕟 𝕥𝕖𝕩𝕥 𝕚𝕟𝕥𝕠 ℍ𝕠𝕞𝕠𝔾𝕝𝕪𝕡𝕙𝕤 /
+            Ⓣⓡⓐⓝⓢⓒⓡⓘⓑⓔ ⓐⓝⓨ Ⓛⓐⓣⓘⓝ ⓣⓔⓧⓣ ⓘⓝⓣⓞ ⒽⓞⓜⓞⒼⓛⓨⓟⓗⓢ
+
+* urls:     https://www.pgconfig.org
+            https://docs.pgconfig.org/
+  title:    PGConfig
+  about:    PostgreSQL configuration builder
+
+* urls:     https://pgtune.leopard.in.ua
+  title:    PGTune
+  about:    PostgreSQL configuration builder
+
+* urls:     https://mojiportal.nabunken.go.jp/?c=search&moji=蘭
+            https://wcd-ihp.ascdc.sinica.edu.tw/union/en/index.php?c=search&moji=蘭
+  tags:     CJK calligraphy character-variants
+  title:    史的文字データベース連携検索システム
+
+* urls:     https://github.com/anishathalye/periscope
+  tags:     filesystem duplicate
+  title:    Periscope
+  about:    Periscope gives you "duplicate vision" to help you organize and de-duplicate your files without
+            losing data
+
+* urls:     https://www.skypack.dev/
+            https://www.skypack.dev/blog/2020/10/introducing-skypack-discover/
+  tags:     JavaScript package search-engine
+  about:    [Skypack] Discover combines human-reviewed package recommendations with a quality-focused search
+            algorithm to help you find the best JavaScript packages, faster than ever.
+
+* urls:     https://stackoverflow.com/questions/14208673/how-to-draw-grid-using-html5-and-canvas-or-svg
+            https://iros.github.io/patternfills/
+            http://thenewcode.com/245/SVG-Backgrounds-CrossHatching-and-Grids
+            https://lorefnon.tech/2019/01/12/using-an-svg-grid-background-for-aligning-elements-in-web-page/
+            https://www.heropatterns.com/
+  tags:     css html svg svg/grids svg/patterns svg/backgrounds
+
+* urls:     https://tablericons.com/
+            https://www.freepik.com/popular-icons
+  tags:     svg/icons
+
+* urls:     https://justine.storage.googleapis.com/memzoom/index.html
+            https://justine.storage.googleapis.com/memzoom/download.html
+            https://www.reddit.com/r/commandline/comments/jr6bat/memzoom_renders_procpidmem_in_terminal_with/
+  tags:     live ram viewer
+  about:    Memzoom: Renders /proc/pid/mem in terminal with space-filling curves
+
+* urls:     https://github.com/psb1558/Junicode-New
+            https://github.com/loveencounterflow/Junicode-New
+  tags:     unicode font serif
+  about:    A new version of the Junicode font (previously hosted on Sourceforge) featuring full compliance
+            with the Medieval Unicode Font Initiative specification (version 4.0) and including all medieval
+            characters added to Unicode since MUFI 4.0. The font:
+
+            * is made with the Glyphs font editor;
+            * has the same character set in all faces;
+            * has five weights (Light, Regular, Medium, Semibold, Bold)
+            * and three widths (Regular, SemiCondensed, Condensed);
+            * includes a variable font version;
+            * has improved outlines,
+            * an expanded collection of small caps (covering all case-paired characters),
+            * a more comprehensive set of anchors for mark positioning,
+            * and an expanded collection of OpenType features—carefully chosen and organized to promote the
+              display of accessible text.
+
+* urls:     https://gitlab.com/interception/linux/tools
+            https://askubuntu.com/questions/979359/how-do-i-install-caps2esc
+            https://blog.brujordet.no/post/productivity/unlocking-my-keyboard/
+  tags:     keyboard linux keyboard/IME linux/evdev linux/udev linux/input-devices
+  about:    intercept's purpose is to capture input from a given device (optionally grabbing it) and write
+            such raw input to stdout. uinput does the reverse, it receives raw input from stdin and write it
+            to a virtual uinput device created by cloning characteristics of real devices, from YAML
+            configuration, or both.
+
+            So, assuming $DEVNODE as the path of the device, something like `/dev/input/by-id/some-kbd-id`,
+            the following results in a no-op:
+
+            `intercept -g $DEVNODE | uinput -d $DEVNODE`
+
+            In this case using `-g` is important so that the target device is grabbed for exclusive access,
+            allowing the new virtual device created by uinput to substitute it completely: we grab it and
+            others can grab the clone. Now additional processing can be added in the middle easily.
+
+* urls:     https://github.com/MerlijnWajer/uinput-mapper/
+            https://github.com/holizz/joy2chord
+            http://welz.org.za/projects/mxk
+  tags:     keyboard linux keyboard/IME linux/evdev linux/udev linux/input-devices
+
+* urls:     https://github.com/loveencounterflow/postgresqlfs
+            https://github.com/petere/postgresqlfs
+  tags:     fuse fs sql db rdbms
+  title:    postgresqlfs
+  about:    postgresqlfs is a FUSE driver to access PostgreSQL databases as a file system. It exposes the
+            object structure of a PostgreSQL database instance as directories and files that you can operate
+            on using file system tools.
+
+            The idea is that you can use this together with Midnight Commander to browse and edit a database
+            in text mode in situations where psql would be to cumbersome but pgAdmin or phpPgAdmin are not
+            available.
+
+* urls:     https://metacpan.org/pod/Fuse::DBI
+  tags:     fuse fs sql db rdbms perl
+  title:    Fuse::DBI - mount your database as filesystem and use it
+  about:    This module will use Fuse module, part of FUSE (Filesystem in USErspace) available at
+            http://fuse.sourceforge.net/ to mount your database as file system.
+
+            That will give you possibility to use normal file-system tools (cat, grep, vi) to manipulate
+            data in database.
+
+            It's actually opposite of Oracle's intention to put everything into database.
+
+* urls:     https://metacpan.org/pod/distribution/sqlfs-perl/bin/sqlfs.pl
+  tags:     fuse fs sql db rdbms perl
+  title:    sqlfs.pl - Mount Fuse filesystem on a SQL database
+  about:    This script will create a userspace filesystem stored entirely in a SQL database. Only the
+            MySQL, SQLite and PostgreSQL database engines are currently supported. Most functionality is
+            supported, including hard and symbolic links, seek() and tell(), binary data, sparse files, and
+            the ability to unlink a file while there is still a filehandle open on it.
+
+            This is a front end to the DBI::Filesystem module, which creates a fully-functioning userspace
+            filesystem on top of a relational database. Unlike other filesystem-to-DBM mappings, such as
+            Fuse::DBI, this one creates and manages a specific schema designed to support filesystem
+            operations. If you wish to mount a filesystem on an arbitrary DBM schema, you want Fuse::DBI,
+            not this.
+
+            Most filesystem functionality is implemented, including hard and soft links, sparse files,
+            ownership and access modes, UNIX permission checking and random access to binary files. Very
+            large files (up to multiple gigabytes) are supported without performance degradation.
+
+            Why would you use this? The main reason is that it allows you to use DBMs functionality such as
+            accessibility over the network, database replication, failover, etc. In addition, the underlying
+            DBI::Filesystem module can be extended via subclassing to allow additional functionality such as
+            arbitrary access control rules, searchable file and directory metadata, full-text indexing of
+            file contents, etc.
+
+* urls:     https://anvaka.github.io/city-roads
+  title:    city roads
+  about:    Visualization of all roads within any city
+
+            The data is fetched from OpenStreetMap using [overpass API](http://overpass-turbo.eu/). While
+            that API is free (as long as you follow ODbL licenses), it can be rate-limited and sometimes it
+            is slow. After all we are downloading thousands of roads within an area!
+
+            To improve the performance of download, I indexed ~3,000 cities with population larger than
+            100,000 people and stored into a [very
+            simple](https://github.com/anvaka/index-large-cities/blob/master/proto/place.proto) protobuf
+            format. The cities are stored into a cache in this github
+            [repository](https://github.com/anvaka/index-large-cities).
+
+            The name resolution is done by [nominatim](https://nominatim.openstreetmap.org/) - for any query
+            that you type into the search box it returns list of area ids. I check for the area id in my
+            list of cached cities first, and fallback to overpass if area is not present in cache.
+
+            Behind simple UI software engineers would also find scripting capabilities. You can develop
+            programs on top of the city-roads. A few examples are available in
+            [city-script](https://github.com/anvaka/city-script). Scene API is documented here:
+            https://github.com/anvaka/city-roads/blob/master/API.md
+
+* urls:     https://github.com/sindresorhus/ora
+  title:    ora, an elegant terminal spinner
+  tags:     nodejs JavaScript console spinner activity
+
+* urls:     https://github.com/trekhleb/javascript-algorithms
+  title:    JavaScript Algorithms and Data Structures
+  about:    This repository contains JavaScript based examples of many popular algorithms and data
+            structures.
+
+            Each algorithm and data structure has its own separate README with related explanations and
+            links for further reading (including ones to YouTube videos).
+
+            Excerpt: Levenshtein Distance - minimum edit distance between two sequences; Longest Common
+            Subsequence (LCS); Longest Common Substring; Longest Increasing Subsequence; Shortest Common
+            Supersequence; 0/1 Knapsack Problem; Integer Partition
+
+* urls:     https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/
+  title:    Make Offline Mirror of a Site using `wget`
+  about:    Sometimes you want to create an offline copy of a site that you can take and view even without
+            internet access. Using wget you can make such copy easily:
+
+            ```bash
+            wget --mirror --convert-links --adjust-extension --page-requisites --no-parent http://example.org
+            ```
+
+* urls:     https://in-the-sky.org/satmap_worldmap.php
+            https://www.n2yo.com/
+  tags:     satellites astronomy
+  about:    sites with real-time satellite observation data
+
+* urls:     https://james.darpinian.com/satellites/
+  tags:     satellites astronomy
+  about:    sites with real-time satellite observation data; uses Google Street View
+
+* urls:     https://github.com/lambda2/text-roller
+            https://github.com/Gamerbit/odometer
+            https://github.hubspot.com/odometer/docs/welcome/
+            https://github.com/HubSpot/odometer
+  tags:     jquery JavaScript web odometer number display
+
+* urls:     https://partiql.org
+            https://partiql.org/tutorial.html#testing-the-partiql-repl
+            https://community.partiql.org/
+  about:    SQL-compatible access to relational, semi-structured, and nested data.
+
+            **First Class Nested Data**: PartiQL’s extensions to SQL are easy to understand, treat nested
+            data as first class citizens and compose seamlessly with each other and SQL. This enables
+            intuitive filtering, joining and aggregation on the combination of structured, semistructured
+            and nested datasets.
+
+            **Data Storage Independence**: PartiQL enables unified query access across multiple data stores
+            and data formats by separating the syntax and semantics of a query from the underlying format of
+            the data or the data store that is being accessed. It enables users to interact with data with
+            or without regular schema.
+
+            **Open Source**: PartiQL syntax, semantics, the embeddable reference interpreter, CLI, test
+            framework, and tests are licensed under the Apache License, version 2.0, allowing you to freely
+            use, copy, and distribute your changes under the terms of your choice.
+
+* urls:     https://www.academia.edu
+            https://www.academia.edu/Documents/in/Chinese_Characters
+            https://www.academia.edu/search?utf8=%E2%9C%93&q=%E6%BC%A2%E5%AD%97
+  tags:     pdf science papers download free CJK sinology Chinese Japanese chinese-characters
+
+* urls:     https://www.highgo.ca/2020/12/08/bulk-loading-into-postgresql-options-and-comparison/
+  tags:     tesseratua postgresql bulkloading
+  title:    Bulk loading into PostgreSQL: Options and comparison
+  about:    You have a file, possibly a huge CSV, and you want to import its content into your database.
+            There are lots of options to do this but how would you decide which one to use. More often than
+            not the question is how much time would the bulk load would take. I found my self doing the same
+            few days back when I wanted to design a data ingestion process for PostgreSQL where we needed to
+            bulk load around 250GB of data from CSV files every 24 hours.
+
+            Goto solution for bulk loading into PostgreSQL is the native copy command. But one limitation
+            with the copy command is that it requires the CSV file to be placed on the server. So I decided
+            to do a simple comparison of bulk loading options and techniques.
+
+            In short I wanted to see the performance difference of loading the data into standard vs
+            unlogged tables and want to compare the loading time difference between loading into table that
+            has an index vs drop-index->load->recreate-index option.
+
+            Moreover, I wanted to see the performance difference of COPY command, client-side copy command,
+            loading through file_fdw, and pg_bulkload for each of the above options.
+
+* urls:     https://www.compart.com/en/unicode/
+  tags:     unicode codepoints codepoint-catalog
+
+* urls:     https://github.com/phiresky/ripgrep-all
+            https://phiresky.github.io/blog/2019/rga--ripgrep-for-zip-targz-docx-odt-epub-jpg/
+  title:    rga: ripgrep, but also search in PDFs, E-Books, Office documents, zip, tar.gz, etc.
+  about:    rga is a line-oriented search tool that allows you to look for a regex in a multitude of file
+            types. rga wraps the awesome ripgrep and enables it to search in pdf, docx, sqlite, jpg, movie
+            subtitles (mkv, mp4), etc.
+
+            Adapters:
+
+            * ffmpeg Uses ffmpeg to extract video metadata/chapters and subtitles
+              * Extensions: .mkv, .mp4, .avi
+            * pandoc Uses pandoc to convert binary/unreadable text documents to plain markdown-like text
+              * Extensions: .epub, .odt, .docx, .fb2, .ipynb
+            * poppler Uses pdftotext (from poppler-utils) to extract plain text from PDF files
+              * Extensions: .pdf
+              * Mime Types: application/pdf
+            * zip Reads a zip file as a stream and recurses down into its contents
+              * Extensions: .zip
+              * Mime Types: application/zip
+            * decompress Reads compressed file as a stream and runs a different extractor on the contents.
+              * Extensions: .tgz, .tbz, .tbz2, .gz, .bz2, .xz, .zst
+              * Mime Types: application/gzip, application/x-bzip, application/x-xz, application/zstd
+            * tar Reads a tar file as a stream and recurses down into its contents
+              * Extensions: .tar
+            * sqlite Uses sqlite bindings to convert sqlite databases into a simple plain text format
+              * Extensions: .db, .db3, .sqlite, .sqlite3
+              * Mime Types: application/x-sqlite3 The following adapters are disabled by default, and can be
+                enabled using '--rga-adapters=+pdfpages,tesseract':
+            * pdfpages Converts a pdf to its individual pages as png files. Only useful in combination with
+              tesseract
+              * Extensions: .pdf
+              * Mime Types: application/pdf
+            * tesseract Uses tesseract to run OCR on images to make them searchable. May need -j1 to prevent
+              overloading the system. Make sure you have tesseract installed.
+              * Extensions: .jpg, .png
+
+* urls:     https://github.com/loveencounterflow/find-in-apt-history
+  title:    find-in-apt-history
+  about:    Short bash script that searches for installed / deleted /upgraded packages in `/var/log/dpkg*`
+            (including `*.gz` archives)
+
+            * Output is sorted oldest to newest.
+            * Only lines containing one of install, remove, or upgrade are shown.
+            * Plain-text logs and `*.gz` archived logs are searched.
+            * System updates as well as manually installed packages are included.
+            * May use either `find-in-apt-history 'blah'` or `find-in-apt-history | grep 'blah'` to narrow
+              down results.
+            * Package names are always terminated with a `:` (colon) so that's a good way to restrict
+              matches.
+
+* urls:     https://redfin.engineering/node-modules-at-war-why-commonjs-and-es-modules-cant-get-along-9617135eeca1
+  title:    Node Modules at War: Why CommonJS and ES Modules Can’t Get Along: Interop between them is
+            possible, but it’s a hassle
+  about:    In Node 14, there are now two kinds of scripts: there are old-style CommonJS (CJS) scripts and
+            new-style ESM scripts (aka MJS). CJS scripts use require() and module.exports; ESM scripts use
+            import and export.
+
+            I’ll conclude with three guidelines for library authors to follow:
+            * Provide a CJS version of your library
+            * Provide a thin ESM wrapper for your CJS named exports
+            * Add an exports map to your package.json
+
+* urls:     https://omar.website/tabfs/
+            https://github.com/osnr/TabFS
+  title:    Mount your browser tabs as a filesystem
+  tags:     fuse browser-tabs-as-files javascript
+  author:   Omar Rizwan
+  about:    TabFS is a browser extension that mounts your browser tabs as a filesystem on your computer.
+            Out of the box, it supports Chrome and (to a lesser extent1) Firefox, on macOS and Linux.2
+            Each of your open tabs is mapped to a folder.
+
+* urls:     https://geoffreylitt.github.io/wildcard/#/quickstart
+            https://www.geoffreylitt.com/wildcard/
+  tags:     browser javascript
+  title:    Wildcard
+  about:    Wildcard is a browser extension that empowers anyone to modify websites to meet their own
+            specific needs, using a familiar spreadsheet view. It’s a research project as part of my PhD at
+            MIT, with my advisor Daniel Jackson.
+
+* urls:     https://mdsvex.com/docs
+            https://alexxnb.github.io/svelte-preprocess-markdown
+  tags:     svelte markdown preprocessor
+  title:    MarkDown Preprocessors for Svelte so content can be authored without HTML
+
+* urls:     https://luciopaiva.com/witchcraft/
+  title:    Witchcraft
+  about:    Think Greasemonkey for developers.
+
+            Witchcraft is a Google Chrome extension for loading custom Javascript and CSS directly from a
+            folder in your file system, injecting them into pages that match their files names.
+
+            It works by matching the current page domain against script file names available in the scripts
+            folder.
+
+* urls:     https://preql.readthedocs.io/en/latest/language.html
+            https://www.reddit.com/r/ProgrammingLanguages/comments/kuh899/i_wrote_a_new_programming_language_that_compiles/
+  tags:     programming-language languages-that-compile-to/sql
+  title:    Preql, a language that compiles to SQL
+
+* urls:     https://www.geeksforgeeks.org/css-conic-gradient-function/
+            https://developer.mozilla.org/en-US/docs/Web/CSS/repeating-conic-gradient()
+            https://love2dev.com/blog/css-background-stripes/
+            https://css-tricks.com/a-complete-guide-to-css-gradients/
+  tags:     barbershop-current-flow rotating-conical-stripes css
+  about:    How to create a background with star-shaped stripes that converge in a point; when these are
+            rotated and an overlay is added that leaves only small pathsways open, moving 'currents' can be
+            seen as in some lightboxes used for advertisements and teaching that were fashionable in the
+            1970s.
+
+* urls:     https://github.com/lukeed/nestie
+            https://github.com/lukeed/flattie
+  tags:     javascript nested object flatten
+  about:    A tiny (211B) and fast utility to expand a flattened object
+
+            This module expands an Object whose keys are delimited/condensed representatives of multiple
+            levels. By default, the . character is used as a delimiter. This is customizable. Keys are split
+            using the delimiter, each signifying a new level/depth.
+
+* urls:     https://sql.lspgn.workers.dev/?hn
+            https://github.com/lspgn/edge-sql
+            https://github.com/simonw/datasette
+            https://datasette.io/
+            https://github.com/TomasHubelbauer/sqlite-javascript
+            https://news.ycombinator.com/item?id=25842999
+  tags:     sql rdbms sqlite sqlite-javascript
+
+* urls:     https://patents.google.com/patent/US6510441B1/en
+  title:    Optimal line break determination
+  about:    Method and apparatus divide a paragraph of text into lines. The invention determines possible
+            line breaks for multiple lines from a portion of the paragraph and selects an optimal line break
+            that produces an ideal set of line breaks for the multiple lines from the possible line breaks.
+
+* urls:     https://github.com/dalibo/pg_activity
+  title:    pg_activity
+  tags:     postgresql monitoring
+  about:    pg_activity is a top like application for PostgreSQL server activity monitoring.
+
+* urls:     https://github.com/andi23rosca/napi-nim#write-nodejs-native-extensions-in-nim
+  title:    Write NodeJS native extensions in Nim
+  tags:     javascript nim-lang native
+  about:    If you don't like the verbosity of C code and feel that C++ is too complex, then try to improve
+            the performance of your NodeJS apps with napi-nim.
+
+            The new n-api which is now part of NodeJS lets you interface with JavaScript code from any
+            language that supports the C ABI. Nim is a language that values efficiency above all else, but
+            provides a lot of high level constructs and niceties for developer productivity, making it a
+            very suitable choice for writing performant add-ons to your NodeJS code.
+
+* url:      https://github.com/aceakash/string-similarity
+  tags:     javascript string-similarity similarity
+  about:    Finds degree of similarity between two strings, based on Dice's Coefficient, which is mostly
+            better than Levenshtein distance.
+
+* urls:     https://rushjs.io/
+  tags:     javascript monorepo
+  about:    Rush: a scalable monorepo manager for the web
+
+* urls:     https://www.rhymedesk.com/phonemes
+            https://web.archive.org/web/20170930060409/http://icon.shef.ac.uk/Moby/
+  tags:     english natural-language-processing phonetics
+  about:    rhymedesk has a phonetic search for English words that goes from IPA
+            to words, as well as specialized rhyme searches.
+
+* urls:     https://gitlab.redox-os.org/redox-os/rusttype
+  tags:     rust font-rendering text typesetting
+  title:    RustType
+  about:    RustType is a pure Rust alternative to libraries like FreeType.
+
+            The current capabilities of RustType:
+
+            * Reading OpenType formatted fonts and font collections. This includes `*.ttf` as well as
+              `*.otf` font files.
+            * Retrieving glyph shapes and commonly used properties for a font and its glyphs. Laying out
+              glyphs horizontally using horizontal and vertical metrics, and glyph-pair-specific kerning.
+            * Rasterising glyphs with sub-pixel positioning using an accurate analytical algorithm (not
+              based on sampling).
+            * Managing a font cache on the GPU with the gpu_cache module. This keeps recently used glyph
+              renderings in a dynamic cache in GPU memory to minimise texture uploads per-frame. It also
+              allows you keep the draw call count for text very low, as all glyphs are kept in one GPU
+              texture.
+
+            Notable things that RustType does not support yet:
+
+            * Font hinting.
+            * Ligatures of any kind.
+            * Some less common TrueType sub-formats.
+            * Right-to-left and vertical text layout.
+
+* urls:     https://github.com/mgeisler/textwrap
+  about:    "Textwrap is a library for wrapping and indenting text. It is most often used by command-line
+            programs to format dynamic output nicely so it looks good in a terminal. However, you can use
+            the library to wrap arbitrary things by implementing the Fragment trait — an example would be
+            wrapping text for PDF files."
+
+            As such `textwrap` warps text based on the Unicode width of each character; however, by using
+            the [`textwrap::core::fragment`](https://docs.rs/textwrap/0.13.2/textwrap/core/trait.Fragment.html)
+            trait, it is possible to deal with arbitrary chunks having arbitrarily derived widths, no matter
+            their textual (or non-textual) contents:
+
+            ```rust
+            pub trait Fragment: Debug {
+                pub fn width(&self) -> usize;
+                pub fn whitespace_width(&self) -> usize;
+                pub fn penalty_width(&self) -> usize; }
+            ```
+
+            A (text) fragment denotes the unit which we wrap into lines.
+
+            Fragments represent an abstract word plus the whitespace following the word. In case the word
+            falls at the end of the line, the whitespace is dropped and a so-called penalty is inserted
+            instead (typically "-" if the word was hyphenated).
+
+            For wrapping purposes, the precise content of the word, the whitespace, and the penalty is
+            irrelevant. All we need to know is the displayed width of each part, which this trait provides.
+
+* urls:     https://neutralino.js.org/
+  tags:     electron web application alternative-to=puppeteer alternative-to=electron
+  title:    Neutralinojs
+  about:    Build lightweight cross-platform desktop apps with JavaScript, HTML, and CSS
+
+            Alternative to Electron that uses OS web view instead of packaged Chromium.
+
+            Neutralinojs apps will work on Linux, Windows and macOS. Single application package can be
+            released for all popular operating systems.
+
+            An uncompressed Neutralinojs lightweight cross-platform app is only ~10MB and compressed app
+            size is ~2MB. Indeed, it will not consume either physical memory or storage like any other
+            chromium based cross-platform application development frameworks.
+
+            No extra dependencies are required to run lightweight cross-platforms apps built with
+            Neutralinojs. SDK is fully portable. You will be able to debug applications using your favourite
+            web browser.
+
+            Neutralinojs Javascript API exposes access to operating system level functions such as file
+            manipulation, executing commands, showing native dialog boxes etc.
+
+* urls:     https://news.ycombinator.com/item?id=26194990
+            https://tauri.studio/en/
+  tags:     electron web application alternative-to=puppeteer alternative-to=electron
+  about:    Build smaller, faster, and more secure desktop applications with a web frontend
+
+            **Cross-platform** compilation allows to bundle binaries for major desktop platforms (mobile &
+            WASM coming soon)
+
+            **Scoped FileSystem** For improved security of files interaction. (TBD)
+
+            **CLI** The CLI is Node.js based, because it is arguably the most accessible for the majority of
+            the web-development community. Using Tauri requires the latest LTS because we track security
+            patches. In the future we will enable you to use Deno instead of Node if that is your jam.
+
+            **User Interface** The first generation user interface in Tauri apps leverages Cocoa/WebKit on
+            macOS, GTK-WebKit2 on Linux and WebKit via EdgeHTML / Chakra on Windows. Tauri leverages the MIT
+            licensed work known as webview that has been incorporated into the official webview_rust
+            bindings.
+
+* urls:     https://jaredforsyth.com/posts/local-first-database-hypermerge/
+            https://github.com/random-access-storage/random-access-file
+            https://github.com/automerge/hypermerge
+  title:    Hypermerge
+  tags:     Conflict-Free-Replicated-Data-Type CRDT p2p local-first
+  about:    Hypermerge is a Node.js library for building p2p collaborative applications without any server
+            infrastructure. It combines Automerge, a CRDT, with hypercore, a distributed append-only log.
+
+            This project provides a way to have apps data sets that are conflict free and offline first
+            (thanks to CRDT's) and serverless (thanks to hypercore/DAT).
+
+            There are several example repos in the /examples directory, including a very simple two-repo
+            code demo and a simple CLI-based chat application.
+
+            The best demonstration of Hypermerge is PushPin, which shows Hypermerge in "full flight",
+            including taking advantage of splitting the fast, simple front-end from the more expensive,
+            slower back-end.
+
+* urls:     https://github.com/automerge/automerge
+  title:    Automerge
+  tags:     Conflict-Free-Replicated-Data-Type CRDT p2p local-first
+  about:    Automerge is a library of data structures for building collaborative applications in JavaScript.
+            It supports automatic syncing and merging:
+
+            * You can have a copy of the application state locally on several devices (which may belong to
+              the same user, or to different users). Each user can independently update the application
+              state on their local device, even while offline, and save the state to local disk.
+
+            * (Similar to git, which allows you to edit files and commit changes offline.)
+
+            * When a network connection is available, Automerge figures out which changes need to be synced
+              from one device to another, and brings them into the same state.
+
+            * (Similar to git, which lets you push your own changes, and pull changes from other developers,
+              when you are online.)
+
+            * If the state was changed concurrently on different devices, Automerge automatically merges the
+              changes together cleanly, so that everybody ends up in the same state, and no changes are
+              lost.
+
+            (Different from git: no merge conflicts to resolve!)
+
+* urls:     https://github.com/inkandswitch/farm
+  title:    Farm
+  tags:     Conflict-Free-Replicated-Data-Type CRDT p2p local-first
+  about:    Farm is an experiment in distributed peer-to-peer computing. Farm is an extensible, programmable
+            environment with real-time and offline collaboration with other users and no mandatory
+            infrastructure. You can program Farm using the Elm programming language, and changes you make to
+            the code will be shared in real-time with users anywhere in the world.
+
+            Farm also includes a demonstration application inspired by tools like Google Keep, Milanote, or
+            Trello.
+
+            It partners particularly well with our vscode plugin.
+
+* urls:     https://mpv.io/
+            https://github.com/mpv-player/mpv/wiki/User-Scripts
+  tags:     video/playback media-player
+  title:    mpv
+  about:    mpv is a free (as in freedom) media player for the command line. It supports a wide variety of
+            media file formats, audio and video codecs, and subtitle types.
+
+            **Scripting**—Powerful scripting capabilities can make the player do almost anything. There is a
+            large selection of user scripts on the wiki.
+
+            **On Screen Controller**—While mpv strives for minimalism and provides no real GUI, it has a
+            small controller on top of the video for basic control.
+
+            **High quality video output**—mpv has an OpenGL, Vulkan, and D3D11 based video output that is
+            capable of many features loved by videophiles, such as video scaling with popular high quality
+            algorithms, color management, frame timing, interpolation, HDR, and more.
+
+            **GPU video decoding**—mpv can leverage most hardware decoding APIs on all platforms. Hardware
+            decoding can be enabled at runtime on demand.
+
+* urls:     https://di.nmfay.com/exploring-databases-visually
+            https://gitlab.com/dmfay/dotfiles/-/blob/master/zsh/fks.zsh
+  tags:     postgresql RDBMS visualization graph db/visualization
+  about:    draw dot graphs of DB structure w/ foreign keys, centered on given table
 
 # Unsorted
 
@@ -2114,4 +3412,36 @@
             A new type of shell. The goal of this project is to take the Unix philosophy of shells, where
             pipes connect simple commands together, and bring it to the modern style of development.
 
+  * name:   V
+    urls:   https://vlang.io/
+            https://github.com/vlang/awesome-v
+    remark: compiles to C
 
+            Simple, fast, safe, compiled. For developing maintainable software.
+
+            Simple language for building maintainable programs
+
+            You can learn the entire language by going through the documentation in an hour, and in most
+            cases there's only one way to do something.
+
+            This results in simple, readable, and maintainable code.
+
+            Despite being simple, V gives a lot of power to the developer and can be used in pretty much
+            every field, including systems programming, webdev, gamedev, GUI, mobile (wip), science,
+            embedded, tooling, etc.
+
+            V is very similar to Go. If you know Go, you already know ≈80% of V. Things V improves on Go:
+            vlang.io/compare#go.
+
+            * No null
+            * No global variables
+            * No undefined values
+            * No undefined behavior
+            * No variable shadowing
+            * Bounds checking
+            * Immutable variables by default
+            * Pure functions by default
+            * Immutable structs by default
+            * Option/Result and mandatory error checks
+            * Sum types
+            * Generics
