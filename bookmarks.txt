@@ -2008,6 +2008,10 @@
   about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
             wraparound option)" (Utopia Planitia, UP)
 
+* urls:     https://www.endlesspaper.app/
+  tags:     utopia-planitia(software)
+  about:    EndlessPaper is a note-taking app with infinite zoom for iOS
+
 * urls:     http://zoom.it/
             https://github.com/zoomhub/zoomhub
   tags:     utopia-planitia(software)
@@ -3069,6 +3073,187 @@
   about:    Finds degree of similarity between two strings, based on Dice's Coefficient, which is mostly
             better than Levenshtein distance.
 
+* urls:     https://rushjs.io/
+  tags:     javascript monorepo
+  about:    Rush: a scalable monorepo manager for the web
+
+* urls:     https://www.rhymedesk.com/phonemes
+            https://web.archive.org/web/20170930060409/http://icon.shef.ac.uk/Moby/
+  tags:     english natural-language-processing phonetics
+  about:    rhymedesk has a phonetic search for English words that goes from IPA
+            to words, as well as specialized rhyme searches.
+
+* urls:     https://gitlab.redox-os.org/redox-os/rusttype
+  tags:     rust font-rendering text typesetting
+  title:    RustType
+  about:    RustType is a pure Rust alternative to libraries like FreeType.
+
+            The current capabilities of RustType:
+
+            * Reading OpenType formatted fonts and font collections. This includes `*.ttf` as well as
+              `*.otf` font files.
+            * Retrieving glyph shapes and commonly used properties for a font and its glyphs. Laying out
+              glyphs horizontally using horizontal and vertical metrics, and glyph-pair-specific kerning.
+            * Rasterising glyphs with sub-pixel positioning using an accurate analytical algorithm (not
+              based on sampling).
+            * Managing a font cache on the GPU with the gpu_cache module. This keeps recently used glyph
+              renderings in a dynamic cache in GPU memory to minimise texture uploads per-frame. It also
+              allows you keep the draw call count for text very low, as all glyphs are kept in one GPU
+              texture.
+
+            Notable things that RustType does not support yet:
+
+            * Font hinting.
+            * Ligatures of any kind.
+            * Some less common TrueType sub-formats.
+            * Right-to-left and vertical text layout.
+
+* urls:     https://github.com/mgeisler/textwrap
+  about:    "Textwrap is a library for wrapping and indenting text. It is most often used by command-line
+            programs to format dynamic output nicely so it looks good in a terminal. However, you can use
+            the library to wrap arbitrary things by implementing the Fragment trait — an example would be
+            wrapping text for PDF files."
+
+            As such `textwrap` warps text based on the Unicode width of each character; however, by using
+            the [`textwrap::core::fragment`](https://docs.rs/textwrap/0.13.2/textwrap/core/trait.Fragment.html)
+            trait, it is possible to deal with arbitrary chunks having arbitrarily derived widths, no matter
+            their textual (or non-textual) contents:
+
+            ```rust
+            pub trait Fragment: Debug {
+                pub fn width(&self) -> usize;
+                pub fn whitespace_width(&self) -> usize;
+                pub fn penalty_width(&self) -> usize; }
+            ```
+
+            A (text) fragment denotes the unit which we wrap into lines.
+
+            Fragments represent an abstract word plus the whitespace following the word. In case the word
+            falls at the end of the line, the whitespace is dropped and a so-called penalty is inserted
+            instead (typically "-" if the word was hyphenated).
+
+            For wrapping purposes, the precise content of the word, the whitespace, and the penalty is
+            irrelevant. All we need to know is the displayed width of each part, which this trait provides.
+
+* urls:     https://neutralino.js.org/
+  tags:     electron web application alternative-to=puppeteer alternative-to=electron
+  title:    Neutralinojs
+  about:    Build lightweight cross-platform desktop apps with JavaScript, HTML, and CSS
+
+            Alternative to Electron that uses OS web view instead of packaged Chromium.
+
+            Neutralinojs apps will work on Linux, Windows and macOS. Single application package can be
+            released for all popular operating systems.
+
+            An uncompressed Neutralinojs lightweight cross-platform app is only ~10MB and compressed app
+            size is ~2MB. Indeed, it will not consume either physical memory or storage like any other
+            chromium based cross-platform application development frameworks.
+
+            No extra dependencies are required to run lightweight cross-platforms apps built with
+            Neutralinojs. SDK is fully portable. You will be able to debug applications using your favourite
+            web browser.
+
+            Neutralinojs Javascript API exposes access to operating system level functions such as file
+            manipulation, executing commands, showing native dialog boxes etc.
+
+* urls:     https://news.ycombinator.com/item?id=26194990
+            https://tauri.studio/en/
+  tags:     electron web application alternative-to=puppeteer alternative-to=electron
+  about:    Build smaller, faster, and more secure desktop applications with a web frontend
+
+            **Cross-platform** compilation allows to bundle binaries for major desktop platforms (mobile &
+            WASM coming soon)
+
+            **Scoped FileSystem** For improved security of files interaction. (TBD)
+
+            **CLI** The CLI is Node.js based, because it is arguably the most accessible for the majority of
+            the web-development community. Using Tauri requires the latest LTS because we track security
+            patches. In the future we will enable you to use Deno instead of Node if that is your jam.
+
+            **User Interface** The first generation user interface in Tauri apps leverages Cocoa/WebKit on
+            macOS, GTK-WebKit2 on Linux and WebKit via EdgeHTML / Chakra on Windows. Tauri leverages the MIT
+            licensed work known as webview that has been incorporated into the official webview_rust
+            bindings.
+
+* urls:     https://jaredforsyth.com/posts/local-first-database-hypermerge/
+            https://github.com/random-access-storage/random-access-file
+            https://github.com/automerge/hypermerge
+  title:    Hypermerge
+  tags:     Conflict-Free-Replicated-Data-Type CRDT p2p local-first
+  about:    Hypermerge is a Node.js library for building p2p collaborative applications without any server
+            infrastructure. It combines Automerge, a CRDT, with hypercore, a distributed append-only log.
+
+            This project provides a way to have apps data sets that are conflict free and offline first
+            (thanks to CRDT's) and serverless (thanks to hypercore/DAT).
+
+            There are several example repos in the /examples directory, including a very simple two-repo
+            code demo and a simple CLI-based chat application.
+
+            The best demonstration of Hypermerge is PushPin, which shows Hypermerge in "full flight",
+            including taking advantage of splitting the fast, simple front-end from the more expensive,
+            slower back-end.
+
+* urls:     https://github.com/automerge/automerge
+  title:    Automerge
+  tags:     Conflict-Free-Replicated-Data-Type CRDT p2p local-first
+  about:    Automerge is a library of data structures for building collaborative applications in JavaScript.
+            It supports automatic syncing and merging:
+
+            * You can have a copy of the application state locally on several devices (which may belong to
+              the same user, or to different users). Each user can independently update the application
+              state on their local device, even while offline, and save the state to local disk.
+
+            * (Similar to git, which allows you to edit files and commit changes offline.)
+
+            * When a network connection is available, Automerge figures out which changes need to be synced
+              from one device to another, and brings them into the same state.
+
+            * (Similar to git, which lets you push your own changes, and pull changes from other developers,
+              when you are online.)
+
+            * If the state was changed concurrently on different devices, Automerge automatically merges the
+              changes together cleanly, so that everybody ends up in the same state, and no changes are
+              lost.
+
+            (Different from git: no merge conflicts to resolve!)
+
+* urls:     https://github.com/inkandswitch/farm
+  title:    Farm
+  tags:     Conflict-Free-Replicated-Data-Type CRDT p2p local-first
+  about:    Farm is an experiment in distributed peer-to-peer computing. Farm is an extensible, programmable
+            environment with real-time and offline collaboration with other users and no mandatory
+            infrastructure. You can program Farm using the Elm programming language, and changes you make to
+            the code will be shared in real-time with users anywhere in the world.
+
+            Farm also includes a demonstration application inspired by tools like Google Keep, Milanote, or
+            Trello.
+
+            It partners particularly well with our vscode plugin.
+
+* urls:     https://mpv.io/
+            https://github.com/mpv-player/mpv/wiki/User-Scripts
+  tags:     video/playback media-player
+  title:    mpv
+  about:    mpv is a free (as in freedom) media player for the command line. It supports a wide variety of
+            media file formats, audio and video codecs, and subtitle types.
+
+            **Scripting**—Powerful scripting capabilities can make the player do almost anything. There is a
+            large selection of user scripts on the wiki.
+
+            **On Screen Controller**—While mpv strives for minimalism and provides no real GUI, it has a
+            small controller on top of the video for basic control.
+
+            **High quality video output**—mpv has an OpenGL, Vulkan, and D3D11 based video output that is
+            capable of many features loved by videophiles, such as video scaling with popular high quality
+            algorithms, color management, frame timing, interpolation, HDR, and more.
+
+            **GPU video decoding**—mpv can leverage most hardware decoding APIs on all platforms. Hardware
+            decoding can be enabled at runtime on demand.
+
+* urls:     https://di.nmfay.com/exploring-databases-visually
+            https://gitlab.com/dmfay/dotfiles/-/blob/master/zsh/fks.zsh
+  tags:     postgresql RDBMS visualization graph db/visualization
+  about:    draw dot graphs of DB structure w/ foreign keys, centered on given table
 
 # Unsorted
 
