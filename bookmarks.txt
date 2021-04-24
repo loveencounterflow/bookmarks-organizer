@@ -2030,6 +2030,16 @@
             that your viewport element can be your document body, some browsers appear to do even more
             optimization for that special case.
 
+* urls:     https://arcan-fe.com/2021/04/12/introducing-pipeworld
+  title:    Introducing Pipeworld: Spreadsheet Dataflow Computing
+  tags:     utopia-planitia(software)
+  about:    Pipeworld (github link) combines ‘dataflow‘ programming (like Excel or Userland) with a
+            Zooming-Tiling User Interface (ZUI). It builds dynamic pipelines similarly to (Ultimate
+            Plumber), and leverages most of the gamut of Arcan features — from terminal emulator liberated
+            CLIs and TUIs to dynamic network transparency. It follows many of the principles for a Diverging
+            Desktop Future, particularly towards the idea of making clients simpler and more composable by
+            focusing on interactive “breadboarding” data exchange.
+
 * urls:     http://htwins.net/scale2/
             https://www.pixijs.com/
   tags:     utopia-planitia(software)
