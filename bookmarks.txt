@@ -902,6 +902,11 @@
           rather than a big canvas/svg/plugin. It's usable as a library as part of a larger web app, but it
           also includes a command-line app that dumps a self-contained HTML file that displays a map.
 
+* urls:   https://github.com/imsnif/diskonaut
+  tags:   visualization treemaps filesystem rust
+  about:  Command line (TUI) program written in rust that renders files sizes as a treemap; fast; can
+          navigate, delete files.
+
 * url:    https://mapire.eu/en/
   about:  synchronized historical and modern maps, zoomable, 3D
 
