@@ -2008,6 +2008,12 @@
   about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
             wraparound option)" (Utopia Planitia, UP)
 
+* urls:     https://pinch-zoom-element.glitch.me/
+            https://github.com/GoogleChromeLabs/pinch-zoom
+            https://github.com/davatron5000/awesome-standalones
+  title:    pinch-zoom custom HTML element
+  about:    A web component for pinch zooming DOM elements.
+
 * urls:     https://www.endlesspaper.app/
   tags:     utopia-planitia(software)
   about:    EndlessPaper is a note-taking app with infinite zoom for iOS
@@ -2023,6 +2029,16 @@
             more efficient than using transform for panning. As an extra bonus, if your DOM is structured so
             that your viewport element can be your document body, some browsers appear to do even more
             optimization for that special case.
+
+* urls:     https://arcan-fe.com/2021/04/12/introducing-pipeworld
+  title:    Introducing Pipeworld: Spreadsheet Dataflow Computing
+  tags:     utopia-planitia(software)
+  about:    Pipeworld (github link) combines ‘dataflow‘ programming (like Excel or Userland) with a
+            Zooming-Tiling User Interface (ZUI). It builds dynamic pipelines similarly to (Ultimate
+            Plumber), and leverages most of the gamut of Arcan features — from terminal emulator liberated
+            CLIs and TUIs to dynamic network transparency. It follows many of the principles for a Diverging
+            Desktop Future, particularly towards the idea of making clients simpler and more composable by
+            focusing on interactive “breadboarding” data exchange.
 
 * urls:     http://htwins.net/scale2/
             https://www.pixijs.com/
@@ -2094,17 +2110,25 @@
 * urls:     http://lea.verou.me/2020/04/lch-colors-in-css-what-why-and-how
   tags:     css color/space css4 css5
   title:    LCH colors in CSS: what, why, and how?
-  about:    LCH is a color space that has several advantages over the RGB/HSL colors we’re familiar with in CSS. In fact, I’d go as far as to call it a game-changer, and here’s why.
+
+  about:    LCH is a color space that has several advantages over the RGB/HSL colors we’re familiar with in
+            CSS. In fact, I’d go as far as to call it a game-changer, and here’s why.
 
             1. We actually get access to about 50% more colors.
             2. LCH (and Lab) is perceptually uniform
             3. LCH lightness actually means something
 
-            LCH stands for “Lightness Chroma Hue”. The parameters loosely correspond to HSL’s, however there are a few crucial differences:
+            LCH stands for “Lightness Chroma Hue”. The parameters loosely correspond to HSL’s, however there
+            are a few crucial differences:
 
-            The hue angles don’t fully correspond to HSL’s hues. E.g. 0 is not red, but more of a magenta and 180 is not turquoise but more of a bluish green, and is exactly complementary.
+            The hue angles don’t fully correspond to HSL’s hues. E.g. 0 is not red, but more of a magenta
+            and 180 is not turquoise but more of a bluish green, and is exactly complementary.
 
-            In HSL, saturation is a neat 0-100 percentage, since it’s a simple transformation of RGB into polar coordinates. In LCH however, Chroma is theoretically unbounded. LCH (like Lab) is designed to be able to represent the entire spectrum of human vision, and not all of these colors can be displayed by a screen, even a P3 screen. Not only is the maximum chroma different depending on screen gamut, it’s actually different per color.
+            In HSL, saturation is a neat 0-100 percentage, since it’s a simple transformation of RGB into
+            polar coordinates. In LCH however, Chroma is theoretically unbounded. LCH (like Lab) is designed
+            to be able to represent the entire spectrum of human vision, and not all of these colors can be
+            displayed by a screen, even a P3 screen. Not only is the maximum chroma different depending on
+            screen gamut, it’s actually different per color.
 
 * urls:     https://dba.stackexchange.com/questions/97779/postgresql-result-of-range-difference-would-not-be-contiguous
             https://dba.stackexchange.com/a/97783
