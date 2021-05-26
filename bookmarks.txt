@@ -3284,6 +3284,68 @@
   tags:     postgresql RDBMS visualization graph db/visualization
   about:    draw dot graphs of DB structure w/ foreign keys, centered on given table
 
+* urls:     http://mapstack.stamen.com/edit.html#watercolor[mask=buildings];terrain-lines[invert=1,tint=$ff6600@100,alpha=50];terrain-labels[invert=1]/15/52.4975/13.4430
+            https://hi.stamen.com/map-stack-maps-for-all-8a563c7aa314
+  tags:     cartography custom-maps
+  name:     Stamen Map Stack
+  about:    Create custom maps (watercolors!) from OpenStreetMap data
+
+* urls:     https://en.wikipedia.org/wiki/Bitemporal_Modeling
+            https://www.marklogic.com/blog/bitemporal/
+            https://j.njsm.de/blog/2020/11/01/bitemporal-data-sql-on-steroids/
+            https://lobste.rs/s/wpv3p1/bitemporality_more_than_design_pattern
+            https://martinfowler.com/eaaDev/timeNarrative.html#dimensions
+            http://www2.cs.arizona.edu/~rts/tdbbook.pdf
+            http://www2.cs.arizona.edu/~rts/publications.html
+  tags:     bitemporal temporal-DB
+  about:    Bitemporal Modeling is a specific case of Temporal database information modeling technique
+            designed to handle historical data along two different timelines.[1] This makes it possible to
+            rewind the information to "as it actually was" in combination with "as it was recorded" at some
+            point in time. In order to be able to do so, information cannot be discarded even if it is
+            erroneous. Within, for example, financial reporting it is often desirable to be able to recreate
+            an old report both as it actually looked at the time of creation and as it should have looked
+            given corrections made to the data after its creation.
+
+            Implementations of Bitemporal Modeling are mostly done using relational databases. As such,
+            Bitemporal Modeling is considered different from Dimensional Modeling and complementary to
+            database normalization. The SQL:2011 standard provides language constructs for working with
+            bitemporal data. However, many of current solutions are still vendor-specific.
+
+* urls:     https://vale.dev/
+  tags:     programming-language
+  title:    The Vale Programming Language
+  about:    Vale is the fast, fearless, and flexible programming language.
+
+            Vale's goal is to show the world that speed and safety can be easy. Vale is:
+
+            * *Fast*: Vale is an AOT compiled language that uses an entirely new approach to memory
+              management: generational references, which have zero aliasing costs and no garbage collection
+              pauses.
+
+            * *Fearless*: It is the safest native language: zero unsafe, region isolation, extern
+              boundaries, and dependency extern whitelisting.
+
+            * *Flexible*: Its new take on regions enables alternate memory management and allocation
+              strategies, with the region borrow checker enabling seamless, fast, and easy interop between
+              them.
+
+            Read comparisons with [C++, Javascript, and Rust](https://vale.dev/blog/comparisons)!
+
+* urls:     http://strlen.com/lobster/
+  tags:     programming-language
+  title:    The Lobster Programming Language
+  about:    Lobster is a programming language that tries to combine the advantages of static typing and
+            compile-time memory management with a very lightweight, friendly and terse syntax, by doing most
+            of the heavy lifting for you.
+
+            While it is a general purpose language, its current implementation is biased towards games and
+            other graphical things, with plenty of “batteries included” functionality.
+
+            Lobster is Open Source (Apache v2 license) and can be found on github. Online copy of the full
+            documentation.
+
+
+
 # Unsorted
 
 ## Group
