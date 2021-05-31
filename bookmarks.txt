@@ -2614,6 +2614,15 @@
             [So far, the extension works on Postgres 10
             only](https://github.com/bluejekyll/pg-extend-rs/issues/49)
 
+* urls:     https://ossc-db.github.io/pg_bulkload/index.html
+            https://github.com/ossc-db/pg_bulkload
+  tags:     postgresql bulkloading
+  titel:    pg_bulkload
+
+  about:    pg_bulkload is a high speed data loading tool for PostgreSQL. It is designed to load huge amount
+            of data to a database. You can load data to table bypassing PostgreSQL shared buffers.
+            pg_bulkload also has some ETL features; input data validation and data transformation.
+
 * urls:     https://github.com/jeff-davis/postgres-extension.rs
   tags:     rust postgresql-extension
   about:    Write PostgreSQL extensions in pure rust
@@ -3344,7 +3353,22 @@
             Lobster is Open Source (Apache v2 license) and can be found on github. Online copy of the full
             documentation.
 
+* urls:     https://github.com/chrispsn/mesh
+            http://mesh-spreadsheet.com/
+  title:    Mesh Spreadsheet
+  about:    Mesh is a JavaScript code editor that feels like a spreadsheet.
 
+            Specifically, Mesh is a spreadsheet UI wrapper around a text file editor. Actions on the grid
+            are automatically translated to changes in the JavaScript code.
+
+            Mesh helps people maximise their personal productivity and to share their work with others.
+            Consider Mesh if you:
+
+            * use JavaScript, but want rapid visual feedback and a convenient grid UI
+            * use spreadsheets, but feel constrained by Excel's limitations.
+
+            WARNING! Mesh is under active development. The UI and APIs will likely change a lot, it is not
+            well optimised, and there are lots of missing features and bugs.
 
 # Unsorted
 
