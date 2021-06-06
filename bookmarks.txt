@@ -2633,6 +2633,8 @@
 
 * urls:     https://github.com/zombodb/pgx
             https://news.ycombinator.com/item?id=23821112
+            https://lib.rs/crates/pgx
+            https://bluejekyll.github.io/blog/posts/announcing-pg-extend/
   tags:     rust postgresql-extension
   about:    Build Postgres Extensions with Rust!
 
@@ -2640,6 +2642,29 @@
             and safe as possible.
 
             pgx supports Postgres v10, v11, and v12.
+
+* urls:     https://github.com/zombodb/plrust
+  title:    plrust Extension for PostgreSQL
+  about:    Support for plrust in PostgreSQL functions.
+
+            ```rs
+            plrust Extension for PostgreSQL
+            CI status
+
+            Support for plrust in PostgreSQL functions.
+
+            CREATE EXTENSION IF NOT EXISTS plrust;
+            CREATE OR REPLACE FUNCTION sum_array(a BIGINT[]) RETURNS BIGINT
+                IMMUTABLE STRICT
+                LANGUAGE PLRUST AS
+            $$
+            [dependencies]
+                # Add Cargo.toml dependencies here.
+            [code]
+                Some(a.into_iter().map(|v| v.unwrap_or_default()).sum())
+            $$;
+            SELECT sum_array(ARRAY[1,2,3]);
+            ```
 
 * urls:     https://github.com/jirutka/smlar
             git://sigaev.ru/smlar.git
@@ -3147,6 +3172,7 @@
             * Right-to-left and vertical text layout.
 
 * urls:     https://github.com/mgeisler/textwrap
+            https://www.reddit.com/r/rust/comments/nsvrta/textwrap_0140_released_with_support_for_wrapping/
   about:    "Textwrap is a library for wrapping and indenting text. It is most often used by command-line
             programs to format dynamic output nicely so it looks good in a terminal. However, you can use
             the library to wrap arbitrary things by implementing the Fragment trait — an example would be
@@ -3377,7 +3403,6 @@
   about:    Pikchr (pronounced "picture") is a PIC-like markup language for diagrams in technical
             documentation. Pikchr is designed to be embedded in fenced code blocks of Markdown or similar
             mechanisms of other documentation markup languages.
-
 
 
 
