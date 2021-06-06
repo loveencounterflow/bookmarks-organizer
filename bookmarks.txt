@@ -3370,6 +3370,17 @@
             WARNING! Mesh is under active development. The UI and APIs will likely change a lot, it is not
             well optimised, and there are lots of missing features and bugs.
 
+* urls:     https://pikchr.org/home/doc/trunk/homepage.md
+            https://lib.rs/crates/pikchr
+  tags:     markdown diagram
+  title:    Pikchr
+  about:    Pikchr (pronounced "picture") is a PIC-like markup language for diagrams in technical
+            documentation. Pikchr is designed to be embedded in fenced code blocks of Markdown or similar
+            mechanisms of other documentation markup languages.
+
+
+
+
 # Unsorted
 
 ## Group
