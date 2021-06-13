@@ -3404,7 +3404,15 @@
             documentation. Pikchr is designed to be embedded in fenced code blocks of Markdown or similar
             mechanisms of other documentation markup languages.
 
+* urls:     https://github.com/xo/usql
+  title:    usql
+  about:    usql is a universal command-line interface for PostgreSQL, MySQL, Oracle Database, SQLite3,
+            Microsoft SQL Server, and many other databases including NoSQL and non-relational databases!
 
+            usql provides a simple way to work with SQL and NoSQL databases via a command-line inspired by
+            PostgreSQL's psql. usql supports most of the core psql features, such as variables, backticks,
+            and commands and has additional features that psql does not, such as syntax highlighting,
+            context-based completion, and multiple database support.
 
 # Unsorted
 
