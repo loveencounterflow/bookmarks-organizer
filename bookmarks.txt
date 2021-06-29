@@ -3414,6 +3414,67 @@
             and commands and has additional features that psql does not, such as syntax highlighting,
             context-based completion, and multiple database support.
 
+* urls:     https://github.com/stanfordnlp/GloVe
+            https://nlp.stanford.edu/projects/glove/
+            https://nlp.stanford.edu/pubs/glove.pdf
+  tags:     similarity wordvectors
+  about:    GloVe model for distributed word representation
+
+* urls:     https://osquery.io/
+            https://osquery.readthedocs.io/en/stable/
+  tags:     rdbms sqlite os
+  title:    osquery
+  about:    Query OS information likes processes, installed software, hardware status using SQL.
+
+            Sample queries:
+
+            ```sh
+            osqueryi -csv -header "select * from processes where name like '%post%';" | pspg -s6 --csv --csv-header=on --double-header                 ✔
+            osqueryi -csv -header "select * from python_packages;" | pspg -s6 --csv --csv-header=on --double-header                              ✔  36s
+            osqueryi -csv -header "select * from system_info;" | pspg -s6 --csv --csv-header=on --double-header                                  ✔  37s
+            osqueryi -csv -header "select * from chrome_extensions;" | pspg -s6 --csv --csv-header=on --double-header                             ✔  7s
+            ```
+
+            osquery is an operating system instrumentation framework for Windows, OS X (macOS), Linux, and
+            FreeBSD. The tools make low-level operating system analytics and monitoring both performant and
+            intuitive.
+
+            osquery exposes an operating system as a high-performance relational database. This allows you
+            to write SQL queries to explore operating system data. With osquery, SQL tables represent
+            abstract concepts such as running processes, loaded kernel modules, open network connections,
+            browser plugins, hardware events or file hashes.
+
+* urls:     http://tylerneylon.com/a/lsh1/
+  tags:     lsh locality-sensitive-hash
+  title:    Introduction to Locality-Sensitive Hashing
+  author:   Tyler Neylon
+  about:    Locality-sensitive hashing (LSH) is a set of techniques that dramatically speed up
+            search-for-neighbors or near-duplication detection on data. These techniques can be used, for
+            example, to filter out duplicates of scraped web pages at an impressive speed, or to perform
+            near-constant-time lookups of nearby points from a geospatial data set.
+
+* urls:     https://github.com/nalgeon/sqlean/
+  title:    SQLean: all the missing SQLite functions
+  about:    SQLite has very few functions compared to other DBMS. SQLite authors see this as a feature
+            rather than a bug, because SQLite has extension mechanism in place.
+
+            There are a lot of SQLite extensions out there, but they are incomplete, inconsistent and
+            scattered across the internet.
+
+            sqlean brings them all together, neatly packaged by domain modules and built for Linux, Windows
+            and macOS.
+
+            Here is what we've got right now:
+
+            * `crypto`: secure hashes
+            * `json1`: JSON functions
+            * `math`: math functions
+            * `re`: regular expressions
+            * `stats`: math statistics
+            * `text`: string functions
+            * `unicode`: Unicode support
+            * `vsv`: CSV files as virtual tables
+
 # Unsorted
 
 ## Group
