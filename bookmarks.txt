@@ -2003,6 +2003,9 @@
             * Pagerank - rough estimate of package importance, based on number of dependents/dependencies.
             * Hubs and Authorities - alternative importance classification, also based on number of edges.
 
+* urls:     https://deps.dev/npm/icql-dba/6.2.0
+  tags:     visualization npm/dependencies npm-packages
+
 * urls:     https://moiva.io/?compare=cnd+intertype+mixa+multimix
   tags:     visualization npm-packages pagerank
   title:    Measure and compare JavaScript libraries
