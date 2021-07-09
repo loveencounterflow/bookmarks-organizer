@@ -3478,6 +3478,15 @@
             * `unicode`: Unicode support
             * `vsv`: CSV files as virtual tables
 
+* urls:     https://github.com/bpampuch/pdfmake
+            http://pdfmake.org
+            https://pdfmake.github.io/docs/0.1/
+  tags:     pdf typesetting javascript
+  title:    pdfmake
+  about:    PDF document generation library for server-side and client-side usage in pure JavaScript.
+
+
+
 # Unsorted
 
 ## Group
