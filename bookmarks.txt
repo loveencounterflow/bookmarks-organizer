@@ -3485,6 +3485,19 @@
   title:    pdfmake
   about:    PDF document generation library for server-side and client-side usage in pure JavaScript.
 
+* urls:     https://github.com/hartator/wayback-machine-downloader/
+            https://news.ycombinator.com/item?id=27807376
+  tags:     web archive backup
+  title:    Wayback Machine Downloader
+  about:    Download an entire website from the Wayback Machine.
+
+            It will download the last version of every file present on Wayback Machine to
+            ./websites/example.com/. It will also re-create a directory structure and auto-create index.html
+            pages to work seamlessly with Apache and Nginx. All files downloaded are the original ones and
+            not Wayback Machine rewritten versions. This way, URLs and links structure are the same as
+            before.
+
+            fromTimestamp and toTiemstamp arguments supported.
 
 
 # Unsorted
