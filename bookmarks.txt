@@ -3499,6 +3499,9 @@
 
             fromTimestamp and toTiemstamp arguments supported.
 
+* urls:     https://app.rawgraphs.io/
+  tags:     visualization treemap
+  about:    drag-n-drop your data, choose format, identify data fields, get nice chart
 
 # Unsorted
 
