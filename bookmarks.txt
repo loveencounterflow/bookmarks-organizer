@@ -3526,6 +3526,89 @@
   about:    Locality sensitive hashing (LSH) is a widely popular technique used in approximate nearest
             neighbor (ANN) search.
 
+* urls:     https://realdougwilson.com/writing/coding-with-character
+  title:    Coding with Character: Monospace Fonts with Great Personality
+  tags:     typography monospace web design
+
+* urls:     https://www.recursive.design/
+  tags:     typography monospace web design
+  title:    A highly-flexible new variable font.
+  about:    Built to maximize versatility, control, and performance, Recursive is a five-axis variable font.
+            This enables you to choose from a wide range of predefined styles, or dial in exactly what you
+            want for each of its axes: *Monospace, Casual, Weight, Slant, and Cursive*. Taking full
+            advantage of variable font technology, Recursive offers an unprecedented level of flexibility,
+            all from a single font file.
+
+* urls:     https://github.com/StrumentiResistenti/Tagsistant
+            http://www.tagsistant.net/
+  tags:     tagging tags filesystem linux
+  about:    Semantic filesystem for Linux, with relation reasoner, autotagging plugins and a deduplication
+            service
+
+            Tagsistant is a semantic file system for Linux, a personal tool to catalog files using tags
+            (labels, mnemonic informations) rather than directories.
+
+            Tagsistant replace the concept of directory with that of tag, but since it have to do with
+            directories, it pairs the concept of tag with that of directory. So within Tagsistant a tag is a
+            directory and a directory is a tag.
+
+            To be more precise, this is not true with all the directories. First level directories are
+            special. The one called tags/ hosts all the tags. This means that every directory created inside
+            it is infact a tag.
+
+            Another, called store/, hosts contents, like files. All the tags created inside tags/ are
+            available inside store/. To tag a file all you have to do is to copy it inside one or more
+            directories under store/.
+
+            Another special first level directory is relations/. Inside it you can establish relations
+            between tags using mkdir:
+
+            ```
+            $ mkdir relations/music/includes/rock
+            $ mkdir relations/rock/includes/beatles
+            $ mkdir relations/beatles/includes/lennon
+            $ mkdir relations/beatles/is_equivalent/the_beatles
+            $ mkdir relations/lennon/requires/beatles
+            ```
+
+            A reasoner follows the relations you establish to include objects as a result of your queries.
+            This is an example:
+
+            ```
+            $ cp ~/let_it_be.mp3 store/lennon/@/
+            $ ls store/the_beatles/@/
+            let_it_be.mp3
+            ```
+
+            The file let_it_be.mp3 is tagged as lennon, which is included by beatles, which is equivalent to
+            the_beatles, and so is listed.
+
+            Tagsistant also comes with a plugin API to extend its behaviour. Some plugins for .ogg, .mp3,
+            .xml, .html and other formats are provided. What they do is add more tags to a file, using
+            specific procedures.
+
+            And if a file is copied inside Tagsistant twice, Tagsistant is able to pair the second copy with
+            the first one, keeping it just one.
+
+* urls:     https://github.com/yuzutech/kroki
+            https://kroki.io/
+  tags:     visualization ascii-art diagrams svg
+  about:    Creates diagrams from textual descriptions!
+
+            Kroki provides a unified API with support for BlockDiag (BlockDiag, SeqDiag, ActDiag, NwDiag,
+            PacketDiag, RackDiag), BPMN, Bytefield, C4 (with PlantUML), Ditaa, Erd, Excalidraw, GraphViz,
+            Mermaid, Nomnoml, Pikchr, PlantUML, SvgBob, UMLet, Vega, Vega-Lite and WaveDrom... and more to
+            come!
+
+* urls:     https://github.com/ivanceras/svgbob
+  tags:     visualization ascii-art diagrams svg
+  about:    Convert your ascii diagram scribbles into happy little SVG
+
+* urls:     https://vivliostyle.org/
+  tags:     typesetting markdown html
+  about:    An open source project for a new typesetting system fitting for digital and web publishing based
+            on the latest web standard technology
+
 # Unsorted
 
 ## Group
