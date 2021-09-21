@@ -3609,6 +3609,20 @@
   about:    An open source project for a new typesetting system fitting for digital and web publishing based
             on the latest web standard technology
 
+* urls:     https://github.com/adsharma/py2many
+  tags:     compiles-to:rust transpiler wasm
+  title:    py2many: Python to many CLike languages transpiler
+  about:    Python [...] has poor runtime performance. We can fix that by transpiling a subset of the
+            language into a more performant, statically typed language.
+
+            A second benefit is security. Writing security sensitive code in a low level language like C is
+            error prone and could lead to privilege escalation. [...] py2many can be a more general purpose
+            solution to the problem where you can verify the source via unit tests before you transpile.
+
+            A third potential use case is to accelerate python code by transpiling it into an extension.
+
+
+
 # Unsorted
 
 ## Group
