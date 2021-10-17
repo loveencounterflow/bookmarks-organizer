@@ -3621,7 +3621,15 @@
 
             A third potential use case is to accelerate python code by transpiling it into an extension.
 
-
+* urls:     https://www.ctrl.blog/entry/text-wrap-balance.html
+            https://open.nytimes.com/headline-balancing-act-6e92d3d6119
+            https://opensource.adobe.com/balance-text/
+            https://github.com/nytimes/text-balancer/
+            https://news.ycombinator.com/item?id=28887008
+            https://codeberg.org/da/text-balancer
+  tags:     typesetting line-breaks typography
+  about:    Algorithm to find better line-breaks for headlines and short paragraphs by varying
+            line lengths.
 
 # Unsorted
 
