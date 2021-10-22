@@ -3631,6 +3631,36 @@
   about:    Algorithm to find better line-breaks for headlines and short paragraphs by varying
             line lengths.
 
+* urls:     https://github.com/iorate/uBlacklist
+  tags:     search-engine/customization browser-extension
+  title:    uBlacklist
+  about:    Blocks specific sites from appearing in Google search results. Allows to color-code results from
+            specific sites. Works with a number of poular search engines.
+
+            Chrome Web Store / Firefox Add-ons / App Store (for macOS and iOS, thanks to Group-Leafy)
+
+            This browser extension prevents blacklisted sites from appearing in Google search results.
+
+            You can add rules on search result pages, or on sites to be blocked by clicking the toolbar
+            icon. Rules can be specified either by match patterns (e.g. `*://*.example.com/*`) or by regular
+            expressions (e.g. `/example\.(net|org)/`).
+
+* urls:     https://millionshort.com/search?keywords=anything&shopping=&chat=&remove=10000&country=&dt=
+  tags:     search-engine/customization
+  about:    Million Short allows to pare down search results by hiding specific sites, e-commerce sites,
+            or top N results.
+
+            At Million Short, we are committed to designing innovative technology to redefine internet
+            search. In creating a differentiated search, we aim to provide alternative methods for
+            organizing, accessing, and discovering the vast web of information on the Internet.
+
+            Million Short started out as an experimental web search engine that allows you to filter and
+            refine your search results set. The thinking was that web searches yield the same popular sites.
+            Million Short makes it easy to discover sites that just don't make it to the top of the search
+            engine results for whatever reason – whether it be poor SEO, new site, small marketing budget,
+            or competitive keywords. The Million Short technology gives users access to the wealth of
+            untapped information on the web.
+
 # Unsorted
 
 ## Group
