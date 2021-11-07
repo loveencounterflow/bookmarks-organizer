@@ -3661,6 +3661,14 @@
             or competitive keywords. The Million Short technology gives users access to the wealth of
             untapped information on the web.
 
+* urls:     https://git.cryto.net/joepie91/fix-esm.git
+            https://www.npmjs.com/package/fix-esm
+            https://gist.github.com/joepie91/bca2fda868c1e8b2c2caf76af7dfcad3
+            https://github.com/loveencounterflow/gaps-and-islands#turn-es-import-into-commonjs-require
+  tags:     import require commonjs javascript
+  title:    ES Modules are terrible, actually
+  about:    turn ES `import` into CommonJS `require`
+
 # Unsorted
 
 ## Group
