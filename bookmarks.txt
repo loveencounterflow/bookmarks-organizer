@@ -3669,6 +3669,45 @@
   title:    ES Modules are terrible, actually
   about:    turn ES `import` into CommonJS `require`
 
+* urls:     https://github.com/vercel/pkg
+  tags:     nodejs executable compilation
+  about:    This command line interface enables you to package your Node.js project into an executable that
+            can be run even on devices without Node.js installed.
+
+            * Make a commercial version of your application without sources
+            * Make a demo/evaluation/trial version of your app without sources
+            * Instantly make executables for other platforms (cross-compilation)
+            * Make some kind of self-extracting archive or installer
+            * No need to install Node.js and npm to run the packaged application
+            * No need to download hundreds of files via npm install to deploy your application. Deploy it as
+              a single file
+            * Put your assets inside the executable to make it even more portable
+            * Test your app against new Node.js version without installing it
+
+* urls:     https://chrome.google.com/webstore/detail/copy-all-urls/djdmadneanknadilpjiknlnanaolmbfk
+  tags:     chrome extension copy urls
+  title:    Copy All URLs for Google Chrome
+  about:    Copies all URLs from all tabs in current or in all windows. Format is fully customizable.
+
+
+# Search Engines
+
+* [Kagi Search - Request Access](https://kagi.com/)
+* [You Search, We Donate - Ask.Moe](https://ask.moe/)
+* [Nona ist eine private und werbefreie Suchmaschine](https://www.nona.de/)
+* [Fireball Suchmaschine](https://fireball.de/)
+* [Home - YaCy](https://yacy.net/)
+* [Gnod Search | Compare Search Engines](https://www.gnod.com/search/?engines=f,u,p,1,o,s,y,j,r,2,w,h,3,4,5,n,6,7,8,l,ac,x,i,g,v,9,z,m,a,b,k,t,c,d,q,ab,e)
+* [searx](https://searx.bar/search)
+* [Swisscows the alternative, data secure search engine.](https://swisscows.com/)
+* [MetaGer - Mehr als eine Suchmaschine](https://metager.de/)
+* [MetaGer: Privacy Protected Search & Find](https://metager.org/)
+* [Mojeek](https://www.mojeek.com/)
+* [Right Dao](https://rightdao.com/)
+* [Random Searx Redirector](https://searx.neocities.org/)
+* [Searx: moving away from DuckDuckGo](https://sagrista.info/blog/2021/searx-or-duckduckgo/)
+
+
 # Unsorted
 
 ## Group
