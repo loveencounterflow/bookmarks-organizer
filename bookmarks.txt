@@ -683,7 +683,7 @@
   tags:   databases graphdb
 
 * url:    https://beautifulracket.com/
-  title:  Beau­ti­ful Racket: how to make your own pro­gram­ming lan­guages with Racket
+  title:  Beautiful Racket: how to make your own programming languages with Racket
   tags:   parsing racket::name
 
 * url:    https://jspreadsheets.com/
@@ -799,7 +799,13 @@
 
 * url:    http://asciiflow.com/
           https://github.com/lewish/asciiflow2
+  tags:   ascii-art
   about:  Online editor for ASCII-art boxes etc.
+
+* url:    https://xosh.org/text-to-diagram/
+  tags:   ascii-art diagrams visualization
+  title:  Online text to diagram tools (2020/06/07)
+  about:  A comprehensive list of various text to diagram tools.
 
 * url:    https://github.com/remarkjs/remark
   url:    https://remark.js.org
@@ -1209,33 +1215,6 @@
 * url:    https://mirror.informatik.hs-fulda.de/tex-archive/graphics/pgf/contrib/forest/forest-doc.pdf
   url:    https://ctan.org/pkg/forest
   about:  draw (linguistic) trees; maybe an option to display CJK character decompositions
-
-* url:
-  title:  l3experimental – Experimental LaTeX3 concepts
-
-  about:  The l3­ex­per­i­men­tal pack­ages are a col­lec­tion of
-          ex­per­i­men­tal im­ple­men­ta­tions for as­pects of the LaTeX3
-          ker­nel, deal­ing with higher-level ideas such as the De­signer
-          In­ter­face. Some of them work as stand alone pack­ages, pro­vid­ing
-          new func­tion­al­ity, and can be used on top of LaTeX2ε with no
-          changes to the ex­ist­ing ker­nel.
-
-          The present re­lease in­cludes:
-
-          * l3bench­mark for mea­sur­ing the time taken by TeX to run cer­tain
-            code;
-          * l3c­ctab, sup­port for sav­ing and restor­ing cat­e­gory codes en
-            masse in a ta­ble;
-          * l3­color, sup­port for set­ting col­ors us­ing a range of color
-            mod­els;
-          * l3­draw, a code-level in­ter­face for con­struct­ing draw­ings;
-          * l3str, sup­port for string ma­nip­u­la­tion;
-          * l3sys-shell, which pro­vides ab­strac­tions for com­mon shell
-            func­tions like file dele­tion and copy­ing;
-          * xcoffins, which al­lows the align­ment of boxes us­ing a se­ries of
-            ‘han­dle’ po­si­tions, sup­ple­ment­ing the sim­ple TeX ref­er­ence
-            point;
-          * xgal­ley, which con­trols boxes re­ceiv­ing text for type­set­ting.
 
 * url:    https://github.com/joliss/node-multidep#readme
   about:  allow multiple versions of npm modules to be installed
@@ -3688,6 +3667,43 @@
   tags:     chrome extension copy urls
   title:    Copy All URLs for Google Chrome
   about:    Copies all URLs from all tabs in current or in all windows. Format is fully customizable.
+
+* urls:     https://direkt.bahn.guru/?origin=8011160
+  title:    Berlin Hbf | 🇪🇺 Direct train connections
+  about:    Select direct train connections in Europe, find prices
+
+* urls:     https://www.seat61.com/
+  title:    The Man in Seat 61 | The train travel guide | Train travel in the UK, Europe & Worldwide
+
+* urls:     https://yieldcode.blog/supercharge-nodejs-with-rust/
+            https://news.ycombinator.com/item?id=28976341
+            https://github.com/neon-bindings/neon
+            https://www.neon-bindings.com/
+  title:    Supercharge Your NodeJS With Rust
+  about:    Neon is a library and toolchain for embedding Rust in your Node.js applications and libraries.
+
+* urls:     https://rime.im/
+            https://github.com/rime/librime
+            https://github.com/fcitx/fcitx-rime
+  title:    RIME: Rime Input Method Engine
+  about:    * A modular, extensible input method engine in cross-platform C++ code, built on top of
+              open-source technologies
+            * Covering features found in a large variety of Chinese input methods, either shape-based or
+              phonetic-based
+            * Built with native support for Traditional Chinese, conversion to Simplified Chinese and other
+              regional standards via OpenCC
+            * Rime input schema, a DSL in YAML syntax for fast trying out innovative ideas of input method
+              design
+            * Spelling Algebra, a mechanism to create variant spelling, especially useful for Chinese
+              dialects
+            * Support for chord-typing with a generic Qwerty keyboard
+
+* urls:     https://stackoverflow.com/questions/3488042/how-can-i-extract-embedded-fonts-from-a-pdf-as-valid-font-files
+            https://www.idrsolutions.com/online-pdf-to-html5-converter
+  tags:     pdf conversion extraction fonts html jizura
+  title:    Online PDF to HTML5 Converter
+  about:    Online tool to convert a PDF to an archive with HTML5 pages and separate folders for embedded
+            images and fonts.
 
 
 # Search Engines
