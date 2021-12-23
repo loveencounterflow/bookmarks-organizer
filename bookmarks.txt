@@ -2031,6 +2031,9 @@
             https://www.pixijs.com/
   tags:     utopia-planitia(software)
 
+* urls:     https://woodrush.github.io/lisp-in-life/
+  tags:     utopia-planitia(software) game-of-life
+
 * urls:     https://www.pixijs.com/
   tags:     utopia-planitia(software)
   title:    The HTML5 Creation Engine
