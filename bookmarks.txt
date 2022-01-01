@@ -3708,6 +3708,8 @@
   about:    Online tool to convert a PDF to an archive with HTML5 pages and separate folders for embedded
             images and fonts.
 
+* urls:     https://github.com/mendel5/alternative-front-ends
+  title:    Alternative Frontends to Popular Website
 
 # Search Engines
 
