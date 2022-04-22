@@ -1995,6 +1995,20 @@
   about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
             wraparound option)" (Utopia Planitia, UP)
 
+* urls:     https://goessner.github.io/canvasInteractor/
+  tags:     utopia-planitia(software)
+  title:    canvasInteractor: Make your HTML canvas Interactive
+  about:    canvasInteractor is a JavaScript micro-library (4.7 kB compressed) used to handle pointer events
+            for simple geometry editing together with one or more HTML canvases [1]. It implements a global
+            event loop based on requestAnimationFrame and supports throttling of pointermove and wheel
+            events via its custom tick event for efficient animation [2]. Cartesian coordinates for
+            scientific and engineering applications are supported. Pan, drag and zoom operations based on an
+            user defined origin can be done.
+
+            It was primarily implemented for use in engineering education and conference presentations.
+
+            canvasInteractor is the modern and more minimal successor of deprecated canvas-area [3].
+
 * urls:     https://pinch-zoom-element.glitch.me/
             https://github.com/GoogleChromeLabs/pinch-zoom
             https://github.com/davatron5000/awesome-standalones
