@@ -2015,6 +2015,19 @@
   title:    pinch-zoom custom HTML element
   about:    A web component for pinch zooming DOM elements.
 
+* urls:     http://jaukia.github.io/zoomooz/
+  title:    Zoomooz.js: Make any web page zoom.
+  about:    Zoomooz is a jQuery plugin for making web page elements zoom. It can be used for making Prezi
+            like slideshows and for zooming to images or other details. You can zoom to elements that have
+            been translated, scaled and skewed, and they will morph correctly.
+
+            There is some interesting stuff happening in the background to make the morphings work. To learn
+            about them, read the [Animate between complex
+            transforms](https://github.com/jaukia/zoomooz/wiki/Animating-between-complex-transforms) wiki
+            page.
+
+
+
 * urls:     https://www.endlesspaper.app/
   tags:     utopia-planitia(software)
   about:    EndlessPaper is a note-taking app with infinite zoom for iOS
