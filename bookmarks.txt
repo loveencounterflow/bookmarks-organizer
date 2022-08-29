@@ -3890,6 +3890,15 @@
             * VSD To PPTX
             * VSD To JPG
 
+# Archives of Archives
+
+* urls:     https://github.com/maehr/awesome-digital-history
+  title:    Awesome Digital History Awesome
+  about:    Find primary sources online and learn how to research history digitally.
+
+            Finding aids for textual and multimedia primary sources with a focus on the western hemisphere
+            and the 19th and 20th centuries. Courses and learning tools to explore history digitally.
+
 # Search Engines
 
 * [Kagi Search - Request Access](https://kagi.com/)
