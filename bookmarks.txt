@@ -3746,6 +3746,12 @@
 * urls:     https://github.com/mendel5/alternative-front-ends
   title:    Alternative Frontends to Popular Website
 
+* urls:     https://postgresml.org
+            https://postgresml.org/user_guides/setup/native_installation/
+  title:    PostgresML: End-to-end machine learning solution for everyone
+  about:    Train and deploy models to make online predictions using only SQL, with an open source extension
+            for Postgres. Manage your projects and visualize datasets using the built-in dashboard.
+
 * urls:     https://github.com/rocketraman/sane-scan-pdf
   title:    SANE Command-Line Scan to PDF
   about:    Sane command-line scanning bash shell script on Linux with OCR and deskew support. The script
