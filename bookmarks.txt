@@ -870,6 +870,14 @@
 * url:    https://github.com/facebook/pfff/wiki/Examples2
   tags:   programming/dependencies programming/tools treemaps
 
+* urls:   https://github.com/danvk/webtreemap
+          http://evmar.github.io/webtreemap/
+  tags:   programming/tools treemaps
+  title:  webtreemap CLI
+  about:  No frills treemap visualization from the command line. Includes built-in facilities for
+          visualizing space using on disk or in a JSON file, but the simple input format makes it easy to
+          create a treemap visualization of anything you like.
+
 * url:    https://github.com/laserson/squarify
   tags:   visualization treemaps MKTS python
   about:  Pure Python implementation of the squarify treemap layout algorithm. The function returns a list
@@ -3737,6 +3745,30 @@
 
 * urls:     https://github.com/mendel5/alternative-front-ends
   title:    Alternative Frontends to Popular Website
+
+* urls:     https://github.com/rocketraman/sane-scan-pdf
+  title:    SANE Command-Line Scan to PDF
+  about:    Sane command-line scanning bash shell script on Linux with OCR and deskew support. The script
+            automates common scan-to-pdf operations for scanners with an automatic document feeder, such as
+            the awesome Fujitsu ScanSnap S1500, with output to PDF files.
+
+            Tested and run regularly on Fedora, but should work on other distributions with the requirements
+            below.
+
+            ## Features
+
+            * Join scanned pages into a single output file, or specify a name for each page
+            * Deskew (if supported by scanner driver, or software-based via unpaper)
+            * Crop (if supported by scanner driver)
+            * Creates searchable PDFs (with tesseract)
+            * Duplex (if scanner supports it)
+            * Specify resolution
+            * Truncate n pages explicitly from end of scan e.g. duplex scanning with last page truncated
+            * Skip white-only pages automatically (with ImageMagick)
+            * Specify page width and height for odd size pages, or common sizes (Letter, Legal, A4)
+            * Performance: scanner run in parallel with page post-processing
+            * Limit parallel processing for very fast scanners or constrained environments (if sem installed)
+            * Post-scan open scan output(s) in viewer
 
 * urls:     https://tinywow.com
   title:    TinyWow: Tools That Solve Your Files Problem
