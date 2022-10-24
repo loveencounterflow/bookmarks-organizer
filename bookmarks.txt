@@ -2003,6 +2003,13 @@
   about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
             wraparound option)" (Utopia Planitia, UP)
 
+* urls:     https://www.onezoom.org
+  tags:     utopia-planitia(software)
+  title:    OneZoom tree of life explorer
+  about:    An interactive map of the evolutionary links between all living things known to science.
+            Discover your favourites, see which species are under threat, and be amazed by the diversity of
+            life on earth.
+
 * urls:     https://goessner.github.io/canvasInteractor/
   tags:     utopia-planitia(software)
   title:    canvasInteractor: Make your HTML canvas Interactive
@@ -3927,6 +3934,38 @@
             * VSD To DOCX
             * VSD To PPTX
             * VSD To JPG
+
+* urls:     https://tiptap.dev/examples/tables
+            https://github.com/donotebase/quasar-tiptap
+            https://www.tag1consulting.com/blog/deep-dive-rich-text-editors-tagteamtalk-002
+            https://wiki.ubuntuusers.de/Webeditoren/
+            http://bluegriffon.org/#download
+  tags:     WYSIWYG editor HTML table
+  about:    WYSIWYG editors for HTML tables, possibly as web components turned into stand-alone apps
+
+* urls:     https://grid.glideapps.com
+  tags:     HTML data grid table
+  about:    Glide Data Grid
+
+            A react data grid with no compromises, outrageous performance, rich rendering and full
+            TypeScript support. Built as the basis of the Glide Data Editor – we're hiring.
+
+            * handles huge amount of rows with no problem
+            * theming support
+
+* urls:     https://github.com/finos/perspective
+            https://perspective.finos.org
+  tags:     Wasm data visualization live browser
+  title:    Perspective
+  about:    Perspective is an interactive analytics and data visualization component, which is especially
+            well-suited for large and/or streaming datasets. Use it to create user-configurable reports,
+            dashboards, notebooks and applications, then deploy stand-alone in the browser, or in concert
+            with Python and/or Jupyterlab.
+
+* urls:     https://gist.github.com/manigandham/65543a0bc2bf7006a487
+  tags:     text editor browser html markdown listing
+  title:    Rich text / HTML editors and frameworks
+
 
 # Archives of Archives
 
