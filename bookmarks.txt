@@ -2003,6 +2003,11 @@
   about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
             wraparound option)" (Utopia Planitia, UP)
 
+* urls:     https://www.cs.umd.edu/hcil/trs/2009-21/2009-21.pdf
+            The Promise of Zoomable User Interfaces
+  tags:     utopia-planitia(software)
+  title:    The Promise of Zoomable User Interfaces [2009]
+
 * urls:     https://www.onezoom.org
   tags:     utopia-planitia(software)
   title:    OneZoom tree of life explorer
@@ -3965,6 +3970,11 @@
 * urls:     https://gist.github.com/manigandham/65543a0bc2bf7006a487
   tags:     text editor browser html markdown listing
   title:    Rich text / HTML editors and frameworks
+
+* urls:     https://pixian.ai
+            https://news.ycombinator.com/item?id=33439405
+  title:    Remove Image Backgrounds with AI
+  tags:     image-processing ai
 
 
 # Archives of Archives
