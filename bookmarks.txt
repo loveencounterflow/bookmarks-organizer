@@ -1755,6 +1755,11 @@
   tags:   regex patterns xml xml_lexer
   about:  patterns for XML lexers
 
+* url:    https://github.com/langium/langium
+          https://langium.org/
+  tags:   parser chevrotain:name
+  about:  parser framework built on top of [Chevrotain](https://github.com/SAP/chevrotain)
+
 * url:    https://bbs.archlinux.org/viewtopic.php?id=193570
   url:    https://askubuntu.com/questions/990363/how-to-load-iwlwifi-driver
   url:    https://duckduckgo.com/?q=install+a+testing+version+of+iwlwifi&t=opera&ia=web
