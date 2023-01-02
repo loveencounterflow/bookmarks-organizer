@@ -2008,6 +2008,10 @@
   about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
             wraparound option)" (Utopia Planitia, UP)
 
+* urls:     https://obsidian.md/canvas
+            https://news.ycombinator.com/item?id=34066824
+  tags:     utopia-planitia(software)
+
 * urls:     https://www.cs.umd.edu/hcil/trs/2009-21/2009-21.pdf
             The Promise of Zoomable User Interfaces
   tags:     utopia-planitia(software)
@@ -3981,6 +3985,9 @@
   title:    Remove Image Backgrounds with AI
   tags:     image-processing ai
 
+* urls:     https://news.ycombinator.com/item?id=34211457
+  title:    Ask HN: Are there any good open source text-to-speech tools?
+  tags:     text-to-speech
 
 # Archives of Archives
 
