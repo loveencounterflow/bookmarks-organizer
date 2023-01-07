@@ -3989,6 +3989,12 @@
   title:    Ask HN: Are there any good open source text-to-speech tools?
   tags:     text-to-speech
 
+* urls:     https://github.com/gildas-lormeau/SingleFile
+            https://news.ycombinator.com/item?id=30527999
+  about:    Web Extension and CLI tool for saving a faithful copy of an entire web page in a single HTML
+            file
+
+
 # Archives of Archives
 
 * urls:     https://github.com/maehr/awesome-digital-history
