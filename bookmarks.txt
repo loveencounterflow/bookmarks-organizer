@@ -2008,6 +2008,20 @@
   about:    software to drive "Highly Zoomable Interface on Infinite Plane (including horizontal, vertical
             wraparound option)" (Utopia Planitia, UP)
 
+* urls:     https://github.com/aappleby/Wideboard
+            https://news.ycombinator.com/item?id=34758336
+  tags:     utopia-planitia(software) terminal
+  about:    This repo is a revamp of an old proof of concept that I wrote in 2013 to answer the question
+            "How much text can you render in a web browser at once?", for which the answer is "At least the
+            entire Linux kernel, or as much text as will fit in your GPU's ram".
+
+            Wideboard uses WebGL 1, some special shaders, and some simple GPU-compatible data structures to
+            render arbitrarily large amounts of monospace, unformatted text in a web browser. It has been
+            tested with 56000 files from the Linux repo (31 million lines of source, or around 1.2 gigabytes
+            of raw text) and runs at 60 fps while using single-digit percentages of a 3080ti GPU. It should
+            run equally well on integrated GPUs, barring memory limits.
+
+
 * urls:     https://obsidian.md/canvas
             https://news.ycombinator.com/item?id=34066824
   tags:     utopia-planitia(software)
