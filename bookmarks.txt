@@ -2101,6 +2101,10 @@
             https://www.pixijs.com/
   tags:     utopia-planitia(software)
 
+* urls:     https://www.quadratichq.com/blog/2023-05-15-coordinate-system-for-infinite-spreadsheet
+            https://news.ycombinator.com/item?id=35964668
+  tags:     utopia-planitia(software)
+
 * urls:     https://woodrush.github.io/lisp-in-life/
   tags:     utopia-planitia(software) game-of-life
 
