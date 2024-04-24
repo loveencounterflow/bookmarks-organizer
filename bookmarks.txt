@@ -2108,6 +2108,10 @@
 * urls:     https://woodrush.github.io/lisp-in-life/
   tags:     utopia-planitia(software) game-of-life
 
+* urls:     https://infinitecanvas.tools
+  tags:     utopia-planitia(software)
+  about:    A website dedicated to apps leveraging the idea of using an infinite canvas
+
 * urls:     https://www.pixijs.com/
   tags:     utopia-planitia(software)
   title:    The HTML5 Creation Engine
